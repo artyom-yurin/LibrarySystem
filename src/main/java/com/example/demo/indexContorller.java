@@ -18,16 +18,14 @@ public class indexContorller {
 
 
     @GetMapping("/catalog")
-    public ModelAndView catalog() {
-        return new ModelAndView("catalog");
-    }
+    public ModelAndView catalog() { return new ModelAndView("catalog"); }
 
-    @GetMapping("/control")
+    @GetMapping("/{userId}/control")
     public ModelAndView control() {
         return new ModelAndView("control");
     }
 
-    @GetMapping("/myBooks")
+    @GetMapping("/{userId}/myBooks")
     public ModelAndView myBooks() {
         return new ModelAndView("myBooks");
     }
