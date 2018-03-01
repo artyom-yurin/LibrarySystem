@@ -1,13 +1,11 @@
-package com.example.demo;
+package com.example.demo.model;
 
 public class LoginModel {
     private String username;
     private String password;
 
     LoginModel()
-    {
-
-    }
+    {}
 
     public String getUsername() {
         return username;
