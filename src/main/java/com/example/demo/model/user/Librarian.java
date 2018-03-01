@@ -3,29 +3,43 @@ package com.example.demo.model.user;
 import javax.persistence.Entity;
 
 @Entity
-public  class Librarian extends User{
+public  class Librarian{
+    private Integer id;
+    private String name;
+    private String address;
+    private String phoneNumber;
 
-    public Librarian(long id, String name, String adress, String phoneNumber) {
-        super(id, name, adress, phoneNumber);
+    public Librarian(Integer id, String name, String adress, String phoneNumber) {}
+
+    public Integer getId() {
+        return id;
     }
 
-    /*public Patron createPatron(String name, String adress, String phoneNumber, long id, boolean isFaculty){
-        Patron newPatron = new Patron(name, adress, phoneNumber, id, isFaculty);
-        return newPatron;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    public Librarian createLibrarian(String name, String adress, String phoneNumber, long id){
-        Librarian newLibrarian = new Librarian(name, adress, phoneNumber, id);
-        return newLibrarian;
+    public String getName() {
+        return name;
     }
 
-    public StringBuilder displayCard(){
-        StringBuilder result = new StringBuilder();
-        result.append(this.name);
-        result.append(this.id);
-        result.append(this.adress);
-        result.append(this.phoneNumber);
-        result.append("Librarian");
-        return result;
-    }*/
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
 }

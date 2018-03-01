@@ -3,53 +3,52 @@ package com.example.demo.model.user;
 import javax.persistence.Entity;
 
 @Entity
-public class Patron extends User {
-    public boolean isFaculty;
+public class Patron{
+    private Integer id;
+    private String name;
+    private String address;
+    private String phoneNumber;
+    private boolean isFaculty;
 
-    public Patron(long id, String name, String adress, String phoneNumber, boolean isFaculty) {
-        super(id, name, adress, phoneNumber);
-        this.isFaculty = isFaculty;
+    public Patron(Integer id, String name, String address, String phoneNumber, boolean isFaculty) {}
+
+    public Integer getId() {
+        return id;
     }
 
-    /*public void addDocument(Book document){
-        if(document.isReference){
-            return;
-        }
-        if(document.getCount() == 0){
-            return;
-        }
-        if(documents.contains(document)){
-            return;
-        }
-        Constants.checkOut(document);
-        documents.add(document);
-        document.setReturnTime(21);
-        if(document.isBestseller){
-            document.setReturnTime(14);
-        }
-        if(this.isFaculty){
-            document.setReturnTime(28);
-        }
-        this.lastAdded = document;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    public void returnDocument(Document document){
-        //request to Library
-        documents.remove(document);
+    public String getName() {
+        return name;
     }
 
-    public StringBuilder displayCard(){
-        StringBuilder result = new StringBuilder();
-        result.append(this.name);
-        result.append(this.id);
-        result.append(this.adress);
-        result.append(this.phoneNumber);
-        if(isFaculty){
-            result.append("Faculty");
-        }
-        else{
-            result.append("Student");
-        }
-        return result;
-    }*/
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public boolean isFaculty() {
+        return isFaculty;
+    }
+
+    public void setFaculty(boolean faculty) {
+        isFaculty = faculty;
+    }
 }
