@@ -2,7 +2,7 @@ package com.example.demo.model.document;
 
 import javax.persistence.Entity;
 
-@Entity
+//@Entity
 public class AVMaterial {
     private Integer id;
     private String title;

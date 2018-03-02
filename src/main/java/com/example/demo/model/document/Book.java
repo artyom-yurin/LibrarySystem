@@ -1,17 +1,18 @@
 package com.example.demo.model.document;
 
 import javax.persistence.Entity;
+import java.util.ArrayList;
 
-@Entity
+//@Entity
 public class Book{
     private Integer id;
     private String title;
-    private String[] authors;
+    private ArrayList<Author> authors;
     private int price;
     private int count;
-    private String[] tags;
+    private ArrayList<Tag> tags;
     private String publisher;
-    private int edition;
+    private int edition; // TODO: add edition
     private boolean isBestseller;
     private boolean isReference;
     private int publishingYear;

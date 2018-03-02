@@ -6,7 +6,7 @@ import javax.validation.constraints.Size;
 @Entity
 public class Tag {
     @Id
-    @Column(name = "ID")
+    @Column(name = "TAG_ID")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     @Size(max = 25)

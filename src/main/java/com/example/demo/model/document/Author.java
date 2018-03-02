@@ -6,7 +6,7 @@ import javax.validation.constraints.Size;
 @Entity
 public class Author {
     @Id
-    @Column(name = "ID")
+    @Column(name = "AUTHOR_ID")
     @GeneratedValue (strategy = GenerationType.AUTO)
     private Integer id;
     @Size(max = 25)
