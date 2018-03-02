@@ -1,17 +1,17 @@
 package com.example.demo.model.document;
 
 import javax.persistence.Entity;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.Set;
 
 //@Entity
 public class JournalArticle{
     private Integer id;
     private String title;
-    private ArrayList<Author> authors;
+    private Set<Author> authors;
     private String editor;
     private Date dateOfPublishing;
-    private ArrayList<Tag> tags;
+    private Set<Tag> tags;
     private int price;
     private int count;
 }
