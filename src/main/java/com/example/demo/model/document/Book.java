@@ -9,6 +9,7 @@ import java.util.Set;
 public class Book{
     @Id
     @Column(name = "BOOK_ID")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
     @Size(max = 25)
