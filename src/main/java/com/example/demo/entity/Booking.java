@@ -1,8 +1,8 @@
-package com.example.demo.model;
+package com.example.demo.entity;
 
 
-import com.example.demo.model.document.Document;
-import com.example.demo.model.user.User;
+import com.example.demo.entity.document.Document;
+import com.example.demo.entity.user.User;
 
 import javax.persistence.*;
 import java.util.Date;

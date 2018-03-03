@@ -1,4 +1,4 @@
-package com.example.demo.model.user;
+package com.example.demo.entity.user;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -30,6 +30,8 @@ public class User{
     @Size(max = 25)
     @Column(name = "PASSWORD")
     private String password;
+
+    public User() {};
 
     public User(Integer id, String name, String surname, String address, String phoneNumber, Integer role, String username, String password) {}
 

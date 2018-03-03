@@ -1,4 +1,4 @@
-package com.example.demo.model.document;
+package com.example.demo.entity.document;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;

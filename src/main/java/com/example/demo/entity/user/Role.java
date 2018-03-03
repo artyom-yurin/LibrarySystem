@@ -1,4 +1,4 @@
-package com.example.demo.model.user;
+package com.example.demo.entity.user;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -12,6 +12,8 @@ public class Role {
     @Size(max = 25)
     @Column(name = "NAME")
     private String name;
+
+    public Role() {}
 
     public Role(Integer id, String name) {}
 
