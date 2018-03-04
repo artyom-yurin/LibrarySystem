@@ -41,16 +41,8 @@ public class UserController {
     @PostMapping("/user/add")
     public void addUser(@RequestBody UserModel userModel)
     {
-        int id;
-        try
-        {
-            id = roleService.getIdByName(userModel.getRole());
-        }
-        catch (Exception e)
-        {
-            throw e;
-        }
-        Role role = roleService.findById(id);
+        Role role = roleService.findByName(userModel.getRole());
+        if (role == null) throw new RoleNotFoundException();
         User user = new User(userModel.getName(), userModel.getSurname(), userModel.getAddress(), userModel.getPhoneNumber(), role, userModel.getUsername(), userModel.getPassword());
         try {
             userService.save(user);
@@ -64,15 +56,8 @@ public class UserController {
     @PutMapping("/user/update")
     public void updateUser(@RequestBody UserModel userModel)
     {
-        int id;
-        try {
-            id = roleService.getIdByName(userModel.getRole());
-        }
-        catch (Exception e)
-        {
-            throw e;
-        }
-        Role role = roleService.findById(id);
+        Role role = roleService.findByName(userModel.getRole());
+        if (role == null) throw new RoleNotFoundException();
         User user = new User(userModel.getName(), userModel.getSurname(), userModel.getAddress(), userModel.getPhoneNumber(), role, userModel.getUsername(), userModel.getPassword());
         user.setId(userModel.getId());
         try {
