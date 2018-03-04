@@ -36,10 +36,10 @@ public class Document{
     @Column(name = "EDITION")
     private Integer edition;
 
-    @Column(name = "BESTSELLER")
+    @Column(name = "BESTSELLER", columnDefinition = "TINYINT(1)")
     private boolean isBestseller;
 
-    @Column(name = "REFERENCE")
+    @Column(name = "REFERENCE", columnDefinition = "TINYINT(1)")
     private boolean isReference;
 
     @Column(name = "PUBLISHING_DATE",columnDefinition = "DATETIME")
