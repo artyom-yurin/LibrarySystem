@@ -52,7 +52,13 @@ public class UserController {
         }
         Role role = roleService.findById(id);
         User user = new User(userModel.getName(), userModel.getSurname(), userModel.getAddress(), userModel.getPhoneNumber(), role, userModel.getUsername(), userModel.getPassword());
-        userService.save(user);
+        try {
+            userService.save(user);
+        }
+        catch (Exception e)
+        {
+            throw e;
+        }
     }
 
     @PutMapping("/user/update")
@@ -69,7 +75,13 @@ public class UserController {
         Role role = roleService.findById(id);
         User user = new User(userModel.getName(), userModel.getSurname(), userModel.getAddress(), userModel.getPhoneNumber(), role, userModel.getUsername(), userModel.getPassword());
         user.setId(userModel.getId());
-        userService.save(user);
+        try {
+            userService.save(user);
+        }
+        catch (Exception e)
+        {
+            throw e;
+        }
     }
 
     @Transactional
