@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import com.example.demo.entity.Booking;
+import com.example.demo.repository.BookingRepository;
 import com.example.demo.repository.RoleRepository;
 import com.example.demo.repository.UserRepository;
 import org.springframework.stereotype.Controller;
@@ -11,10 +13,12 @@ public class IndexController {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final BookingRepository bookingRepository;
 
-    public IndexController(UserRepository userRepository, RoleRepository roleRepository) {
+    public IndexController(UserRepository userRepository, RoleRepository roleRepository, BookingRepository bookingRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.bookingRepository = bookingRepository;
     }
 
     @GetMapping("/")
