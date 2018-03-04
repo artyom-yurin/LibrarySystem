@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TypeDocumentRepository extends JpaRepository<TypeDocument, Integer> {
+    TypeDocument findByTypeName(String name);
 }
