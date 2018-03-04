@@ -16,7 +16,7 @@ public class Document{
     @Column(name = "TITLE")
     private String title;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "AUTHOR_ID")
     private Set<Author> authors;
 
@@ -25,7 +25,7 @@ public class Document{
     @Column(name = "COUNT")
     private Integer count;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "TAG_ID")
     private Set<Tag> tags;
 
