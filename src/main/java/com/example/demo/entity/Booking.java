@@ -25,13 +25,13 @@ public class Booking {
     @Column(name = "RETURN_DATE",columnDefinition = "DATETIME")
     private Date returnDate;
 
-    @Column(name = "HAS_BACK_REQUEST")
+    @Column(name = "HAS_BACK_REQUEST",columnDefinition = "TINYINT(1)")
     private boolean hasBackRequest;
 
     @Column(name = "FINE")
     private Integer fine;
 
-    @Column(name = "IS_CLOSE")
+    @Column(name = "IS_CLOSE",columnDefinition = "TINYINT(1)")
     private boolean isClose;
 
     public Booking() {}

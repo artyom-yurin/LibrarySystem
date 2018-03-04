@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.repository.BookingRepository;
 import com.example.demo.repository.RoleRepository;
 import com.example.demo.repository.TagRepository;
 import com.example.demo.repository.UserRepository;
@@ -15,14 +16,17 @@ public class IndexController {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final BookingRepository bookingRepository;
     private final TagRepository tagRepository;
 
     public IndexController(UserRepository userRepository,
                            RoleRepository roleRepository,
-                           TagRepository tagRepository) {
+                           TagRepository tagRepository,
+                          BookingRepository bookingRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.tagRepository = tagRepository;
+        this.bookingRepository = bookingRepository;
     }
 
     @GetMapping("/")
