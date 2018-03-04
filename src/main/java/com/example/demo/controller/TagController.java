@@ -5,10 +5,10 @@ import com.example.demo.service.TagService;
 import org.springframework.stereotype.Controller;
 
 @Controller
-public class BookController {
+public class TagController {
     private TagService tagService;
 
-    BookController(TagRepository tagRepository)
+    TagController(TagRepository tagRepository)
     {
         tagService = new TagService(tagRepository);
     }

@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.entity.Booking;
 import com.example.demo.repository.BookingRepository;
 import org.springframework.stereotype.Service;
 
@@ -11,5 +12,10 @@ public class BookingService {
 
     public BookingService(BookingRepository bookingRepository) {
         this.bookingRepository = bookingRepository;
+    }
+
+    public Booking findById(Integer id)
+    {
+        return bookingRepository.findById(id);
     }
 }
