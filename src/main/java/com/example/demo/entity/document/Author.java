@@ -11,12 +11,17 @@ public class Author {
     private Integer id;
     @Size(max = 25)
     @Column(name = "FIRST_NAME")
-    private String FirstName;
+    private String firstName;
     @Size(max = 25)
     @Column(name = "LAST_NAME")
-    private String LastName;
+    private String lastName;
 
-    public Author(Integer id, String firstName, String lastName) {}
+    public Author() {}
+
+    public Author(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
 
     public Integer getId() {
         return id;
@@ -27,18 +32,18 @@ public class Author {
     }
 
     public String getFirstName() {
-        return FirstName;
+        return firstName;
     }
 
     public void setFirstName(String firstName) {
-        FirstName = firstName;
+        this.firstName = firstName;
     }
 
     public String getLastName() {
-        return LastName;
+        return lastName;
     }
 
     public void setLastName(String lastName) {
-        LastName = lastName;
+        this.lastName = lastName;
     }
 }

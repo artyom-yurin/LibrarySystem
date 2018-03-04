@@ -34,7 +34,16 @@ public class Booking {
     @Column(name = "IS_CLOSE")
     private boolean isClose;
 
-    public Booking(Integer id, User user, Document document, Date returnDate, boolean hasBackRequest, Integer fine, boolean isClose) {}
+    public Booking() {}
+
+    public Booking(User user, Document document, Date returnDate, boolean hasBackRequest, Integer fine, boolean isClose) {
+        this.user = user;
+        this.document = document;
+        this.returnDate = returnDate;
+        this.hasBackRequest = hasBackRequest;
+        this.fine = fine;
+        this.isClose = isClose;
+    }
 
     public Integer getId() {
         return id;

@@ -1,41 +1,19 @@
-package com.example.demo.entity.user;
+package com.example.demo.model;
 
-
-
-import javax.persistence.*;
-import javax.validation.constraints.Size;
-
-@Entity
-public class User{
-    @Id
-    @Column(name = "USER_ID")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+public class UserModel {
     private Integer id;
-    @Size(max = 25)
-    @Column(name = "FIRST_NAME")
     private String name;
-    @Size(max = 25)
-    @Column(name = "LAST_NAME")
     private String surname;
-    @Size(max = 25)
-    @Column(name = "ADDRESS")
     private String address;
-    @Size(max = 25)
-    @Column(name = "PHONE")
     private String phoneNumber;
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "ROLE_ID")
-    private Role role;
-    @Size(max = 25)
-    @Column(name = "LOGIN", unique = true)
+    private String role;
     private String username;
-    @Size(max = 25)
-    @Column(name = "PASSWORD")
     private String password;
 
-    public User() {}
+    public  UserModel(){}
 
-    public User(String name, String surname, String address, String phoneNumber, Role role, String username, String password) {
+    public UserModel(Integer id, String name, String surname, String address, String phoneNumber, String role, String username, String password) {
+        this.id = id;
         this.name = name;
         this.surname = surname;
         this.address = address;
@@ -85,11 +63,11 @@ public class User{
         this.phoneNumber = phoneNumber;
     }
 
-    public Role getRole() {
+    public String getRole() {
         return role;
     }
 
-    public void setRole(Role role) {
+    public void setRole(String role) {
         this.role = role;
     }
 

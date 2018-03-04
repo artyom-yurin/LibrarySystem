@@ -13,7 +13,11 @@ public class Publisher{
     @Column(name = "PUBLISHER_NAME")
     private String publisherName;
 
-    public Publisher(Integer id, String publisherName) {}
+    public Publisher() {}
+
+    public Publisher(String publisherName) {
+        this.publisherName = publisherName;
+    }
 
     public Integer getId() {
         return id;

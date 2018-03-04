@@ -1,21 +1,20 @@
 package com.example.demo.controller;
 
-import com.example.demo.repositories.UserRepository;
+import com.example.demo.repository.RoleRepository;
+import com.example.demo.repository.UserRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
-
 @Controller
 public class IndexController {
 
-    final UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
 
-    public IndexController(UserRepository userRepository) {
+    public IndexController(UserRepository userRepository, RoleRepository roleRepository) {
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
     }
 
     @GetMapping("/")
@@ -26,12 +25,12 @@ public class IndexController {
     @GetMapping("/catalog")
     public ModelAndView catalog() { return new ModelAndView("catalog"); }
 
-    @GetMapping("/{userId}/control")
+    @GetMapping("/control")
     public ModelAndView control() {
         return new ModelAndView("control");
     }
 
-    @GetMapping("/{userId}/myBooks")
+    @GetMapping("/myBooks")
     public ModelAndView myBooks() {
         return new ModelAndView("myBooks");
     }

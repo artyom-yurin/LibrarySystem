@@ -16,7 +16,11 @@ public class TypeDocument {
     @Column(name = "TYPE_NAME")
     private String typeName;
 
-    public TypeDocument(Integer id, String typeName) {}
+    public TypeDocument() {}
+
+    public TypeDocument(String typeName) {
+        this.typeName = typeName;
+    }
 
     public Integer getId() {
         return id;
