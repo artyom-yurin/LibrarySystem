@@ -6,6 +6,9 @@ import com.example.demo.repository.UserRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
+import com.example.security.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Controller
 public class IndexController {
@@ -23,12 +26,14 @@ public class IndexController {
     }
 
     @GetMapping("/")
-    public ModelAndView login() {
+    public ModelAndView login(HttpServletRequest request) {
         return new ModelAndView("login");
     }
 
     @GetMapping("/catalog")
-    public ModelAndView catalog() { return new ModelAndView("catalog"); }
+    public ModelAndView catalog() {
+        return new ModelAndView("catalog");
+    }
 
     @GetMapping("/control")
     public ModelAndView control() {
