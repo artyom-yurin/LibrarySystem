@@ -1,6 +1,5 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.Booking;
 import com.example.demo.repository.BookingRepository;
 import com.example.demo.repository.RoleRepository;
 import com.example.demo.repository.UserRepository;
