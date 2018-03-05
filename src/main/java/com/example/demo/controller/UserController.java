@@ -36,14 +36,21 @@ public class UserController {
     }
 
     @PostMapping("/user/login")
-    public void login(@RequestBody LoginModel loginModel, HttpServletResponse response)
+    public ModelAndView login(@RequestBody LoginModel loginModel, HttpServletResponse response)
     {
         User loginUser = userService.findByUsername(loginModel.getUsername());
         if (loginUser == null) throw new UserNotFoundException();
         if (loginUser.getPassword().equals(loginModel.getPassword()))
         {
             TokenAuthenticationService.addAuthentication(response, loginUser);
-            return;
+            if (loginUser.getRole().getName().equals("admin"))
+            {
+                return new ModelAndView("control");
+            }
+            else
+            {
+                return new ModelAndView("catalog");
+            }
         }
         throw new PasswordInvalidException();
     }
