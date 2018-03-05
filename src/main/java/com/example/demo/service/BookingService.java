@@ -18,4 +18,10 @@ public class BookingService {
     {
         return bookingRepository.findAll();
     }
+
+    public void removeBookingById(Integer id){ bookingRepository.removeBookingById(id);}
+
+    public void save(Booking booking){ this.bookingRepository.save(booking);}
+
+    public Booking getBookingById(Integer id){ return bookingRepository.getBookingById(id);}
 }
