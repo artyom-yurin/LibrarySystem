@@ -36,7 +36,7 @@ public class UserController {
         if (loginUser.getPassword().equals(loginModel.getPassword())) {
             TokenAuthenticationService.addAuthentication(response, loginUser);
             if (loginUser.getRole().getName().equals("admin")) {
-                return new ModelAndView("control");
+                return new ModelAndView("books");
             } else {
                 return new ModelAndView("catalog");
             }
