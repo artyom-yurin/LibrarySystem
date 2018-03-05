@@ -1,6 +1,8 @@
 package com.example.demo.controller;
 
+import com.example.demo.exception.AccessDeniedException;
 import com.example.demo.exception.AlreadyLoginException;
+import com.example.demo.exception.UnauthorizedException;
 import com.example.demo.repository.BookingRepository;
 import com.example.demo.repository.RoleRepository;
 import com.example.demo.repository.TagRepository;
@@ -41,17 +43,45 @@ public class IndexController {
     }
 
     @GetMapping("/catalog")
-    public ModelAndView catalog() {
+    public ModelAndView catalog(HttpServletRequest request) {
+        ParserToken token = TokenAuthenticationService.getAuthentication(request);
+        if (token == null) throw new UnauthorizedException();
+        if (token.role.equals("admin")) throw new AccessDeniedException();
         return new ModelAndView("catalog");
     }
 
-    @GetMapping("/control")
-    public ModelAndView control() {
-        return new ModelAndView("control");
+    @GetMapping("/myBooks")
+    public ModelAndView myBooks(HttpServletRequest request) {
+        ParserToken token = TokenAuthenticationService.getAuthentication(request);
+        if (token == null) throw new UnauthorizedException();
+        if (token.role.equals("admin")) throw new AccessDeniedException();
+        return new ModelAndView("mybooks");
     }
 
-    @GetMapping("/myBooks")
-    public ModelAndView myBooks() {
-        return new ModelAndView("myBooks");
+    @GetMapping("/admin/documents")
+    public ModelAndView allDocuments(HttpServletRequest request)
+    {
+        ParserToken token = TokenAuthenticationService.getAuthentication(request);
+        if (token == null) throw new UnauthorizedException();
+        if (!token.role.equals("admin")) throw new AccessDeniedException();
+        return new ModelAndView("books");
+    }
+
+    @GetMapping("/admin/users")
+    public ModelAndView allUsers(HttpServletRequest request)
+    {
+        ParserToken token = TokenAuthenticationService.getAuthentication(request);
+        if (token == null) throw new UnauthorizedException();
+        if (!token.role.equals("admin")) throw new AccessDeniedException();
+        return new ModelAndView("users");
+    }
+
+    @GetMapping("/admin/requests")
+    public ModelAndView allRequests(HttpServletRequest request)
+    {
+        ParserToken token = TokenAuthenticationService.getAuthentication(request);
+        if (token == null) throw new UnauthorizedException();
+        if (!token.role.equals("admin")) throw new AccessDeniedException();
+        return new ModelAndView("request");
     }
 }
