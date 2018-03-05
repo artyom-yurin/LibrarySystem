@@ -2,18 +2,27 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.user.Role;
 import com.example.demo.entity.user.User;
-import com.example.demo.exception.PasswordInvalidException;
-import com.example.demo.exception.RoleNotFoundException;
-import com.example.demo.exception.UserNotFoundException;
+import com.example.demo.exception.*;
 import com.example.demo.model.LoginModel;
 import com.example.demo.model.UserModel;
 import com.example.demo.repository.RoleRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.RoleService;
 import com.example.demo.service.UserService;
+import com.example.security.TokenAuthenticationService;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Collection;
+import java.util.Locale;
 
 @RestController
 public class UserController {
@@ -27,13 +36,14 @@ public class UserController {
     }
 
     @PostMapping("/user/login")
-    public ModelAndView login(@RequestBody LoginModel loginModel)
+    public void login(@RequestBody LoginModel loginModel, HttpServletResponse response)
     {
         User loginUser = userService.findByUsername(loginModel.getUsername());
         if (loginUser == null) throw new UserNotFoundException();
         if (loginUser.getPassword().equals(loginModel.getPassword()))
         {
-            return new ModelAndView("catalog");
+            TokenAuthenticationService.addAuthentication(response, loginUser);
+            return;
         }
         throw new PasswordInvalidException();
     }
@@ -41,38 +51,34 @@ public class UserController {
     @PostMapping("/user/add")
     public void addUser(@RequestBody UserModel userModel)
     {
+        User user = userService.findByUsername(userModel.getUsername());
+        if (user != null) {throw new AlreadyUserExistException();}
         Role role = roleService.findByName(userModel.getRole());
         if (role == null) throw new RoleNotFoundException();
-        User user = new User(userModel.getName(), userModel.getSurname(), userModel.getAddress(), userModel.getPhoneNumber(), role, userModel.getUsername(), userModel.getPassword());
-        try {
-            userService.save(user);
-        }
-        catch (Exception e)
-        {
-            throw e;
-        }
+        user = new User(userModel.getName(), userModel.getSurname(), userModel.getAddress(), userModel.getPhoneNumber(), role, userModel.getUsername(), userModel.getPassword());
+        userService.save(user);
     }
 
     @PutMapping("/user/update")
     public void updateUser(@RequestBody UserModel userModel)
     {
+        if (userModel.getId() == null) {throw new NullIdException();}
+        User user = userService.findById(userModel.getId());
+        if (user == null) {throw new UserNotFoundException();}
         Role role = roleService.findByName(userModel.getRole());
         if (role == null) throw new RoleNotFoundException();
-        User user = new User(userModel.getName(), userModel.getSurname(), userModel.getAddress(), userModel.getPhoneNumber(), role, userModel.getUsername(), userModel.getPassword());
+        user = new User(userModel.getName(), userModel.getSurname(), userModel.getAddress(), userModel.getPhoneNumber(), role, userModel.getUsername(), userModel.getPassword());
         user.setId(userModel.getId());
-        try {
-            userService.save(user);
-        }
-        catch (Exception e)
-        {
-            throw e;
-        }
+        userService.save(user);
     }
 
     @Transactional
     @DeleteMapping("/user/remove")
-    public void removeUser(@RequestBody User user)
+    public void removeUser(@RequestBody UserModel userModel)
     {
+        if (userModel.getId() == null) {throw new NullIdException();}
+        User user = userService.findById(userModel.getId());
+        if (user == null) {throw new UserNotFoundException();}
         userService.remove(user.getId());
     }
 

@@ -1,61 +1,33 @@
-package com.example.demo.entity.document;
+package com.example.demo.model;
 
-import javax.persistence.*;
-import javax.validation.constraints.Size;
+import com.example.demo.entity.document.Author;
+import com.example.demo.entity.document.Publisher;
+import com.example.demo.entity.document.Tag;
+import com.example.demo.entity.document.TypeDocument;
+
 import java.util.Date;
 import java.util.Set;
 
-@Entity
-public class Document{
-    @Id
-    @Column(name = "DOCUMENT_ID")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+public class DocumentModel {
+
     private Integer id;
-
-    @Size(max = 25)
-    @Column(name = "TITLE")
     private String title;
-
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "AUTHOR_ID")
     private Set<Author> authors;
-
-    @Column(name = "PRICE")
     private Integer price;
-    @Column(name = "COUNT")
     private Integer count;
-
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "TAG_ID")
     private Set<Tag> tags;
-
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "PUBLISHER_ID")
     private Publisher publisher;
-
-    @Column(name = "EDITION")
     private Integer edition;
-
-    @Column(name = "BESTSELLER", columnDefinition = "TINYINT(1)")
     private boolean isBestseller;
-
-    @Column(name = "REFERENCE", columnDefinition = "TINYINT(1)")
     private boolean isReference;
-
-    @Column(name = "PUBLISHING_DATE",columnDefinition = "DATETIME")
     private Date publishingDate;
-
-    @Size(max = 25)
-    @Column(name = "EDITOR")
     private String editor;
+    private TypeDocument type;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "TYPE_ID")
-    private  TypeDocument type;
+    public DocumentModel(){}
 
-    public Document() {}
-
-    public Document(String title, Set<Author> authors, Integer price, Integer count, Set<Tag> tags, Publisher publisher, Integer edition, boolean isBestseller, boolean isReference, Date publishingDate, String editor, TypeDocument type) {
+    public DocumentModel(Integer id, String title, Set<Author> authors, Integer price, Integer count, Set<Tag> tags, Publisher publisher, Integer edition, boolean isBestseller, boolean isReference, Date publishingDate, String editor, TypeDocument type) {
+        this.id = id;
         this.title = title;
         this.authors = authors;
         this.price = price;
@@ -150,11 +122,11 @@ public class Document{
         isReference = reference;
     }
 
-    public Date getPublishingDate() {
+    public java.util.Date getPublishingDate() {
         return publishingDate;
     }
 
-    public void setPublishingDate(Date publishingDate) {
+    public void setPublishingDate(java.sql.Date publishingDate) {
         this.publishingDate = publishingDate;
     }
 

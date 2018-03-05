@@ -11,4 +11,8 @@ public class TypeDocumentService {
     public TypeDocumentService(TypeDocumentRepository typeDocumentRepository) {
         this.typeDocumentRepository = typeDocumentRepository;
     }
+
+    public TypeDocument findByTypeName(String name){
+        return this.typeDocumentRepository.findByTypeName(name);
+    }
 }
