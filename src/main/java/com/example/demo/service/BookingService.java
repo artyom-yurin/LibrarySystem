@@ -4,6 +4,8 @@ import com.example.demo.entity.Booking;
 import com.example.demo.repository.BookingRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class BookingService {
     private BookingRepository bookingRepository;
@@ -12,16 +14,8 @@ public class BookingService {
         this.bookingRepository = bookingRepository;
     }
 
-    public Booking findById(Integer id)
+    public List<Booking> findAll()
     {
-        Booking book = null;
-        try
-        {
-            book = bookingRepository.findById(id);
-        }
-        catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return book;
+        return bookingRepository.findAll();
     }
 }
