@@ -2,9 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.user.Role;
 import com.example.demo.entity.user.User;
-import com.example.demo.exception.PasswordInvalidException;
-import com.example.demo.exception.RoleNotFoundException;
-import com.example.demo.exception.UserNotFoundException;
+import com.example.demo.exception.*;
 import com.example.demo.model.LoginModel;
 import com.example.demo.model.UserModel;
 import com.example.demo.repository.RoleRepository;
@@ -53,38 +51,34 @@ public class UserController {
     @PostMapping("/user/add")
     public void addUser(@RequestBody UserModel userModel)
     {
+        User user = userService.findByUsername(userModel.getUsername());
+        if (user != null) {throw new AlreadyUserExistException();}
         Role role = roleService.findByName(userModel.getRole());
         if (role == null) throw new RoleNotFoundException();
-        User user = new User(userModel.getName(), userModel.getSurname(), userModel.getAddress(), userModel.getPhoneNumber(), role, userModel.getUsername(), userModel.getPassword());
-        try {
-            userService.save(user);
-        }
-        catch (Exception e)
-        {
-            throw e;
-        }
+        user = new User(userModel.getName(), userModel.getSurname(), userModel.getAddress(), userModel.getPhoneNumber(), role, userModel.getUsername(), userModel.getPassword());
+        userService.save(user);
     }
 
     @PutMapping("/user/update")
     public void updateUser(@RequestBody UserModel userModel)
     {
+        if (userModel.getId() == null) {throw new NullIdException();}
+        User user = userService.findById(userModel.getId());
+        if (user == null) {throw new UserNotFoundException();}
         Role role = roleService.findByName(userModel.getRole());
         if (role == null) throw new RoleNotFoundException();
-        User user = new User(userModel.getName(), userModel.getSurname(), userModel.getAddress(), userModel.getPhoneNumber(), role, userModel.getUsername(), userModel.getPassword());
+        user = new User(userModel.getName(), userModel.getSurname(), userModel.getAddress(), userModel.getPhoneNumber(), role, userModel.getUsername(), userModel.getPassword());
         user.setId(userModel.getId());
-        try {
-            userService.save(user);
-        }
-        catch (Exception e)
-        {
-            throw e;
-        }
+        userService.save(user);
     }
 
     @Transactional
     @DeleteMapping("/user/remove")
-    public void removeUser(@RequestBody User user)
+    public void removeUser(@RequestBody UserModel userModel)
     {
+        if (userModel.getId() == null) {throw new NullIdException();}
+        User user = userService.findById(userModel.getId());
+        if (user == null) {throw new UserNotFoundException();}
         userService.remove(user.getId());
     }
 
