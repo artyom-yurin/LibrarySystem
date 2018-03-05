@@ -11,9 +11,20 @@ import com.example.demo.repository.RoleRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.RoleService;
 import com.example.demo.service.UserService;
+import com.example.security.TokenAuthenticationService;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Collection;
+import java.util.Locale;
 
 @RestController
 public class UserController {
@@ -27,13 +38,14 @@ public class UserController {
     }
 
     @PostMapping("/user/login")
-    public ModelAndView login(@RequestBody LoginModel loginModel)
+    public void login(@RequestBody LoginModel loginModel, HttpServletResponse response)
     {
         User loginUser = userService.findByUsername(loginModel.getUsername());
         if (loginUser == null) throw new UserNotFoundException();
         if (loginUser.getPassword().equals(loginModel.getPassword()))
         {
-            return new ModelAndView("catalog");
+            TokenAuthenticationService.addAuthentication(response, loginUser);
+            return;
         }
         throw new PasswordInvalidException();
     }

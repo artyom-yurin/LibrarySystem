@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.exception.AlreadyLoginException;
 import com.example.demo.repository.BookingRepository;
 import com.example.demo.repository.RoleRepository;
 import com.example.demo.repository.TagRepository;
@@ -31,7 +32,12 @@ public class IndexController {
 
     @GetMapping("/")
     public ModelAndView login(HttpServletRequest request) {
-        return new ModelAndView("login");
+        ParserToken token = TokenAuthenticationService.getAuthentication(request);
+        if (token == null)
+        {
+            return new ModelAndView("login");
+        }
+        throw new AlreadyLoginException();
     }
 
     @GetMapping("/catalog")
