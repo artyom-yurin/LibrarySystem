@@ -1,4 +1,4 @@
-package com.example.demo.controller;
+package com.example.demo.controllers;
 
 import com.example.demo.entity.document.Author;
 import com.example.demo.entity.document.Document;
@@ -15,6 +15,7 @@ import com.example.demo.service.PublisherService;
 import com.example.demo.service.TypeDocumentService;
 import com.example.security.ParserToken;
 import com.example.security.TokenAuthenticationService;
+import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,15 +23,15 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.HashSet;
 import java.util.Set;
 
-@RestController
-public class DocumentController {
+@Controller
+public class DocumentContr {
 
     private DocumentService documentService;
     private TypeDocumentService typeDocumentService;
     private AuthorService authorService;
     private PublisherService publisherService;
 
-    public DocumentController(DocumentService documentService, TypeDocumentService typeDocumentService, AuthorService authorService, PublisherService publisherService) {
+    public DocumentContr(DocumentService documentService, TypeDocumentService typeDocumentService, AuthorService authorService, PublisherService publisherService) {
         this.documentService = documentService;
         this.typeDocumentService = typeDocumentService;
         this.authorService = authorService;
