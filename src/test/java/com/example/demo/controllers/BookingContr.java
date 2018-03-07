@@ -70,7 +70,9 @@ public class BookingContr{
         if (user == null)
             throw new UserNotFoundException();
         if (!document.isReference() && document.getCount() > 0) {
-            bookingService.save(new Booking(user, document, null, false, 0, false));
+            Booking booking = new Booking(user, document, null, false, 0, false);
+            booking.setId(-1);
+            bookingService.save(booking);
             document.setCount(document.getCount() - 1);
             documentService.save(document);
         }

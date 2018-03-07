@@ -61,6 +61,7 @@ public class DocumentContr {
             publisher = publisherService.findByPublisherName(documentModel.getPublisher().getPublisherName());
         }
         Document document = new Document(documentModel.getTitle(), authors, documentModel.getPrice(), documentModel.getCount(), documentModel.getTags(), publisher, documentModel.getEdition(), documentModel.isBestseller(), documentModel.isReference(), documentModel.getPublishingDate(), documentModel.getEditor(), type);
+        document.setId(-1);
         this.documentService.save(document);
     }
 
