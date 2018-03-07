@@ -30,6 +30,8 @@ public class BookingController {
 
     private static final long FACULTY_DEFAULT_TIME = 2419200000L;
 
+    private static final long AV_JOURNAL_TIME = 1209600000L;
+
     BookingController(BookingRepository bookingRepository, DocumentService documentService, UserService userService) {
         bookingService = new BookingService(bookingRepository);
         this.documentService = documentService;
@@ -100,15 +102,20 @@ public class BookingController {
             throw new UserNotFoundException();
         if (!document.isReference() && document.getCount() > 0) {
             long time = System.currentTimeMillis();
-            if (token.role.equals("patron")){
-                if (document.isBestseller()){
-                    returnDate.setTime(time + BESTSELLER_FOR_PATRON_TIME);
-                }else{
-                    returnDate.setTime(time + PATRON_DEFAULT_TIME);
+            if(document.getType().getTypeName().equals("book")){
+                if (token.role.equals("patron")){
+                    if (document.isBestseller()){
+                        returnDate.setTime(time + BESTSELLER_FOR_PATRON_TIME);
+                    }else{
+                        returnDate.setTime(time + PATRON_DEFAULT_TIME);
+                    }
+                }
+                if (token.role.equals("faculty")){
+                    returnDate.setTime(time + FACULTY_DEFAULT_TIME);
                 }
             }
-            if (token.role.equals("faculty")){
-                returnDate.setTime(time + FACULTY_DEFAULT_TIME);
+            else{
+                returnDate.setTime(time + AV_JOURNAL_TIME);
             }
             bookingService.save(new Booking(user, document, returnDate, false, 0, false));
             document.setCount(document.getCount() - 1);
