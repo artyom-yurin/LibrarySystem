@@ -9,6 +9,7 @@ import com.example.demo.repository.UserRepository;
 import com.example.demo.service.RoleService;
 import com.example.demo.service.UserService;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -54,6 +55,16 @@ public class UserContr {
             throw new NullIdException();
         }
         User user = userService.findById(userModel.getId());
+        if (user == null) {
+            throw new UserNotFoundException();
+        }
+        userService.remove(user.getId());
+    }
+
+
+    @Transactional
+    public void removeUserTest(Integer id) {
+        User user = userService.findById(id);
         if (user == null) {
             throw new UserNotFoundException();
         }

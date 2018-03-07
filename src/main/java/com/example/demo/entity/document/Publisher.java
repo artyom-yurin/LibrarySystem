@@ -9,7 +9,7 @@ public class Publisher{
     @Column(name = "PUBLISHER_ID")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-    @Size(max = 25)
+    @Size(max = 100)
     @Column(name = "PUBLISHER_NAME")
     private String publisherName;
 

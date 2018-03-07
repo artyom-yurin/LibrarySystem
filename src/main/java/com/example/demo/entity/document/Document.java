@@ -12,7 +12,7 @@ public class Document{
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    @Size(max = 25)
+    @Size(max = 100)
     @Column(name = "TITLE")
     private String title;
 
@@ -45,7 +45,7 @@ public class Document{
     @Column(name = "PUBLISHING_DATE",columnDefinition = "DATETIME")
     private Date publishingDate;
 
-    @Size(max = 25)
+    @Size(max = 100)
     @Column(name = "EDITOR")
     private String editor;
 

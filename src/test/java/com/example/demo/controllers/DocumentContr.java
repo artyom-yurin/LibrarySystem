@@ -53,12 +53,15 @@ public class DocumentContr {
                 else{ authors.add(authorService.findByLastName(author.getLastName())); }
             }
         }
-        Publisher publisher;
-        if(documentModel.getPublisher().getId() != null) {
-            publisher = publisherService.findById(documentModel.getPublisher().getId());
-        }
-        else{
-            publisher = publisherService.findByPublisherName(documentModel.getPublisher().getPublisherName());
+        Publisher publisher = null;
+        if(documentModel.getPublisher() != null)
+        {
+            if(documentModel.getPublisher().getId() != null) {
+                publisher = publisherService.findById(documentModel.getPublisher().getId());
+            }
+            else{
+                publisher = publisherService.findByPublisherName(documentModel.getPublisher().getPublisherName());
+            }
         }
         Document document = new Document(documentModel.getTitle(), authors, documentModel.getPrice(), documentModel.getCount(), documentModel.getTags(), publisher, documentModel.getEdition(), documentModel.isBestseller(), documentModel.isReference(), documentModel.getPublishingDate(), documentModel.getEditor(), type);
         document.setId(-1);
