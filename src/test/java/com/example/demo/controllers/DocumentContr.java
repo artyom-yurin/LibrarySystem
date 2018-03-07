@@ -38,12 +38,7 @@ public class DocumentContr {
         this.publisherService = publisherService;
     }
 
-    @PostMapping("/document/add")
-    public void addDocument(@RequestBody DocumentModel documentModel, HttpServletRequest request){
-        ParserToken token = TokenAuthenticationService.getAuthentication(request);
-        if (token == null) throw new UnauthorizedException();
-        if (!token.role.equals("admin")) throw new AccessDeniedException();
-
+    public void addDocumentTest(DocumentModel documentModel){
         TypeDocument type = typeDocumentService.findByTypeName(documentModel.getType().getTypeName());
         if(type == null) throw new TypeNotFoundException();
         Set<Author> authors = new HashSet<>();
@@ -69,13 +64,8 @@ public class DocumentContr {
         this.documentService.save(document);
     }
 
-    @PutMapping("/document/update")
-    public void updateDocument(@RequestBody DocumentModel documentModel, HttpServletRequest request)
+    public void updateDocumentTest(DocumentModel documentModel)
     {
-        ParserToken token = TokenAuthenticationService.getAuthentication(request);
-        if (token == null) throw new UnauthorizedException();
-        if (!token.role.equals("admin")) throw new AccessDeniedException();
-
         TypeDocument type = typeDocumentService.findByTypeName(documentModel.getType().getTypeName());
         if (type == null) throw new TypeNotFoundException();
         Set<Author> authors = new HashSet<>();
@@ -102,43 +92,24 @@ public class DocumentContr {
         this.documentService.save(document);
     }
 
-    @Transactional
-    @DeleteMapping("/document/remove")
-    public void removeDocument(@RequestBody Document document, HttpServletRequest request)
+    public void removeDocumentTest(Document document)
     {
-        ParserToken token = TokenAuthenticationService.getAuthentication(request);
-        if (token == null) throw new UnauthorizedException();
-        if (!token.role.equals("admin")) throw new AccessDeniedException();
-
         this.documentService.remove(document.getId());
     }
 
-    @Transactional
-    @DeleteMapping("/document/removeid")
-    public void removeDocumentId(@RequestParam(value = "id", defaultValue = "") Integer id, HttpServletRequest request)
+    public void removeDocumentIdTest(Integer id)
     {
-        ParserToken token = TokenAuthenticationService.getAuthentication(request);
-        if (token == null) throw new UnauthorizedException();
-        if (!token.role.equals("admin")) throw new AccessDeniedException();
-
         this.documentService.remove(documentService.findById(id).getId());
     }
 
-    @GetMapping("/document/find")
-    public Document getDocument(@RequestParam(value = "id", defaultValue = "") Integer id, HttpServletRequest request)
+    public Document getDocumentTest(Integer id)
     {
-        ParserToken token = TokenAuthenticationService.getAuthentication(request);
-        if (token == null) throw new UnauthorizedException();
-
         Document findDocument = documentService.findById(id);
         if (findDocument == null) throw new DocumentNotFoundException();
         return findDocument;
     }
 
-    @GetMapping("/document/documents")
-    public Iterable<Document> getDocuments(HttpServletRequest request){
-        ParserToken token = TokenAuthenticationService.getAuthentication(request);
-        if (token == null) throw new UnauthorizedException();
+    public Iterable<Document> getDocumentsTest(){
         return this.documentService.getAllDocuments();
     }
 }

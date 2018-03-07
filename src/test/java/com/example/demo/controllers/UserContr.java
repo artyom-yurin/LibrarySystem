@@ -30,6 +30,7 @@ public class UserContr {
         Role role = roleService.findByName(userModel.getRole());
         if (role == null) throw new RoleNotFoundException();
         user = new User(userModel.getName(), userModel.getSurname(), userModel.getAddress(), userModel.getPhoneNumber(), role, userModel.getUsername(), userModel.getPassword());
+        user.setId(-1);
         userService.save(user);
     }
 
