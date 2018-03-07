@@ -63,4 +63,12 @@ public class UserContr {
     public Iterable<User> getUsersTest() {
         return userService.getAllUsers();
     }
+
+    public int getAmountTest(){
+        int count = 0;
+        for(User user : getUsersTest()){
+            count++;
+        }
+        return count;
+    }
 }

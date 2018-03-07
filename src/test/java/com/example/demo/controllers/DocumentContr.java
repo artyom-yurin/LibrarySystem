@@ -113,4 +113,12 @@ public class DocumentContr {
     public Iterable<Document> getDocumentsTest(){
         return this.documentService.getAllDocuments();
     }
+
+    public int getAmountTest(){
+        int count = 0;
+        for(Document document : getDocumentsTest()){
+            count += document.getCount();
+        }
+        return count;
+    }
 }
