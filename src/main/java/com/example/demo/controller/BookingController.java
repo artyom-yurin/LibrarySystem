@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.stream.Collectors;
 
 @RestController
@@ -22,6 +23,14 @@ public class BookingController {
     private BookingService bookingService;
     private DocumentService documentService;
     private UserService userService;
+
+    private static final long BESTSELLER_FOR_PATRON_TIME = 1209600000L;
+
+    private static final long PATRON_DEFAULT_TIME = 1814400000L;
+
+    private static final long FACULTY_DEFAULT_TIME = 2419200000L;
+
+    private static final long AV_JOURNAL_TIME = 1209600000L;
 
     BookingController(BookingRepository bookingRepository, DocumentService documentService, UserService userService) {
         bookingService = new BookingService(bookingRepository);
@@ -77,6 +86,7 @@ public class BookingController {
     @PostMapping("/booking/request")
     public void requestDocumentById(@RequestParam(value = "id", defaultValue = "") Integer documentId, HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
+        Date returnDate = new Date();
         if (token == null)
             throw new UnauthorizedException();
         if (token.role.equals("admin")) throw new AccessDeniedException();
@@ -91,7 +101,23 @@ public class BookingController {
         if (user == null)
             throw new UserNotFoundException();
         if (!document.isReference() && document.getCount() > 0) {
-            bookingService.save(new Booking(user, document, null, false, 0, false));
+            long time = System.currentTimeMillis();
+            if(document.getType().getTypeName().equals("book")){
+                if (token.role.equals("patron")){
+                    if (document.isBestseller()){
+                        returnDate.setTime(time + BESTSELLER_FOR_PATRON_TIME);
+                    }else{
+                        returnDate.setTime(time + PATRON_DEFAULT_TIME);
+                    }
+                }
+                if (token.role.equals("faculty")){
+                    returnDate.setTime(time + FACULTY_DEFAULT_TIME);
+                }
+            }
+            else{
+                returnDate.setTime(time + AV_JOURNAL_TIME);
+            }
+            bookingService.save(new Booking(user, document, returnDate, false, 0, false));
             document.setCount(document.getCount() - 1);
             documentService.save(document);
         }
