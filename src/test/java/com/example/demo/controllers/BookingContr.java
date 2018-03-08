@@ -16,6 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
@@ -30,7 +33,7 @@ public class BookingContr{
         this.userService = userService;
     }
 
-    public Iterable<Booking> findBookingByUserIdTest(Integer id) {
+    public List<Booking> findBookingByUserIdTest(Integer id) {
         return bookingService.findAll()
                 .stream()
                 .filter(booking -> booking.getUser().getId().equals(id))
@@ -69,6 +72,24 @@ public class BookingContr{
         User user = userService.findById(userId);
         if (user == null)
             throw new UserNotFoundException();
+        if (!document.isReference() && document.getCount() > 0) {
+            Booking booking = new Booking(user, document, null, false, 0, false);
+            booking.setId(-1);
+            bookingService.save(booking);
+            document.setCount(document.getCount() - 1);
+            documentService.save(document);
+        }
+        else{
+            throw new AccessDeniedException();
+        }
+    }
+
+    public void requestDocumentByIdTest(Integer documentId, User user) {
+        if (user == null)
+            throw new UserNotFoundException();
+        Document document = documentService.findById(documentId);
+        if (document == null)
+            throw new DocumentNotFoundException();
         if (!document.isReference() && document.getCount() > 0) {
             Booking booking = new Booking(user, document, null, false, 0, false);
             booking.setId(-1);
