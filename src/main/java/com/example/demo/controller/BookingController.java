@@ -159,6 +159,31 @@ public class BookingController {
         documentService.save(document);
     }
 
+    @GetMapping("/booking/fine")
+    public int calculateFine(@RequestParam(value = "id", defaultValue = "-1") Integer id, HttpServletRequest request){
+        ParserToken token = TokenAuthenticationService.getAuthentication(request);
+        if (token == null)
+            throw new UnauthorizedException();
+
+        Date current = new Date();
+        current.setTime(System.currentTimeMillis());
+
+        Booking booking = bookingService.getBookingById(id);
+        if(booking == null)
+            throw new BookingNotFoundException();
+
+        if(current.getTime() - booking.getReturnDate().getTime() < 0)
+            return 0;
+
+        Document document = booking.getDocument();
+
+        int fine = Math.toIntExact((current.getTime() - booking.getReturnDate().getTime())/86400000)*100;
+        if(fine > document.getPrice())
+            return document.getPrice();
+        else
+            return fine;
+    }
+
     @Transactional
     @DeleteMapping("/booking/remove")
     public void removeBooking(@RequestBody Booking booking, HttpServletRequest request){
