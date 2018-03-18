@@ -16,4 +16,9 @@ public class RoleService {
     public Role findByName(String name) {
         return roleRepository.findByName(name.toLowerCase());
     }
+
+    public Role findByPosition(String position)
+    {
+        return roleRepository.findByPosition(position.toLowerCase());
+    }
 }
