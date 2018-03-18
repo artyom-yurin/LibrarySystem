@@ -1,8 +1,5 @@
 package com.example.demo.controller;
 
-
-
-
 import com.example.demo.entity.booking.Booking;
 import com.example.demo.entity.document.Document;
 import com.example.demo.entity.user.User;
@@ -10,6 +7,7 @@ import com.example.demo.exception.*;
 import com.example.demo.repository.BookingRepository;
 import com.example.demo.service.BookingService;
 import com.example.demo.service.DocumentService;
+import com.example.demo.service.TypeBookingService;
 import com.example.demo.service.UserService;
 import com.example.security.ParserToken;
 import com.example.security.TokenAuthenticationService;
@@ -23,6 +21,7 @@ import java.util.stream.Collectors;
 
 @RestController
 public class BookingController {
+    private TypeBookingService typeBookingService;
     private BookingService bookingService;
     private DocumentService documentService;
     private UserService userService;
@@ -35,10 +34,11 @@ public class BookingController {
 
     private static final long AV_JOURNAL_TIME = 1209600000L;
 
-    BookingController(BookingRepository bookingRepository, DocumentService documentService, UserService userService) {
-        bookingService = new BookingService(bookingRepository);
+    BookingController(BookingService bookingService, DocumentService documentService, UserService userService, TypeBookingService typeBookingService) {
+        this.bookingService = bookingService;
         this.documentService = documentService;
         this.userService = userService;
+        this.typeBookingService = typeBookingService;
     }
 
     @GetMapping("/booking/find")
@@ -49,7 +49,7 @@ public class BookingController {
         return bookingService.findAll()
                 .stream()
                 .filter(booking -> booking.getUser().getId().equals(id))
-                .filter(booking -> !booking.isHasBackRequest())
+                .filter(booking -> !("is_close".equals(booking.getTypeBooking().getTypeName())))
                 .collect(Collectors.toList());
     }
 
@@ -61,7 +61,7 @@ public class BookingController {
         return bookingService.findAll()
                 .stream()
                 .filter(booking -> booking.getUser().getId().equals(token.id))
-                .filter(booking -> !booking.isHasBackRequest())
+                .filter(booking -> !("is_close".equals(booking.getTypeBooking().getTypeName())))
                 .collect(Collectors.toList());
     }
 
@@ -73,8 +73,8 @@ public class BookingController {
 
         return bookingService.findAll()
                 .stream()
-                .filter(booking -> !booking.isClose())
-                .filter(booking -> booking.isHasBackRequest())
+                .filter(booking -> !"is_close".equals(booking.getTypeBooking().getTypeName()))
+                .filter(booking -> "return_request".equals(booking.getTypeBooking().getTypeName()))
                 .collect(Collectors.toList());
     }
 
@@ -120,7 +120,7 @@ public class BookingController {
             else{
                 returnDate.setTime(time + AV_JOURNAL_TIME);
             }
-            bookingService.save(new Booking(user, document, returnDate, false, 0, false));
+            bookingService.save(new Booking(user, document, returnDate, 0, typeBookingService.findByTypeName("book_taken")));
             document.setCount(document.getCount() - 1);
             documentService.save(document);
         }
@@ -140,7 +140,7 @@ public class BookingController {
         Booking booking = bookingService.getBookingById(id);
         if (booking == null)
             throw new BookingNotFoundException();
-        booking.setHasBackRequest(true);
+        booking.setTypeBooking(typeBookingService.findByTypeName("return_request"));
         bookingService.save(booking);
     }
 
@@ -155,7 +155,7 @@ public class BookingController {
         if(booking == null){
             throw new BookingNotFoundException();
         }
-        booking.setClose(true);
+        booking.setTypeBooking(typeBookingService.findByTypeName("is_close"));
         bookingService.save(booking);
         Document document = booking.getDocument();
         document.setCount(document.getCount() + 1);

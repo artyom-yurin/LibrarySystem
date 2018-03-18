@@ -60,7 +60,7 @@ public class IndexController {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null) throw new UnauthorizedException();
         if (!token.role.equals("admin")) throw new AccessDeniedException();
-        return new ModelAndView("books");
+        return new ModelAndView("users");
     }
 
     @GetMapping("/admin/requests")
