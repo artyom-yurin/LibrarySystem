@@ -1,4 +1,4 @@
-package com.example.demo.entity;
+package com.example.demo.entity.booking;
 
 
 import com.example.demo.entity.document.Document;
@@ -25,24 +25,21 @@ public class Booking {
     @Column(name = "RETURN_DATE",columnDefinition = "DATETIME")
     private Date returnDate;
 
-    @Column(name = "HAS_BACK_REQUEST",columnDefinition = "TINYINT(1)")
-    private boolean hasBackRequest;
-
     @Column(name = "FINE")
     private Integer fine;
 
-    @Column(name = "IS_CLOSE",columnDefinition = "TINYINT(1)")
-    private boolean isClose;
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "TYPE_ID")
+    private TypeBooking typeBooking;
 
     public Booking() {}
 
-    public Booking(User user, Document document, Date returnDate, boolean hasBackRequest, Integer fine, boolean isClose) {
+    public Booking(User user, Document document, Date returnDate, Integer fine, TypeBooking typeBooking) {
         this.user = user;
         this.document = document;
         this.returnDate = returnDate;
-        this.hasBackRequest = hasBackRequest;
         this.fine = fine;
-        this.isClose = isClose;
+        this.typeBooking = typeBooking;
     }
 
     public Integer getId() {
@@ -77,14 +74,6 @@ public class Booking {
         this.returnDate = returnDate;
     }
 
-    public boolean isHasBackRequest() {
-        return hasBackRequest;
-    }
-
-    public void setHasBackRequest(boolean hasBackRequest) {
-        this.hasBackRequest = hasBackRequest;
-    }
-
     public Integer getFine() {
         return fine;
     }
@@ -93,11 +82,11 @@ public class Booking {
         this.fine = fine;
     }
 
-    public boolean isClose() {
-        return isClose;
+    public TypeBooking getTypeBooking() {
+        return typeBooking;
     }
 
-    public void setClose(boolean close) {
-        isClose = close;
+    public void setTypeBooking(TypeBooking typeBooking) {
+        this.typeBooking = typeBooking;
     }
 }
