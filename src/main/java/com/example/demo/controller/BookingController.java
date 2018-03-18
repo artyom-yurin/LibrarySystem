@@ -1,6 +1,5 @@
 package com.example.demo.controller;
 
-
 import com.example.demo.entity.booking.Booking;
 import com.example.demo.entity.document.Document;
 import com.example.demo.entity.user.User;
@@ -15,6 +14,7 @@ import com.example.security.TokenAuthenticationService;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.stream.Collectors;
@@ -160,6 +160,31 @@ public class BookingController {
         Document document = booking.getDocument();
         document.setCount(document.getCount() + 1);
         documentService.save(document);
+    }
+
+    @PutMapping("/booking/update")
+    public void updateFine(HttpServletRequest request){
+        ParserToken token = TokenAuthenticationService.getAuthentication(request);
+        if (token == null)
+            throw new UnauthorizedException();
+        Date current = new Date();
+        current.setTime(System.currentTimeMillis());
+
+        for(Booking booking : bookingService.findAll()){
+            if(current.getTime() - booking.getReturnDate().getTime() < 0)
+                booking.setFine(0);
+
+            Document document = booking.getDocument();
+
+            int fine = Math.toIntExact((current.getTime() - booking.getReturnDate().getTime())/86400000)*100;
+            if(fine > document.getPrice())
+                booking.setFine(document.getPrice());
+            else if(fine < 0)
+                booking.setFine(0);
+            else
+                booking.setFine(fine);
+            this.bookingService.save(booking);
+        }
     }
 
     @Transactional

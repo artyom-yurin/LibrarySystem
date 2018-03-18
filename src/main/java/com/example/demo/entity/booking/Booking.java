@@ -73,7 +73,7 @@ public class Booking {
     public void setReturnDate(Date returnDate) {
         this.returnDate = returnDate;
     }
-
+  
     public Integer getFine() {
         return fine;
     }
