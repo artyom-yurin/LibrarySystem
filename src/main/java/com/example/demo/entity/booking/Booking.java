@@ -1,4 +1,4 @@
-package com.example.demo.entity;
+package com.example.demo.entity.booking;
 
 
 import com.example.demo.entity.document.Document;

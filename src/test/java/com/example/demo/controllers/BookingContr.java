@@ -1,7 +1,7 @@
 package com.example.demo.controllers;
 
 
-import com.example.demo.entity.Booking;
+import com.example.demo.entity.booking.Booking;
 import com.example.demo.entity.document.Document;
 import com.example.demo.entity.user.User;
 import com.example.demo.exception.*;
@@ -9,15 +9,8 @@ import com.example.demo.repository.BookingRepository;
 import com.example.demo.service.BookingService;
 import com.example.demo.service.DocumentService;
 import com.example.demo.service.UserService;
-import com.example.security.ParserToken;
-import com.example.security.TokenAuthenticationService;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 

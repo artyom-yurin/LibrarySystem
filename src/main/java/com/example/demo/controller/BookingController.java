@@ -1,7 +1,9 @@
 package com.example.demo.controller;
 
 
-import com.example.demo.entity.Booking;
+
+
+import com.example.demo.entity.booking.Booking;
 import com.example.demo.entity.document.Document;
 import com.example.demo.entity.user.User;
 import com.example.demo.exception.*;
@@ -14,6 +16,7 @@ import com.example.security.TokenAuthenticationService;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.stream.Collectors;
@@ -159,29 +162,29 @@ public class BookingController {
         documentService.save(document);
     }
 
-    @GetMapping("/booking/fine")
-    public int calculateFine(@RequestParam(value = "id", defaultValue = "-1") Integer id, HttpServletRequest request){
+    @PutMapping("/booking/update")
+    public void updateFine(HttpServletRequest request){
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null)
             throw new UnauthorizedException();
-
         Date current = new Date();
         current.setTime(System.currentTimeMillis());
 
-        Booking booking = bookingService.getBookingById(id);
-        if(booking == null)
-            throw new BookingNotFoundException();
+        for(Booking booking : bookingService.findAll()){
+            if(current.getTime() - booking.getReturnDate().getTime() < 0)
+                booking.setFine(0);
 
-        if(current.getTime() - booking.getReturnDate().getTime() < 0)
-            return 0;
+            Document document = booking.getDocument();
 
-        Document document = booking.getDocument();
-
-        int fine = Math.toIntExact((current.getTime() - booking.getReturnDate().getTime())/86400000)*100;
-        if(fine > document.getPrice())
-            return document.getPrice();
-        else
-            return fine;
+            int fine = Math.toIntExact((current.getTime() - booking.getReturnDate().getTime())/86400000)*100;
+            if(fine > document.getPrice())
+                booking.setFine(document.getPrice());
+            else if(fine < 0)
+                booking.setFine(0);
+            else
+                booking.setFine(fine);
+            this.bookingService.save(booking);
+        }
     }
 
     @Transactional

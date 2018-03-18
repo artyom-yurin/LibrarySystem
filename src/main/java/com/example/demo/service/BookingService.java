@@ -1,6 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.Booking;
+import com.example.demo.entity.booking.Booking;
 import com.example.demo.repository.BookingRepository;
 import org.springframework.stereotype.Service;
 
