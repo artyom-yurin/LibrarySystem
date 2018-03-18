@@ -49,7 +49,7 @@ public class BookingController {
         return bookingService.findAll()
                 .stream()
                 .filter(booking -> booking.getUser().getId().equals(id))
-                .filter(booking -> !("is_close".equals(booking.getTypeBooking().getTypeName())))
+                .filter(booking -> !("close".equals(booking.getTypeBooking().getTypeName())))
                 .collect(Collectors.toList());
     }
 
@@ -61,7 +61,7 @@ public class BookingController {
         return bookingService.findAll()
                 .stream()
                 .filter(booking -> booking.getUser().getId().equals(token.id))
-                .filter(booking -> !("is_close".equals(booking.getTypeBooking().getTypeName())))
+                .filter(booking -> !("close".equals(booking.getTypeBooking().getTypeName())))
                 .collect(Collectors.toList());
     }
 
@@ -73,8 +73,8 @@ public class BookingController {
 
         return bookingService.findAll()
                 .stream()
-                .filter(booking -> !"is_close".equals(booking.getTypeBooking().getTypeName()))
-                .filter(booking -> "return_request".equals(booking.getTypeBooking().getTypeName()))
+                .filter(booking -> !"close".equals(booking.getTypeBooking().getTypeName()))
+                .filter(booking -> "return request".equals(booking.getTypeBooking().getTypeName()))
                 .collect(Collectors.toList());
     }
 
@@ -120,7 +120,7 @@ public class BookingController {
             else{
                 returnDate.setTime(time + AV_JOURNAL_TIME);
             }
-            bookingService.save(new Booking(user, document, returnDate, 0, typeBookingService.findByTypeName("book_taken")));
+            bookingService.save(new Booking(user, document, returnDate, 0, typeBookingService.findByTypeName("taken")));
             document.setCount(document.getCount() - 1);
             documentService.save(document);
         }
@@ -140,7 +140,7 @@ public class BookingController {
         Booking booking = bookingService.getBookingById(id);
         if (booking == null)
             throw new BookingNotFoundException();
-        booking.setTypeBooking(typeBookingService.findByTypeName("return_request"));
+        booking.setTypeBooking(typeBookingService.findByTypeName("return request"));
         bookingService.save(booking);
     }
 
@@ -155,7 +155,7 @@ public class BookingController {
         if(booking == null){
             throw new BookingNotFoundException();
         }
-        booking.setTypeBooking(typeBookingService.findByTypeName("is_close"));
+        booking.setTypeBooking(typeBookingService.findByTypeName("close"));
         bookingService.save(booking);
         Document document = booking.getDocument();
         document.setCount(document.getCount() + 1);
