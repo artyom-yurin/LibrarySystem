@@ -54,7 +54,7 @@ public class UserController {
             if (user != null) {
                 throw new AlreadyUserExistException();
             }
-            Role role = roleService.findByPosition(userModel.getPosition());
+            Role role = roleService.findByPosition(userModel.getPosition().toLowerCase());
             if (role == null) throw new RoleNotFoundException();
             user = new User(userModel.getName(), userModel.getSurname(), userModel.getAddress(), userModel.getPhoneNumber(), role, userModel.getUsername(), userModel.getPassword());
             userService.save(user);
@@ -75,7 +75,7 @@ public class UserController {
             if (user == null) {
                 throw new UserNotFoundException();
             }
-            Role role = roleService.findByPosition(userModel.getPosition());
+            Role role = roleService.findByPosition(userModel.getPosition().toLowerCase());
             if (role == null) throw new RoleNotFoundException();
             user = new User(userModel.getName(), userModel.getSurname(), userModel.getAddress(), userModel.getPhoneNumber(), role, userModel.getUsername(), userModel.getPassword());
             user.setId(userModel.getId());

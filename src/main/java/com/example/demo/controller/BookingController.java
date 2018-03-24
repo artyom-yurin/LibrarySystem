@@ -4,20 +4,16 @@ import com.example.demo.entity.booking.Booking;
 import com.example.demo.entity.document.Document;
 import com.example.demo.entity.user.User;
 import com.example.demo.exception.*;
-import com.example.demo.repository.BookingRepository;
 import com.example.demo.service.BookingService;
 import com.example.demo.service.DocumentService;
 import com.example.demo.service.TypeBookingService;
 import com.example.demo.service.UserService;
 import com.example.security.ParserToken;
 import com.example.security.TokenAuthenticationService;
-import javafx.geometry.Pos;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -37,6 +33,8 @@ public class BookingController {
     private static final long AV_JOURNAL_TIME = 1209600000L;
 
     private static final long RENEW_TIME = 1209600000L;
+
+    private static final long AVAILABLE_TIME = 86400000L;
 
 
     BookingController(BookingService bookingService, DocumentService documentService, UserService userService, TypeBookingService typeBookingService) {
@@ -94,7 +92,6 @@ public class BookingController {
     @PostMapping("/booking/request")
     public void requestDocumentById(@RequestParam(value = "id", defaultValue = "") Integer documentId, HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
-        Date returnDate = new Date();
         if (token == null)
             throw new UnauthorizedException();
         if (token.role.equals("admin")) throw new AccessDeniedException();
@@ -109,31 +106,57 @@ public class BookingController {
         if (user == null)
             throw new UserNotFoundException();
         if (!document.isReference()) {
+            Date returnDate = new Date();
             if (document.getCount() > 0) {
                 long time = System.currentTimeMillis();
-                if (document.getType().getTypeName().equals("book")) {
-                    if (token.role.equals("patron")) {
-                        if (document.isBestseller()) {
-                            returnDate.setTime(time + BESTSELLER_FOR_PATRON_TIME);
-                        } else {
-                            returnDate.setTime(time + PATRON_DEFAULT_TIME);
-                        }
-                    }
-                    if (token.role.equals("faculty")) {
-                        returnDate.setTime(time + FACULTY_DEFAULT_TIME);
-                    }
-                } else {
-                    returnDate.setTime(time + AV_JOURNAL_TIME);
-                }
-                bookingService.save(new Booking(user, document, returnDate, 0, typeBookingService.findByTypeName("taken")));
-                document.setCount(document.getCount() - 1);
-                documentService.save(document);
+                returnDate.setTime(time + AVAILABLE_TIME);
+                bookingService.save(new Booking(user, document, returnDate, 0, typeBookingService.findByTypeName("available")));
             } else {
                 bookingService.save(new Booking(user, document, returnDate, 0, typeBookingService.findByTypeName("open")));
             }
         } else {
             throw new AccessDeniedException();
         }
+    }
+
+    @PutMapping("/booking/take")
+    public void takeDocumentByBookingId(@RequestParam Integer bookingId, HttpServletRequest request)
+    {
+        ParserToken token = TokenAuthenticationService.getAuthentication(request);
+        if (token == null)
+            throw new UnauthorizedException();
+        if (!token.role.equals("admin")) throw new AccessDeniedException();
+
+        Booking booking = bookingService.getBookingById(bookingId);
+        if (booking == null) {
+            throw new BookingNotFoundException();
+        }
+
+        if ("available".equals(booking.getTypeBooking().getTypeName()))
+        {
+            throw new AccessDeniedException();
+        }
+
+        Document document = booking.getDocument();
+        User user = booking.getUser();
+        Date returnDate = new Date();
+        long time = System.currentTimeMillis();
+        if (document.getType().getTypeName().equals("book")) {
+            if (user.getRole().getName().equals("patron")) {
+                if (document.isBestseller()) {
+                    returnDate.setTime(time + BESTSELLER_FOR_PATRON_TIME);
+                } else {
+                    returnDate.setTime(time + PATRON_DEFAULT_TIME);
+                }
+            }
+            if (user.getRole().getName().equals("faculty")) {
+                returnDate.setTime(time + FACULTY_DEFAULT_TIME);
+            }
+        } else {
+            returnDate.setTime(time + AV_JOURNAL_TIME);
+        }
+        document.setCount(document.getCount() - 1);
+        documentService.save(document);
     }
 
     @PutMapping("/booking/return")
@@ -164,10 +187,25 @@ public class BookingController {
         }
         booking.setTypeBooking(typeBookingService.findByTypeName("close"));
         bookingService.save(booking);
+
+
         Document document = booking.getDocument();
-        document.setCount(document.getCount() + 1);
-        documentService.save(document);
-        //TODO: find next owner for book
+        PriorityQueue<Booking> priorityQueue = getQueueForBookById(document.getId());
+
+        if (priorityQueue.size() > 0)
+        {
+            booking = priorityQueue.remove();
+            booking.setTypeBooking(typeBookingService.findByTypeName("available"));
+            Date returnData = new Date();
+            returnData.setTime(System.currentTimeMillis() + AVAILABLE_TIME);
+            booking.setReturnDate(returnData);
+            bookingService.save(booking);
+        }
+        else
+        {
+            document.setCount(document.getCount() + 1);
+            documentService.save(document);
+        }
     }
 
     @PutMapping("/booking/update")
@@ -222,8 +260,28 @@ public class BookingController {
             throw new UnauthorizedException();
         if (token.role.equals("admin")) throw new AccessDeniedException();
         Booking booking = bookingService.getBookingById(id);
+
+        if (booking == null)
+        {
+            throw new BookingNotFoundException();
+        }
+
+        if (booking.getDocument().isBestseller())
+        {
+            throw new UnableRenewBestsellerException();
+        }
+
+        if ("renew".equals(booking.getTypeBooking().getTypeName()))
+        {
+            throw new AlreadyRenewException();
+        }
+
         PriorityQueue<Booking> queue = getQueueForBookById(booking.getDocument().getId());
-        //TODO: Rules for renew
+
+        if (queue.size() > 0)
+        {
+            throw new UnableRenewException();
+        }
 
         booking.setTypeBooking(typeBookingService.findByTypeName("renew"));
         booking.setReturnDate(new Date(booking.getReturnDate().getTime() + RENEW_TIME));
