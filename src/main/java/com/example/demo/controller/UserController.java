@@ -69,7 +69,7 @@ public class UserController {
         if (token == null) throw new UnauthorizedException();
         if (token.role.equals("admin")) {
             if (userModel.getId() == null) {
-                throw new NullIdException();
+                throw new InvalidIdException();
             }
             User user = userService.findById(userModel.getId());
             if (user == null) {
@@ -92,7 +92,7 @@ public class UserController {
         if (token == null) throw new UnauthorizedException();
         if (token.role.equals("admin")) {
             if (userModel.getId() == null) {
-                throw new NullIdException();
+                throw new InvalidIdException();
             }
             User user = userService.findById(userModel.getId());
             if (user == null) {
