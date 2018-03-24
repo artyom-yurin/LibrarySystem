@@ -49,6 +49,8 @@ public class BookingController {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null) throw new UnauthorizedException();
         if (!token.role.equals("admin")) throw new AccessDeniedException();
+        if (id == -1)
+            throw new InvalidIdException();
         return bookingService.findAll()
                 .stream()
                 .filter(booking -> booking.getUser().getId().equals(id))
@@ -90,18 +92,16 @@ public class BookingController {
     }
 
     @PostMapping("/booking/request")
-    public void requestDocumentById(@RequestParam(value = "id", defaultValue = "") Integer documentId, HttpServletRequest request) {
+    public void requestDocumentById(@RequestParam(value = "id", defaultValue = "-1") Integer documentId, HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null)
             throw new UnauthorizedException();
         if (token.role.equals("admin")) throw new AccessDeniedException();
-        if (documentId == null)
-            throw new NullIdException();
+        if (documentId == -1)
+            throw new InvalidIdException();
         Document document = documentService.findById(documentId);
         if (document == null)
             throw new DocumentNotFoundException();
-        if (token.id == null)
-            throw new NullIdException();
         User user = userService.findById(token.id);
         if (user == null)
             throw new UserNotFoundException();
@@ -120,12 +120,15 @@ public class BookingController {
     }
 
     @PutMapping("/booking/take")
-    public void takeDocumentByBookingId(@RequestParam Integer bookingId, HttpServletRequest request)
+    public void takeDocumentByBookingId(@RequestParam(value = "id", defaultValue = "-1")  Integer bookingId, HttpServletRequest request)
     {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null)
             throw new UnauthorizedException();
         if (!token.role.equals("admin")) throw new AccessDeniedException();
+
+        if (bookingId == -1)
+            throw new InvalidIdException();
 
         Booking booking = bookingService.getBookingById(bookingId);
         if (booking == null) {
@@ -160,13 +163,13 @@ public class BookingController {
     }
 
     @PutMapping("/booking/return")
-    public void returnDocumentById(@RequestParam Integer id, HttpServletRequest request) {
+    public void returnDocumentById(@RequestParam(value = "id", defaultValue = "-1") Integer id, HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null)
             throw new UnauthorizedException();
         if (token.role.equals("admin")) throw new AccessDeniedException();
-        if (id == null)
-            throw new NullIdException();
+        if (id == -1)
+            throw new InvalidIdException();
         Booking booking = bookingService.getBookingById(id);
         if (booking == null)
             throw new BookingNotFoundException();
@@ -175,11 +178,14 @@ public class BookingController {
     }
 
     @PutMapping("/booking/close")
-    public void closeBooking(@RequestParam Integer id, HttpServletRequest request) {
+    public void closeBooking(@RequestParam(value = "id", defaultValue = "-1") Integer id, HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null)
             throw new UnauthorizedException();
         if (!token.role.equals("admin")) throw new AccessDeniedException();
+
+        if (id == -1)
+            throw new InvalidIdException();
 
         Booking booking = bookingService.getBookingById(id);
         if (booking == null) {
@@ -245,20 +251,59 @@ public class BookingController {
 
     @Transactional
     @DeleteMapping("/booking/idremove")
-    public void removeBookingById(@RequestParam Integer id, HttpServletRequest request) {
+    public void removeBookingById(@RequestParam(value = "id", defaultValue = "-1") Integer id, HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null)
             throw new UnauthorizedException();
         if (!token.role.equals("admin")) throw new AccessDeniedException();
+        if (id == -1)
+            throw new InvalidIdException();
         this.bookingService.removeBookingById(id);
     }
 
+    @PutMapping("booking/outstanding")
+    public void makeOutstandingRequest(@RequestParam(value = "id", defaultValue = "-1") Integer bookingId, HttpServletRequest request)
+    {
+        ParserToken token = TokenAuthenticationService.getAuthentication(request);
+        if (token == null)
+            throw new UnauthorizedException();
+        if (!token.role.equals("admin")) throw new AccessDeniedException();
+
+        if (bookingId == -1)
+            throw new InvalidIdException();
+
+        Booking booking = bookingService.getBookingById(bookingId);
+        if (booking == null)
+        {
+            throw new BookingNotFoundException();
+        }
+
+        PriorityQueue<Booking> priorityQueue = getQueueForBookById(booking.getDocument().getId());
+
+        Booking firstBooking = priorityQueue.peek();
+
+        if ("outstanding".equals(firstBooking.getTypeBooking().getTypeName()))
+            throw new AlreadyHaveOutstandingRequestException();
+
+        for(Booking bookItem: priorityQueue)
+        {
+            bookItem.setTypeBooking(typeBookingService.findByTypeName("close"));
+            bookingService.save(bookItem);
+        }
+        booking.setTypeBooking(typeBookingService.findByTypeName("outstanding"));
+        bookingService.save(booking);
+    }
+
     @PutMapping("/booking/renew")
-    public void renewBook(@RequestParam Integer id, HttpServletRequest request) {
+    public void renewBook(@RequestParam(value = "id", defaultValue = "-1")  Integer id, HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null)
             throw new UnauthorizedException();
         if (token.role.equals("admin")) throw new AccessDeniedException();
+
+        if (id == -1)
+            throw new InvalidIdException();
+
         Booking booking = bookingService.getBookingById(id);
 
         if (booking == null)
@@ -317,7 +362,7 @@ public class BookingController {
         queue.addAll(bookingService.findAll()
                 .stream()
                 .filter(booking -> booking.getDocument().getId().equals(bookId))
-                .filter(booking -> "open".equals(booking.getTypeBooking().getTypeName()))
+                .filter(booking -> ("open".equals(booking.getTypeBooking().getTypeName()) || "outstanding".equals(booking.getTypeBooking().getTypeName())))
                 .collect(Collectors.toList()));
 
         return queue;
