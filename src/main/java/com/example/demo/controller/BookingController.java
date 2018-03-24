@@ -36,6 +36,8 @@ public class BookingController {
 
     private static final long AVAILABLE_TIME = 86400000L;
 
+    private static final long VP_TIME = 604800000L;
+
 
     BookingController(BookingService bookingService, DocumentService documentService, UserService userService, TypeBookingService typeBookingService) {
         this.bookingService = bookingService;
@@ -120,8 +122,7 @@ public class BookingController {
     }
 
     @PutMapping("/booking/take")
-    public void takeDocumentByBookingId(@RequestParam(value = "id", defaultValue = "-1")  Integer bookingId, HttpServletRequest request)
-    {
+    public void takeDocumentByBookingId(@RequestParam(value = "id", defaultValue = "-1") Integer bookingId, HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null)
             throw new UnauthorizedException();
@@ -135,8 +136,7 @@ public class BookingController {
             throw new BookingNotFoundException();
         }
 
-        if ("available".equals(booking.getTypeBooking().getTypeName()))
-        {
+        if ("available".equals(booking.getTypeBooking().getTypeName())) {
             throw new AccessDeniedException();
         }
 
@@ -144,15 +144,16 @@ public class BookingController {
         User user = booking.getUser();
         Date returnDate = new Date();
         long time = System.currentTimeMillis();
-        if (document.getType().getTypeName().equals("book")) {
+        if (user.getRole().getName().equals("vp")) {
+            returnDate.setTime(time + VP_TIME);
+        } else if (document.getType().getTypeName().equals("book")) {
             if (user.getRole().getName().equals("patron")) {
                 if (document.isBestseller()) {
                     returnDate.setTime(time + BESTSELLER_FOR_PATRON_TIME);
                 } else {
                     returnDate.setTime(time + PATRON_DEFAULT_TIME);
                 }
-            }
-            if (user.getRole().getName().equals("faculty")) {
+            } else if (user.getRole().getName().equals("faculty")) {
                 returnDate.setTime(time + FACULTY_DEFAULT_TIME);
             }
         } else {
@@ -198,17 +199,14 @@ public class BookingController {
         Document document = booking.getDocument();
         PriorityQueue<Booking> priorityQueue = getQueueForBookById(document.getId());
 
-        if (priorityQueue.size() > 0)
-        {
+        if (priorityQueue.size() > 0) {
             booking = priorityQueue.remove();
             booking.setTypeBooking(typeBookingService.findByTypeName("available"));
             Date returnData = new Date();
             returnData.setTime(System.currentTimeMillis() + AVAILABLE_TIME);
             booking.setReturnDate(returnData);
             bookingService.save(booking);
-        }
-        else
-        {
+        } else {
             document.setCount(document.getCount() + 1);
             documentService.save(document);
         }
@@ -262,8 +260,7 @@ public class BookingController {
     }
 
     @PutMapping("booking/outstanding")
-    public void makeOutstandingRequest(@RequestParam(value = "id", defaultValue = "-1") Integer bookingId, HttpServletRequest request)
-    {
+    public void makeOutstandingRequest(@RequestParam(value = "id", defaultValue = "-1") Integer bookingId, HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null)
             throw new UnauthorizedException();
@@ -273,8 +270,7 @@ public class BookingController {
             throw new InvalidIdException();
 
         Booking booking = bookingService.getBookingById(bookingId);
-        if (booking == null)
-        {
+        if (booking == null) {
             throw new BookingNotFoundException();
         }
 
@@ -285,8 +281,7 @@ public class BookingController {
         if ("outstanding".equals(firstBooking.getTypeBooking().getTypeName()))
             throw new AlreadyHaveOutstandingRequestException();
 
-        for(Booking bookItem: priorityQueue)
-        {
+        for (Booking bookItem : priorityQueue) {
             bookItem.setTypeBooking(typeBookingService.findByTypeName("close"));
             bookingService.save(bookItem);
         }
@@ -295,7 +290,7 @@ public class BookingController {
     }
 
     @PutMapping("/booking/renew")
-    public void renewBook(@RequestParam(value = "id", defaultValue = "-1")  Integer id, HttpServletRequest request) {
+    public void renewBook(@RequestParam(value = "id", defaultValue = "-1") Integer id, HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null)
             throw new UnauthorizedException();
@@ -306,35 +301,36 @@ public class BookingController {
 
         Booking booking = bookingService.getBookingById(id);
 
-        if (booking == null)
-        {
+        if (booking == null) {
             throw new BookingNotFoundException();
         }
 
-        if (booking.getDocument().isBestseller())
-        {
+        if (booking.getDocument().isBestseller()) {
             throw new UnableRenewBestsellerException();
         }
 
-        if ("renew".equals(booking.getTypeBooking().getTypeName()))
-        {
+        if (!"vp".equals(booking.getUser().getRole().getName()) && "renew".equals(booking.getTypeBooking().getTypeName())) {
             throw new AlreadyRenewException();
         }
 
         PriorityQueue<Booking> queue = getQueueForBookById(booking.getDocument().getId());
 
-        if (queue.size() > 0)
-        {
+
+        if ("outstanding".equals(queue.peek().getTypeBooking().getTypeName())) {
             throw new UnableRenewException();
         }
 
         booking.setTypeBooking(typeBookingService.findByTypeName("renew"));
-        booking.setReturnDate(new Date(booking.getReturnDate().getTime() + RENEW_TIME));
+        if ("vp".equals(booking.getUser().getRole().getName())) {
+            booking.setReturnDate(new Date(booking.getReturnDate().getTime() + VP_TIME));
+        } else {
+            booking.setReturnDate(new Date(booking.getReturnDate().getTime() + RENEW_TIME));
+        }
         bookingService.save(booking);
     }
 
     public enum Positions {
-        PROFESSOR, TA, INSTRUCTOR, STUDENT
+        PROFESSOR, VP, TA, INSTRUCTOR, STUDENT
     }
 
     private class MyComparator implements Comparator<Booking> {
@@ -343,14 +339,18 @@ public class BookingController {
         }
     }
 
-    private Positions convertToEnum(String position)
-    {
-        switch (position.toLowerCase())
-        {
-            case "student": return Positions.STUDENT;
-            case "instructor": return Positions.INSTRUCTOR;
-            case "ta": return Positions.TA;
-            case "professor": return Positions.PROFESSOR;
+    private Positions convertToEnum(String position) {
+        switch (position.toLowerCase()) {
+            case "student":
+                return Positions.STUDENT;
+            case "instructor":
+                return Positions.INSTRUCTOR;
+            case "ta":
+                return Positions.TA;
+            case "professor":
+                return Positions.PROFESSOR;
+            case "vp":
+                return Positions.VP;
         }
         throw new RoleNotFoundException();
     }
