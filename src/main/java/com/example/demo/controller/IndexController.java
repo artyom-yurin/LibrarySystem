@@ -1,12 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.exception.AccessDeniedException;
-import com.example.demo.exception.AlreadyLoginException;
 import com.example.demo.exception.UnauthorizedException;
-import com.example.demo.repository.BookingRepository;
-import com.example.demo.repository.RoleRepository;
-import com.example.demo.repository.TagRepository;
-import com.example.demo.repository.UserRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
