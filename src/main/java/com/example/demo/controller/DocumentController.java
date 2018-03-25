@@ -12,6 +12,7 @@ import com.example.demo.service.PublisherService;
 import com.example.demo.service.TypeDocumentService;
 import com.example.security.ParserToken;
 import com.example.security.TokenAuthenticationService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +22,9 @@ import java.util.Set;
 
 @RestController
 public class DocumentController {
+
+    @Autowired
+    private BookingController bookingController;
 
     private DocumentService documentService;
     private TypeDocumentService typeDocumentService;
@@ -34,7 +38,7 @@ public class DocumentController {
         this.publisherService = publisherService;
     }
 
-    private HashSet<Author> getAuthors(Set<Author> setAuthors) {
+    private HashSet<Author> findAuthors(Set<Author> setAuthors) {
         HashSet<Author> authors = new HashSet<>();
         if (setAuthors != null) {
             for (Author author : setAuthors) {
@@ -58,7 +62,7 @@ public class DocumentController {
 
         TypeDocument type = typeDocumentService.findByTypeName(documentModel.getType().getTypeName());
         if (type == null) throw new TypeNotFoundException();
-        Set<Author> authors = getAuthors(documentModel.getAuthors());
+        Set<Author> authors = findAuthors(documentModel.getAuthors());
         Publisher publisher;
         if (documentModel.getPublisher().getId() != null) {
             publisher = publisherService.findById(documentModel.getPublisher().getId());
@@ -77,7 +81,7 @@ public class DocumentController {
 
         TypeDocument type = typeDocumentService.findByTypeName(documentModel.getType().getTypeName());
         if (type == null) throw new TypeNotFoundException();
-        Set<Author> authors = getAuthors(documentModel.getAuthors());
+        Set<Author> authors = findAuthors(documentModel.getAuthors());
         Publisher publisher;
         if (documentModel.getPublisher().getId() != null) {
             publisher = publisherService.findById(documentModel.getPublisher().getId());
@@ -87,6 +91,7 @@ public class DocumentController {
         Document document = new Document(documentModel.getTitle(), authors, documentModel.getPrice(), documentModel.getCount(), documentModel.getTags(), publisher, documentModel.getEdition(), documentModel.isBestseller(), documentModel.isReference(), documentModel.getPublishingDate(), documentModel.getEditor(), documentModel.getType());
         document.setId(documentModel.getId());
         this.documentService.save(document);
+        bookingController.queueAllocation(document.getId());
     }
 
     @Transactional
