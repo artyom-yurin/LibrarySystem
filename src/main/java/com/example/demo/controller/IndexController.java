@@ -25,7 +25,12 @@ public class IndexController {
         if (token == null) {
             return new ModelAndView("login");
         }
-        throw new AlreadyLoginException();
+        else if("admin".equals(token.role)){
+            return new ModelAndView("books");
+        }
+        else {
+            return new ModelAndView("catalog");
+        }
     }
 
     @GetMapping("/catalog")
@@ -66,5 +71,13 @@ public class IndexController {
         if (token == null) throw new UnauthorizedException();
         if (!token.role.equals("admin")) throw new AccessDeniedException();
         return new ModelAndView("request");
+    }
+
+    @GetMapping("/admin/available")
+    public ModelAndView allAvailable(HttpServletRequest request) {
+        ParserToken token = TokenAuthenticationService.getAuthentication(request);
+        if (token == null) throw new UnauthorizedException();
+        if (!token.role.equals("admin")) throw new AccessDeniedException();
+        return new ModelAndView("available");
     }
 }

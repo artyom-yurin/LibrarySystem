@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.booking.Booking;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,7 +21,7 @@ public class SystemController {
         return System.currentTimeMillis();
     }
 
-    @PutMapping("/system/update")
+    @Scheduled(initialDelay = 0L, fixedDelay = 86400000L)
     public void systemUpdate() {
         Long systemTime = System.currentTimeMillis();
         for (Booking booking : bookingController.findActiveBookings()) {
