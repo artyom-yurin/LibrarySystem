@@ -12,6 +12,7 @@ import com.example.demo.service.PublisherService;
 import com.example.demo.service.TypeDocumentService;
 import com.example.security.ParserToken;
 import com.example.security.TokenAuthenticationService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +22,9 @@ import java.util.Set;
 
 @RestController
 public class DocumentController {
+
+    @Autowired
+    private BookingController bookingController;
 
     private DocumentService documentService;
     private TypeDocumentService typeDocumentService;
@@ -87,6 +91,7 @@ public class DocumentController {
         Document document = new Document(documentModel.getTitle(), authors, documentModel.getPrice(), documentModel.getCount(), documentModel.getTags(), publisher, documentModel.getEdition(), documentModel.isBestseller(), documentModel.isReference(), documentModel.getPublishingDate(), documentModel.getEditor(), documentModel.getType());
         document.setId(documentModel.getId());
         this.documentService.save(document);
+        bookingController.queueAllocation(document.getId());
     }
 
     @Transactional

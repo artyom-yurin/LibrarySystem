@@ -13,6 +13,7 @@ import com.example.security.TokenAuthenticationService;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -359,6 +360,23 @@ public class BookingController {
         bookingService.save(booking);
     }
 
+    public void queueAllocation(Integer bookID) {
+        PriorityQueue<Booking> pq = getQueueForBookById(bookID);
+
+        Document document = documentService.findById(bookID);
+        Integer countDocument = document.getCount();
+
+        for (int i = 0; i < countDocument && i < pq.size(); i++) {
+            Booking booking = pq.poll();
+            booking.setTypeBooking(typeBookingService.findByTypeName("available"));
+            booking.setReturnDate(new Date(System.currentTimeMillis() + AVAILABLE_TIME));
+            bookingService.save(booking);
+            //TODO: NOTIFICATION TO NEW USER THAT BOOK AVAILABLE FOR HIM
+            document.setCount(document.getCount() - 1);
+            documentService.save(document);
+        }
+    }
+
     public enum Positions {
         PROFESSOR, VP, TA, INSTRUCTOR, STUDENT
     }
@@ -387,7 +405,6 @@ public class BookingController {
 
     private PriorityQueue<Booking> getQueueForBookById(Integer bookId) {
         PriorityQueue<Booking> queue = new PriorityQueue<>(new MyComparator());
-
 
         queue.addAll(bookingService.findAll()
                 .stream()
