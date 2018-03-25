@@ -104,13 +104,6 @@ public class UserController {
         throw new AccessDeniedException();
     }
 
-    /*@GetMapping("/user/find")
-    public User getUser(@RequestParam(value = "username", defaultValue = "") String username){
-        User findUser = userService.findByUsername(username);
-        if (findUser == null) throw new UserNotFoundException();
-        return findUser;
-    }*/
-
     @GetMapping("/user/users")
     public Iterable<User> getUsers(HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
