@@ -101,7 +101,7 @@ public class BookingContr{
 
     public void returnDocumentByIdTest(Integer id){
         if (id == null)
-            throw new NullIdException();
+            throw new InvalidIdException();
         Booking booking = bookingService.getBookingById(id);
         if (booking == null)
             throw new BookingNotFoundException();
