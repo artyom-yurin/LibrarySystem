@@ -22,7 +22,7 @@ public class Booking {
     @JoinColumn(name = "DOCUMENT_ID")
     private Document document;
 
-    @Column(name = "RETURN_DATE",columnDefinition = "DATETIME")
+    @Column(name = "RETURN_DATE", columnDefinition = "DATETIME")
     private Date returnDate;
 
     @Column(name = "FINE")
@@ -32,7 +32,8 @@ public class Booking {
     @JoinColumn(name = "TYPE_ID")
     private TypeBooking typeBooking;
 
-    public Booking() {}
+    public Booking() {
+    }
 
     public Booking(User user, Document document, Date returnDate, Integer fine, TypeBooking typeBooking) {
         this.user = user;
@@ -73,7 +74,7 @@ public class Booking {
     public void setReturnDate(Date returnDate) {
         this.returnDate = returnDate;
     }
-  
+
     public Integer getFine() {
         return fine;
     }

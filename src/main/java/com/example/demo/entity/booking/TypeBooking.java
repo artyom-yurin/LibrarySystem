@@ -14,7 +14,8 @@ public class TypeBooking {
     @Column(name = "TYPE_NAME")
     private String typeName;
 
-    public TypeBooking(){}
+    public TypeBooking() {
+    }
 
     public TypeBooking(String typeName) {
         this.typeName = typeName;

@@ -1,12 +1,11 @@
 package com.example.demo.entity.user;
 
 
-
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 
 @Entity
-public class User{
+public class User {
     @Id
     @Column(name = "USER_ID")
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -33,7 +32,8 @@ public class User{
     @Column(name = "PASSWORD")
     private String password;
 
-    public User() {}
+    public User() {
+    }
 
     public User(String name, String surname, String address, String phoneNumber, Role role, String username, String password) {
         this.name = name;

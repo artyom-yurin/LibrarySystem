@@ -12,7 +12,7 @@ public class TypeDocumentService {
         this.typeDocumentRepository = typeDocumentRepository;
     }
 
-    public TypeDocument findByTypeName(String name){
+    public TypeDocument findByTypeName(String name) {
         return this.typeDocumentRepository.findByTypeName(name);
     }
 }

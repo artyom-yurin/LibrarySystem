@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 public class RoleService {
     private RoleRepository roleRepository;
 
-    public RoleService(RoleRepository roleRepository){
+    public RoleService(RoleRepository roleRepository) {
         this.roleRepository = roleRepository;
     }
 
@@ -17,8 +17,7 @@ public class RoleService {
         return roleRepository.findByName(name.toLowerCase());
     }
 
-    public Role findByPosition(String position)
-    {
+    public Role findByPosition(String position) {
         return roleRepository.findByPosition(position.toLowerCase());
     }
 }

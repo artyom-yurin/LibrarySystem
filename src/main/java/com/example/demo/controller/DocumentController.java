@@ -34,46 +34,24 @@ public class DocumentController {
         this.publisherService = publisherService;
     }
 
-    private HashSet<Author> getAuthors(Set<Author> setAuthors)
-    {
+    private HashSet<Author> getAuthors(Set<Author> setAuthors) {
         HashSet<Author> authors = new HashSet<>();
-        if(setAuthors != null) {
+        if (setAuthors != null) {
             for (Author author : setAuthors) {
-                if(author.getId() != null){
+                if (author.getId() != null) {
                     authors.add(authorService.findById(author.getId()));
-                }
-                else if(author.getFirstName() != null){
+                } else if (author.getFirstName() != null) {
                     authors.add(authorService.findByFirstName(author.getFirstName()));
+                } else {
+                    authors.add(authorService.findByLastName(author.getLastName()));
                 }
-                else{ authors.add(authorService.findByLastName(author.getLastName())); }
             }
         }
         return authors;
     }
 
     @PostMapping("/document/add")
-    public void addDocument(@RequestBody DocumentModel documentModel, HttpServletRequest request){
-        ParserToken token = TokenAuthenticationService.getAuthentication(request);
-        if (token == null) throw new UnauthorizedException();
-        if (!token.role.equals("admin")) throw new AccessDeniedException();
-
-        TypeDocument type = typeDocumentService.findByTypeName(documentModel.getType().getTypeName());
-        if(type == null) throw new TypeNotFoundException();
-        Set<Author> authors = getAuthors(documentModel.getAuthors());
-        Publisher publisher;
-        if(documentModel.getPublisher().getId() != null) {
-            publisher = publisherService.findById(documentModel.getPublisher().getId());
-        }
-        else{
-            publisher = publisherService.findByPublisherName(documentModel.getPublisher().getPublisherName());
-        }
-        Document document = new Document(documentModel.getTitle(), authors, documentModel.getPrice(), documentModel.getCount(), documentModel.getTags(), publisher, documentModel.getEdition(), documentModel.isBestseller(), documentModel.isReference(), documentModel.getPublishingDate(), documentModel.getEditor(), type);
-        this.documentService.save(document);
-    }
-
-    @PutMapping("/document/update")
-    public void updateDocument(@RequestBody DocumentModel documentModel, HttpServletRequest request)
-    {
+    public void addDocument(@RequestBody DocumentModel documentModel, HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null) throw new UnauthorizedException();
         if (!token.role.equals("admin")) throw new AccessDeniedException();
@@ -82,10 +60,28 @@ public class DocumentController {
         if (type == null) throw new TypeNotFoundException();
         Set<Author> authors = getAuthors(documentModel.getAuthors());
         Publisher publisher;
-        if(documentModel.getPublisher().getId() != null) {
+        if (documentModel.getPublisher().getId() != null) {
             publisher = publisherService.findById(documentModel.getPublisher().getId());
+        } else {
+            publisher = publisherService.findByPublisherName(documentModel.getPublisher().getPublisherName());
         }
-        else{
+        Document document = new Document(documentModel.getTitle(), authors, documentModel.getPrice(), documentModel.getCount(), documentModel.getTags(), publisher, documentModel.getEdition(), documentModel.isBestseller(), documentModel.isReference(), documentModel.getPublishingDate(), documentModel.getEditor(), type);
+        this.documentService.save(document);
+    }
+
+    @PutMapping("/document/update")
+    public void updateDocument(@RequestBody DocumentModel documentModel, HttpServletRequest request) {
+        ParserToken token = TokenAuthenticationService.getAuthentication(request);
+        if (token == null) throw new UnauthorizedException();
+        if (!token.role.equals("admin")) throw new AccessDeniedException();
+
+        TypeDocument type = typeDocumentService.findByTypeName(documentModel.getType().getTypeName());
+        if (type == null) throw new TypeNotFoundException();
+        Set<Author> authors = getAuthors(documentModel.getAuthors());
+        Publisher publisher;
+        if (documentModel.getPublisher().getId() != null) {
+            publisher = publisherService.findById(documentModel.getPublisher().getId());
+        } else {
             publisher = publisherService.findByPublisherName(documentModel.getPublisher().getPublisherName());
         }
         Document document = new Document(documentModel.getTitle(), authors, documentModel.getPrice(), documentModel.getCount(), documentModel.getTags(), publisher, documentModel.getEdition(), documentModel.isBestseller(), documentModel.isReference(), documentModel.getPublishingDate(), documentModel.getEditor(), documentModel.getType());
@@ -95,8 +91,7 @@ public class DocumentController {
 
     @Transactional
     @DeleteMapping("/document/remove")
-    public void removeDocument(@RequestBody Document document, HttpServletRequest request)
-    {
+    public void removeDocument(@RequestBody Document document, HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null) throw new UnauthorizedException();
         if (!token.role.equals("admin")) throw new AccessDeniedException();
@@ -106,8 +101,7 @@ public class DocumentController {
 
     @Transactional
     @DeleteMapping("/document/removeid")
-    public void removeDocumentId(@RequestParam(value = "id", defaultValue = "-1") Integer id, HttpServletRequest request)
-    {
+    public void removeDocumentId(@RequestParam(value = "id", defaultValue = "-1") Integer id, HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null) throw new UnauthorizedException();
         if (!token.role.equals("admin")) throw new AccessDeniedException();
@@ -119,8 +113,7 @@ public class DocumentController {
     }
 
     @GetMapping("/document/find")
-    public Document getDocument(@RequestParam(value = "id", defaultValue = "-1") Integer id, HttpServletRequest request)
-    {
+    public Document getDocument(@RequestParam(value = "id", defaultValue = "-1") Integer id, HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null) throw new UnauthorizedException();
 
@@ -133,7 +126,7 @@ public class DocumentController {
     }
 
     @GetMapping("/document/documents")
-    public Iterable<Document> getDocuments(HttpServletRequest request){
+    public Iterable<Document> getDocuments(HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null) throw new UnauthorizedException();
         return this.documentService.getAllDocuments();

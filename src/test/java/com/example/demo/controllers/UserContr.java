@@ -75,9 +75,9 @@ public class UserContr {
         return userService.getAllUsers();
     }
 
-    public int getAmountTest(){
+    public int getAmountTest() {
         int count = 0;
-        for(User user : getUsersTest()){
+        for (User user : getUsersTest()) {
             count++;
         }
         return count;

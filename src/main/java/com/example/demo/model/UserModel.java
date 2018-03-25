@@ -10,7 +10,8 @@ public class UserModel {
     private String username;
     private String password;
 
-    public  UserModel(){}
+    public UserModel() {
+    }
 
     public UserModel(Integer id, String name, String surname, String address, String phoneNumber, String poistion, String username, String password) {
         this.id = id;

@@ -16,14 +16,13 @@ import javax.servlet.http.HttpServletRequest;
 
 @Controller
 public class IndexController {
-    public IndexController(){
+    public IndexController() {
     }
 
     @GetMapping("/")
     public ModelAndView login(HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
-        if (token == null)
-        {
+        if (token == null) {
             return new ModelAndView("login");
         }
         throw new AlreadyLoginException();
@@ -46,8 +45,7 @@ public class IndexController {
     }
 
     @GetMapping("/admin/documents")
-    public ModelAndView allDocuments(HttpServletRequest request)
-    {
+    public ModelAndView allDocuments(HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null) throw new UnauthorizedException();
         if (!token.role.equals("admin")) throw new AccessDeniedException();
@@ -55,8 +53,7 @@ public class IndexController {
     }
 
     @GetMapping("/admin/users")
-    public ModelAndView allUsers(HttpServletRequest request)
-    {
+    public ModelAndView allUsers(HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null) throw new UnauthorizedException();
         if (!token.role.equals("admin")) throw new AccessDeniedException();
@@ -64,8 +61,7 @@ public class IndexController {
     }
 
     @GetMapping("/admin/requests")
-    public ModelAndView allRequests(HttpServletRequest request)
-    {
+    public ModelAndView allRequests(HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null) throw new UnauthorizedException();
         if (!token.role.equals("admin")) throw new AccessDeniedException();

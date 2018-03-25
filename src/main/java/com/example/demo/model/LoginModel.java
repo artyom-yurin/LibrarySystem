@@ -4,8 +4,8 @@ public class LoginModel {
     private String username;
     private String password;
 
-    LoginModel()
-    {}
+    LoginModel() {
+    }
 
     public LoginModel(String username, String password) {
         this.username = username;

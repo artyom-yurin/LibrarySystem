@@ -13,7 +13,8 @@ public class Tag {
     @Column(name = "TAG_NAME")
     private String tagName;
 
-    public Tag() {}
+    public Tag() {
+    }
 
     public Tag(String tagName) {
         this.tagName = tagName;

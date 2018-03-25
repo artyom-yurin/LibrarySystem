@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
-public class BookingContr{
+public class BookingContr {
     private TypeBookingService typeBookingService;
     private BookingService bookingService;
     private DocumentService documentService;
@@ -75,31 +75,29 @@ public class BookingContr{
             throw new DocumentNotFoundException();
         if (!document.isReference() && document.getCount() > 0) {
             long time = System.currentTimeMillis();
-            if(document.getType().getTypeName().equals("book")){
-                if (user.getRole().getName().equals("patron")){
-                    if (document.isBestseller()){
+            if (document.getType().getTypeName().equals("book")) {
+                if (user.getRole().getName().equals("patron")) {
+                    if (document.isBestseller()) {
                         returnDate.setTime(time + BESTSELLER_FOR_PATRON_TIME);
-                    }else{
+                    } else {
                         returnDate.setTime(time + PATRON_DEFAULT_TIME);
                     }
                 }
-                if (user.getRole().getName().equals("faculty")){
+                if (user.getRole().getName().equals("faculty")) {
                     returnDate.setTime(time + FACULTY_DEFAULT_TIME);
                 }
-            }
-            else{
+            } else {
                 returnDate.setTime(time + AV_JOURNAL_TIME);
             }
             bookingService.save(new Booking(user, document, returnDate, 0, typeBookingService.findByTypeName("taken")));
             document.setCount(document.getCount() - 1);
             documentService.save(document);
-        }
-        else{
+        } else {
             throw new AccessDeniedException();
         }
     }
 
-    public void returnDocumentByIdTest(Integer id){
+    public void returnDocumentByIdTest(Integer id) {
         if (id == null)
             throw new InvalidIdException();
         Booking booking = bookingService.getBookingById(id);
@@ -109,9 +107,9 @@ public class BookingContr{
         bookingService.save(booking);
     }
 
-    public void closeBookingTest(Integer id){
+    public void closeBookingTest(Integer id) {
         Booking booking = bookingService.getBookingById(id);
-        if(booking == null){
+        if (booking == null) {
             throw new BookingNotFoundException();
         }
         booking.setTypeBooking(typeBookingService.findByTypeName("close"));
@@ -121,11 +119,11 @@ public class BookingContr{
         documentService.save(document);
     }
 
-    public void removeBookingTest(Booking booking){
+    public void removeBookingTest(Booking booking) {
         this.bookingService.removeBookingById(booking.getId());
     }
 
-    public void removeBookingById(Integer id){
+    public void removeBookingById(Integer id) {
         this.bookingService.removeBookingById(id);
     }
 }
