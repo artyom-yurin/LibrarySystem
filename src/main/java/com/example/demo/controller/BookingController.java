@@ -214,6 +214,7 @@ public class BookingController {
             returnData.setTime(System.currentTimeMillis() + AVAILABLE_TIME);
             booking.setReturnDate(returnData);
             bookingService.save(booking);
+            //TODO: NOTIFICATION TO NEW USER THAT BOOK AVAILABLE FOR HIM
         } else {
             document.setCount(document.getCount() + 1);
             documentService.save(document);
@@ -267,6 +268,7 @@ public class BookingController {
         for (Booking bookItem : priorityQueue) {
             bookItem.setTypeBooking(typeBookingService.findByTypeName("close"));
             bookingService.save(bookItem);
+            //TODO: NOTIFICATION TO ALL USER IN QUEUE THAT THEIR SPACE IN QUEUE IS CANCELED
         }
         booking.setTypeBooking(typeBookingService.findByTypeName("outstanding"));
         bookingService.save(booking);
@@ -326,6 +328,7 @@ public class BookingController {
         if ("available".equals(booking.getTypeBooking().getTypeName())) {
             booking.setTypeBooking(typeBookingService.findByTypeName("close"));
             bookingService.save(booking);
+            //TODO NOTIFICATION THAT USER LOST HIM SPACE OF QUEUE
             PriorityQueue<Booking> pq = getQueueForBookById(booking.getDocument().getId());
             if (pq.size() > 0) {
                 Booking newBooking = pq.peek();
@@ -334,9 +337,11 @@ public class BookingController {
                 returnData.setTime(System.currentTimeMillis() + AVAILABLE_TIME);
                 newBooking.setReturnDate(returnData);
                 bookingService.save(newBooking);
+                //TODO: NOTIFICATION TO NEW USER THAT BOOK AVAILABLE FOR HIM
             }
         } else {
             getFine(booking);
+            //TODO: NOTIFICATION TO USER THAT HE HAS A FINE
         }
     }
 
