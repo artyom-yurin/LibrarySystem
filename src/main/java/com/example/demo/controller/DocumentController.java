@@ -34,7 +34,7 @@ public class DocumentController {
         this.publisherService = publisherService;
     }
 
-    private HashSet<Author> getAuthors(Set<Author> setAuthors) {
+    private HashSet<Author> findAuthors(Set<Author> setAuthors) {
         HashSet<Author> authors = new HashSet<>();
         if (setAuthors != null) {
             for (Author author : setAuthors) {
@@ -58,7 +58,7 @@ public class DocumentController {
 
         TypeDocument type = typeDocumentService.findByTypeName(documentModel.getType().getTypeName());
         if (type == null) throw new TypeNotFoundException();
-        Set<Author> authors = getAuthors(documentModel.getAuthors());
+        Set<Author> authors = findAuthors(documentModel.getAuthors());
         Publisher publisher;
         if (documentModel.getPublisher().getId() != null) {
             publisher = publisherService.findById(documentModel.getPublisher().getId());
@@ -77,7 +77,7 @@ public class DocumentController {
 
         TypeDocument type = typeDocumentService.findByTypeName(documentModel.getType().getTypeName());
         if (type == null) throw new TypeNotFoundException();
-        Set<Author> authors = getAuthors(documentModel.getAuthors());
+        Set<Author> authors = findAuthors(documentModel.getAuthors());
         Publisher publisher;
         if (documentModel.getPublisher().getId() != null) {
             publisher = publisherService.findById(documentModel.getPublisher().getId());
