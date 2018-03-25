@@ -93,6 +93,14 @@ public class BookingController {
         return bookingService.findAll();
     }
 
+    @GetMapping("/booking/findavailable")
+    public Iterable<Booking> findAvailableBookings(HttpServletRequest request) {
+        ParserToken token = TokenAuthenticationService.getAuthentication(request);
+        if (token == null) throw new UnauthorizedException();
+        if (!token.role.equals("admin")) throw new AccessDeniedException();
+        return bookingService.findAll();
+    }
+
     @PostMapping("/booking/request")
     public void requestDocumentById(@RequestParam(value = "id", defaultValue = "-1") Integer documentId, HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
@@ -212,31 +220,6 @@ public class BookingController {
         }
     }
 
-    @PutMapping("/booking/update")
-    public void updateFine(HttpServletRequest request) {
-        ParserToken token = TokenAuthenticationService.getAuthentication(request);
-        if (token == null)
-            throw new UnauthorizedException();
-        Date current = new Date();
-        current.setTime(System.currentTimeMillis());
-
-        for (Booking booking : bookingService.findAll()) {
-            if (current.getTime() - booking.getReturnDate().getTime() < 0)
-                booking.setFine(0);
-
-            Document document = booking.getDocument();
-
-            int fine = Math.toIntExact((current.getTime() - booking.getReturnDate().getTime()) / 86400000) * 100;
-            if (fine > document.getPrice())
-                booking.setFine(document.getPrice());
-            else if (fine < 0)
-                booking.setFine(0);
-            else
-                booking.setFine(fine);
-            this.bookingService.save(booking);
-        }
-    }
-
     @Transactional
     @DeleteMapping("/booking/remove")
     public void removeBooking(@RequestBody Booking booking, HttpServletRequest request) {
@@ -326,6 +309,48 @@ public class BookingController {
         } else {
             booking.setReturnDate(new Date(booking.getReturnDate().getTime() + RENEW_TIME));
         }
+        bookingService.save(booking);
+    }
+
+    public List<Booking> findActiveBookings() {
+        return bookingService.findAll()
+                .stream()
+                .filter(booking -> ("available".equals(booking.getTypeBooking().getTypeName())
+                        || "taken".equals(booking.getTypeBooking().getTypeName())
+                        || "renew".equals(booking.getTypeBooking().getTypeName())
+                        || "return request".equals(booking.getTypeBooking().getTypeName())))
+                .collect(Collectors.toList());
+    }
+
+    public void applyMeasures(Booking booking) {
+        if ("available".equals(booking.getTypeBooking().getTypeName())) {
+            booking.setTypeBooking(typeBookingService.findByTypeName("close"));
+            bookingService.save(booking);
+            PriorityQueue<Booking> pq = getQueueForBookById(booking.getDocument().getId());
+            if (pq.size() > 0) {
+                Booking newBooking = pq.peek();
+                newBooking.setTypeBooking(typeBookingService.findByTypeName("available"));
+                Date returnData = new Date();
+                returnData.setTime(System.currentTimeMillis() + AVAILABLE_TIME);
+                newBooking.setReturnDate(returnData);
+                bookingService.save(newBooking);
+            }
+        } else {
+            getFine(booking);
+        }
+    }
+
+    private void getFine(Booking booking) {
+        Date current = new Date();
+        current.setTime(System.currentTimeMillis());
+
+        Document document = booking.getDocument();
+
+        int fine = Math.toIntExact((current.getTime() - booking.getReturnDate().getTime()) / 86400000) * 100;
+        if (fine > document.getPrice())
+            booking.setFine(document.getPrice());
+        else
+            booking.setFine(fine);
         bookingService.save(booking);
     }
 
