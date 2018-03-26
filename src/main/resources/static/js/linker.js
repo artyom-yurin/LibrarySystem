@@ -39,7 +39,7 @@ function sendToken(path) {
             headers: {
                 'Authorization': window.localStorage.getItem("Authorization")
             },
-
+            //async:false,
             success: function (html_data, status, xhr) {
                 document.open();
                 document.write(html_data);
@@ -57,5 +57,4 @@ function sendToken(path) {
             }
         }
     );
-
 }

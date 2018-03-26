@@ -1,13 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="en"><head>
     <title>Control books</title>
     <!--Required Meta tags-->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!--Bootstrap Style Sheets-->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <!--Custom Style Sheets-->
     <link rel="stylesheet" href="css/main.css">
 </head>
@@ -16,15 +14,13 @@
     <!-- Fixed navbar -->
     <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
         <a class="navbar-brand" href="#" id="linkLogo">LibMan</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
-                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link active" href="#" id="linkBooks">Books<span
-                            class="sr-only">(current)</span></a>
+                    <a class="nav-link active" href="#" id="linkBooks">Books<span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link disabled" href="#" id="linkUsers">Users</a>
@@ -48,62 +44,123 @@
 
 <main role="main" class="container mt-5 pt-5">
     <!--Users Database-->
-    <div class="my-3 p-3 bg-white rounded box-shadow">
-        <h4 class="border-bottom border-gray pb-2 mb-0">Books database</h4>
+    <div class="my-3 p-3 bg-white rounded box-shadow" id="database"><h4 class="border-bottom border-gray pb-2 mb-0">Books database</h4>
 
-        <div class="row mt-2 \">
-            <div class="col-4">
-                <div class="list-group" id="list-tab" role="tablist">
-                    <a class="list-group-item list-group-item-action active" id="list-home-list" data-toggle="list"
-                       href="#list-user1" role="tab" aria-controls="home">username1</a>
-                    <a class="list-group-item list-group-item-action" id="list-profile-list" data-toggle="list"
-                       href="#list-user2" role="tab" aria-controls="profile">username2</a>
-                </div>
-            </div>
+        <div class="row mt-2 \"><div class="col-4">
+            <div class="list-group" id="list-tab" role="tablist">
+                <a class="list-group-item list-group-item-action" id="list3" data-toggle="list" href="#3" role="tab" aria-controls="list3" aria-selected="false">PPP</a><a class="list-group-item list-group-item-action" id="list4" data-toggle="list" href="#4" role="tab" aria-controls="list4" aria-selected="false">OP</a><a class="list-group-item list-group-item-action active show" id="list5" data-toggle="list" href="#5" role="tab" aria-controls="list5" aria-selected="true">LOK</a> </div>
+        </div>
             <div class="col-8">
                 <div class="tab-content" id="nav-tabContent">
-
-                    <div class="tab-pane fade show active" id="list-user1" role="tabpanel"
-                         aria-labelledby="list-home-list">
+                    <div class="tab-pane fade" id="3" role="tabpanel" aria-labelledby="list3">
                         <dl class="dl-horizontal">
-                            <dt>Title</dt>
-                            <dd>Algorithm 1232113and Data Structures</dd>
-                            <dt>Author</dt>
-                            <dd>Cormen212314 and ....</dd>
-                        </dl>
-                        <small class="d-block text-right mt-3 border-bottom border-gray pb-2">
-                            <button class="btn btn-outline-danger my-2 my-sm-0 " onclick="deleteUser()" type="submit">
-                                Delete
-                            </button>
-                        </small>
+                            <dt>id</dt>
+                            <dd>3</dd>
+                            <dt>title</dt>
+                            <dd>PPP</dd>
+                            <dt>authors</dt>
+                            <dd>bertran meyer</dd>
+                            <dt>price</dt>
+                            <dd>100</dd>
+                            <dt>count</dt>
+                            <dd>2</dd>
+                            <dt>tags</dt>
+                            <dd></dd>
+                            <dt>publisher</dt>
+                            <dd>BF</dd>
+                            <dt>edition</dt>
+                            <dd>12</dd>
+                            <dt>publishingDate</dt>
+                            <dd>Sat Feb 20 2016 00:00:00 GMT+0300 (RTZ 2 (зима))</dd>
+                            <dt>editor</dt>
+                            <dd>QWE</dd>
+                            <dt>type</dt>
+                            <dd>book</dd>
+                            <dt>reference</dt>
+                            <dd>false</dd>
+                            <dt>bestseller</dt>
+                            <dd>false</dd>
+                        </dl><small class="d-block text-right mt-3 border-bottom border-gray pb-2">
+                        <button class="btn btn-outline-danger my-2 my-sm-0" onclick="deleteBook()" type="submit">Delete</button>
+                    </small>
                     </div>
-
-                    <div class="tab-pane fade" id="list-user2" role="tabpanel" aria-labelledby="list-profile-list">
+                    <div class="tab-pane fade" id="4" role="tabpanel" aria-labelledby="list4">
                         <dl class="dl-horizontal">
-                            <dt>Title</dt>
-                            <dd>Algorithm and Data Structures</dd>
-                            <dt>Author</dt>
-                            <dd>Cormen and ....</dd>
-                        </dl>
-                        <small class="d-block text-right mt-3 border-bottom border-gray pb-2">
-                            <button class="btn btn-outline-danger my-2 my-sm-0" type="submit">Delete</button>
-                        </small>
+                            <dt>id</dt>
+                            <dd>4</dd>
+                            <dt>title</dt>
+                            <dd>OP</dd>
+                            <dt>authors</dt>
+                            <dd>alexander pushkin</dd>
+                            <dt>price</dt>
+                            <dd>200</dd>
+                            <dt>count</dt>
+                            <dd>1</dd>
+                            <dt>tags</dt>
+                            <dd></dd>
+                            <dt>publisher</dt>
+                            <dd>BF</dd>
+                            <dt>edition</dt>
+                            <dd>1</dd>
+                            <dt>publishingDate</dt>
+                            <dd>Sat Nov 19 2011 23:00:00 GMT+0300 (RTZ 2 (зима))</dd>
+                            <dt>editor</dt>
+                            <dd>QAZ</dd>
+                            <dt>type</dt>
+                            <dd>book</dd>
+                            <dt>reference</dt>
+                            <dd>true</dd>
+                            <dt>bestseller</dt>
+                            <dd>false</dd>
+                        </dl><small class="d-block text-right mt-3 border-bottom border-gray pb-2">
+                        <button class="btn btn-outline-danger my-2 my-sm-0" onclick="deleteBook()" type="submit">Delete</button>
+                    </small>
                     </div>
-
+                    <div class="tab-pane fade active show" id="5" role="tabpanel" aria-labelledby="list5">
+                        <dl class="dl-horizontal">
+                            <dt>id</dt>
+                            <dd>5</dd>
+                            <dt>title</dt>
+                            <dd>LOK</dd>
+                            <dt>authors</dt>
+                            <dd></dd>
+                            <dt>price</dt>
+                            <dd>30</dd>
+                            <dt>count</dt>
+                            <dd>4</dd>
+                            <dt>tags</dt>
+                            <dd></dd>
+                            <dt>publisher</dt>
+                            <dd>BF</dd>
+                            <dt>edition</dt>
+                            <dd>5</dd>
+                            <dt>publishingDate</dt>
+                            <dd>Tue Dec 11 2012 23:00:00 GMT+0300 (RTZ 2 (зима))</dd>
+                            <dt>editor</dt>
+                            <dd>OPI</dd>
+                            <dt>type</dt>
+                            <dd>book</dd>
+                            <dt>reference</dt>
+                            <dd>true</dd>
+                            <dt>bestseller</dt>
+                            <dd>true</dd>
+                        </dl><small class="d-block text-right mt-3 border-bottom border-gray pb-2">
+                        <button class="btn btn-outline-danger my-2 my-sm-0" onclick="deleteBook()" type="submit">Delete</button>
+                    </small>
+                    </div>
                 </div>
             </div>
         </div>
-
         <small class="d-block text-right mt-3">
-            <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Update</button>
+            <button class="btn btn-outline-primary my-2 my-sm-0" type="button" onclick="updateBooks()">Update</button>
         </small>
     </div>
 
     <div class="row">
         <div class="col-md-8 order-md mb-4">
             <!--Deal with Books-->
-            <h4 class="mb-3">Add/Modify Document</h4>
-            <form class="needs-validation">
+            <h4 class="mb-3">Add Document</h4>
+            <form class="needs-validation" onsubmit="addBook()">
                 <div class="row">
 
                     <div class="col-md-6 mb-3">
@@ -116,8 +173,7 @@
 
                     <div class="col-md-6 mb-3">
                         <label for="edition">Edition</label>
-                        <input type="text" class="form-control" id="edition" placeholder="Rivera" value=""
-                               required="required">
+                        <input type="number" class="form-control" id="edition" placeholder="2" value="" required="required">
                         <div class="invalid-feedback">
                             Please enter last name.
                         </div>
@@ -126,9 +182,17 @@
 
                 <div class="mb-3">
                     <label for="editor">Editor</label>
-                    <input type="text" class="form-control" id="editor" placeholder="" required="required">
+                    <input type="text" class="form-control" id="editor" placeholder="Billy Willing" required="required">
                     <div class="invalid-feedback">
                         Please enter editor of the book.
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="editor">Authors</label>
+                    <input type="text" class="form-control" id="authors" placeholder="Cormen" required="required">
+                    <div class="invalid-feedback">
+                        Please enter authors and divide each with comma. Ex:  Billy Willing, Cormen, Bertrand Mayer.
                     </div>
                 </div>
 
@@ -146,8 +210,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">₽</span>
                         <div class="input-group">
-                            <input type="number" id="price" class="form-control" placeholder="1000"
-                                   required="required">
+                            <input type="number" id="price" class="form-control" placeholder="1000" required="required">
                         </div>
                         <div class="invalid-feedback">
                             Please enter price.
@@ -159,8 +222,7 @@
                 <div class="mb-3">
                     <label for="isReference">isReference</label>
                     <div class="input-group">
-                        <input type="checkbox" class="form-control" id="isReference"
-                        >
+                        <input type="checkbox" class="form-control" id="isReference">
                     </div>
                 </div>
 
@@ -194,15 +256,9 @@
 
 
 <!--Bootstrap Scripts -->
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-        crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-        crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-        crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
 
 <!--Debug-->
@@ -211,5 +267,6 @@
 <script src="js/linker.js"></script>
 <script src="js/books.js"></script>
 
-</body>
-</html>
+
+
+</body></html>

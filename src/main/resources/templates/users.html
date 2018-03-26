@@ -133,8 +133,8 @@
     <div class="row">
         <div class="col-md-8 order-md mb-4">
             <!--Deal with Users-->
-            <h4 class="mb-3">Create User</h4>
-            <form class="needs-validation">
+            <h4 class="mb-3">Add User</h4>
+            <form class="needs-validation" onsubmit="addUser()">
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="firstName">First name</label>
@@ -202,13 +202,13 @@
                             <option value="">Choose...</option>
                             <option>Patron</option>
                             <option>Faculty</option>
-                            <option>Librarian</option>
+                            <option>Admin</option>
                         </select>
                     </div>
                 </div>
 
                 <hr class="mb-4">
-                <button class="btn btn-primary btn-lg btn-block" type="submit" onsubmit="addOrModifyUser()">Submit
+                <button class="btn btn-primary btn-lg btn-block" type="submit">Submit
                 </button>
             </form>
         </div>

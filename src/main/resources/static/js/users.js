@@ -30,12 +30,6 @@ function updateUsers() {
             let notFirst = false;
             for (let user in users) {
                 //add <a> (link to particular user) for listOfUsers
-                listOfUsers += "<a class=\"list-group-item list-group-item-action\" id=\"list" + users[user]["id"] +
-                    "\" data-toggle=\"list\"\n" +
-                    "href=\"#" + users[user]["id"] +
-                    "\" role=\"tab\" aria-controls=\"list" + users[user]["id"] + "\">" +
-                    users[user]["username"] + "</a>";
-
 
                 let currentUser;
 
@@ -43,12 +37,26 @@ function updateUsers() {
                 if (notFirst) {
                     currentUser =
                         "<div class='tab-pane fade' id=\'" + users[user]["id"] +
-                        "\' role='tabpanel' aria-labelledby='list" + users[user]["id"] + "\'>\n"
+                        "\' role='tabpanel' aria-labelledby='list" + users[user]["id"] + "\'>\n";
+
+                    listOfUsers += "<a class=\"list-group-item list-group-item-action\" id=\"list" + users[user]["id"] +
+                        "\" data-toggle=\"list\"\n" +
+                        "href=\"#" + users[user]["id"] +
+                        "\" role=\"tab\" aria-controls=\"list" + users[user]["id"] + "\" aria-selected=\"false\">" +
+                        users[user]["username"] + "</a>";
+
                 }
                 else {
                     currentUser =
                         "<div class='tab-pane fade show active' id=\'" + users[user]["id"] +
                         "\' role='tabpanel' aria-labelledby='list" + users[user]["id"] + "\'>\n";
+
+                    listOfUsers += "<a class=\"list-group-item list-group-item-action active show\" id=\"list" + users[user]["id"] +
+                        "\" data-toggle=\"list\"\n" +
+                        "href=\"#" + users[user]["id"] +
+                        "\" role=\"tab\" aria-controls=\"list" + users[user]["id"] + "\" aria-selected=\"true\">" +
+                        users[user]["username"] + "</a>";
+
                     notFirst = true;
                 }
 
@@ -61,7 +69,7 @@ function updateUsers() {
                     currentUser += "<dd>";
 
                     if (userAttribute === "role") { // here we need "if" because role has 2 (key : value) pairs, not only one
-                        currentUser += users[user][userAttribute]["name"]
+                        currentUser += users[user]["role"]["name"]
                     }
                     else {
                         currentUser += users[user][userAttribute]
@@ -75,7 +83,7 @@ function updateUsers() {
                 currentUser +=
                     "</dl>" +
                     "<small class='d-block text-right mt-3 border-bottom border-gray pb-2'>\n" +
-                    "<button class='btn btn-outline-danger my-2 my-sm-0' onclick='deleteUser()' " +
+                    "<button class='btn btn-outline-danger my-2 my-sm-0' onclick='deleteUser(" + users[user]["id"] + ")' " +
                     "type='submit'>Delete" +
                     "</button>\n" +
                     "</small>\n" +
@@ -105,8 +113,6 @@ function updateUsers() {
             outer += updateButton;
 
 
-
-
             //Final load in html. It replace everything inside <div id = "database'> which is container for our database.
             $("#database").html(outer);
         },
@@ -120,7 +126,7 @@ function updateUsers() {
     });
 }
 
-// When we modify(update) we must put id when add we not obligated
+// When we modify(update) we must put id when add we do not obligated
 function addUser() {
     let firstName = $("#firstName").val();
     let lastName = $("#lastName").val();
@@ -136,6 +142,7 @@ function addUser() {
         "surname": lastName,
         "address": address,
         "phone": phone,
+        "username": username,
         "login": username,
         "password": password,
         "role": role
@@ -143,7 +150,7 @@ function addUser() {
 
     {
         $.ajax({
-            url: URL_LOCALHOST + "/user/add", /* Also we have /user/update  and   /user/remove */
+            url: URL_LOCALHOST + "/user/add",
             type: "POST", //onUpdate use put
             headers: {
                 'Authorization': window.localStorage.getItem("Authorization"),
@@ -151,32 +158,39 @@ function addUser() {
             },
             contentType: "application/json; charset=utf-8",
             data: jsonData,
-            success() {
-                alert("Successful sent " + typeRequest + " request.")
+            success: function (data, status, xhr) {
+                alert("User added");
             },
-            error() {
-                alert("Failed sent " + typeRequest + " request.")
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert("Fail User addition");
+                console.error(jqXHR);
+                console.error(textStatus);
+                console.error(errorThrown);
             }
         });
 
     }
 }
 
-    function deleteUser(id) {
-        let jsonData = {
-            "id": id
-        };
-
-        $.ajax({
-            url: linkToUsers + "/remove",
-            type: "DELETE",
-            headers: {
-                'Content-Type': "application/json"
-            },
-            data: jsonData,
-            dataType: "json"
-        });
-    }
+function deleteUser(id) {
+    alert(id);
+    $.ajax({
+        url: URL_LOCALHOST + "/user/remove?id=" + id,
+        type: "DELETE",
+        headers: {
+            'Authorization': window.localStorage.getItem("Authorization"),
+        },
+        success: function (users, status, xhr) {
+            updateUsers();
+            alert("ura");
+        },
+        error: function (users, status, xhr) {
+            alert("ne ura");
+            console.error(status);
+            console.error(xhr);
+        }
+    });
+}
 
 
 
