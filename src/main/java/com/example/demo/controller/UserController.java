@@ -54,7 +54,7 @@ public class UserController {
             if (user != null) {
                 throw new AlreadyUserExistException();
             }
-            Role role = roleService.findByName(userModel.getRole());
+            Role role = roleService.findByPosition(userModel.getPosition().toLowerCase());
             if (role == null) throw new RoleNotFoundException();
             user = new User(userModel.getName(), userModel.getSurname(), userModel.getAddress(), userModel.getPhoneNumber(), role, userModel.getUsername(), userModel.getPassword());
             userService.save(user);
@@ -69,13 +69,13 @@ public class UserController {
         if (token == null) throw new UnauthorizedException();
         if (token.role.equals("admin")) {
             if (userModel.getId() == null) {
-                throw new NullIdException();
+                throw new InvalidIdException();
             }
             User user = userService.findById(userModel.getId());
             if (user == null) {
                 throw new UserNotFoundException();
             }
-            Role role = roleService.findByName(userModel.getRole());
+            Role role = roleService.findByPosition(userModel.getPosition().toLowerCase());
             if (role == null) throw new RoleNotFoundException();
             user = new User(userModel.getName(), userModel.getSurname(), userModel.getAddress(), userModel.getPhoneNumber(), role, userModel.getUsername(), userModel.getPassword());
             user.setId(userModel.getId());
@@ -92,7 +92,7 @@ public class UserController {
         if (token == null) throw new UnauthorizedException();
         if (token.role.equals("admin")) {
             if (userModel.getId() == null) {
-                throw new NullIdException();
+                throw new InvalidIdException();
             }
             User user = userService.findById(userModel.getId());
             if (user == null) {

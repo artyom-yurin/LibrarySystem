@@ -1,8 +1,6 @@
 package com.example.demo.controllers;
 
-import com.example.demo.entity.Booking;
 import com.example.demo.entity.document.Author;
-import com.example.demo.entity.document.Document;
 import com.example.demo.entity.document.Publisher;
 import com.example.demo.entity.document.Tag;
 import com.example.demo.entity.user.User;
@@ -10,8 +8,6 @@ import com.example.demo.model.DocumentModel;
 import com.example.demo.model.UserModel;
 import com.example.demo.repository.*;
 import com.example.demo.service.TypeDocumentService;
-import net.minidev.json.JSONStyle;
-import net.minidev.json.reader.JsonWriter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
