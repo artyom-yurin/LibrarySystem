@@ -7,12 +7,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class UserService{
+public class UserService {
 
     private UserRepository userRepository;
 
-    public UserService(UserRepository userRepository)
-    {
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
@@ -20,7 +19,7 @@ public class UserService{
         userRepository.save(user);
     }
 
-    public void  remove(Integer id){
+    public void remove(Integer id) {
         userRepository.removeUserById(id);
     }
 
@@ -28,7 +27,9 @@ public class UserService{
         return userRepository.findByUsername(username);
     }
 
-    public User findById(Integer id){ return userRepository.findById(id);}
+    public User findById(Integer id) {
+        return userRepository.findById(id);
+    }
 
     public List<User> getAllUsers() {
         return userRepository.findAll();

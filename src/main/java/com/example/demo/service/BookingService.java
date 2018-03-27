@@ -14,14 +14,19 @@ public class BookingService {
         this.bookingRepository = bookingRepository;
     }
 
-    public List<Booking> findAll()
-    {
+    public List<Booking> findAll() {
         return bookingRepository.findAll();
     }
 
-    public void removeBookingById(Integer id){ bookingRepository.removeBookingById(id);}
+    public void removeBookingById(Integer id) {
+        bookingRepository.removeBookingById(id);
+    }
 
-    public void save(Booking booking){ this.bookingRepository.save(booking);}
+    public void save(Booking booking) {
+        this.bookingRepository.save(booking);
+    }
 
-    public Booking getBookingById(Integer id){ return bookingRepository.getBookingById(id);}
+    public Booking getBookingById(Integer id) {
+        return bookingRepository.getBookingById(id);
+    }
 }

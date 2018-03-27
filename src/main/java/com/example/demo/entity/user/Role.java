@@ -17,7 +17,8 @@ public class Role {
     private String position;
 
 
-    public Role() {}
+    public Role() {
+    }
 
     public Role(String name, String position) {
         this.name = name;

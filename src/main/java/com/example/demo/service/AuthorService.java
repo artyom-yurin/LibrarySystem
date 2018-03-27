@@ -12,15 +12,15 @@ public class AuthorService {
         this.authorRepository = authorRepository;
     }
 
-    public Author findById(Integer id){
+    public Author findById(Integer id) {
         return this.authorRepository.findById(id);
     }
 
-    public Author findByFirstName(String firstName){
+    public Author findByFirstName(String firstName) {
         return this.authorRepository.findByFirstName(firstName);
     }
 
-    public Author findByLastName(String lastName){
+    public Author findByLastName(String lastName) {
         return this.authorRepository.findByLastName(lastName);
     }
 }

@@ -37,7 +37,7 @@ public class UserContr {
 
     public void updateUserTest(UserModel userModel) {
         if (userModel.getId() == null) {
-            throw new NullIdException();
+            throw new InvalidIdException();
         }
         User user = userService.findById(userModel.getId());
         if (user == null) {
@@ -52,7 +52,7 @@ public class UserContr {
 
     public void removeUserTest(UserModel userModel) {
         if (userModel.getId() == null) {
-            throw new NullIdException();
+            throw new InvalidIdException();
         }
         User user = userService.findById(userModel.getId());
         if (user == null) {
@@ -75,9 +75,9 @@ public class UserContr {
         return userService.getAllUsers();
     }
 
-    public int getAmountTest(){
+    public int getAmountTest() {
         int count = 0;
-        for(User user : getUsersTest()){
+        for (User user : getUsersTest()) {
             count++;
         }
         return count;

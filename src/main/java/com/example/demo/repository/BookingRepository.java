@@ -7,5 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Integer> {
     Booking getBookingById(Integer id);
+
     void removeBookingById(Integer id);
 }

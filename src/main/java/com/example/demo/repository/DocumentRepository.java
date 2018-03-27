@@ -7,6 +7,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface DocumentRepository extends JpaRepository<Document, Integer> {
     Document findById(Integer id);
+
     Document findByTitle(String title);
+
     void removeDocumentById(Integer id);
 }

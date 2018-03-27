@@ -24,7 +24,8 @@ public class DocumentModel {
     private String editor;
     private TypeDocument type;
 
-    public DocumentModel(){}
+    public DocumentModel() {
+    }
 
     public DocumentModel(Integer id, String title, Set<Author> authors, Integer price, Integer count, Set<Tag> tags, Publisher publisher, Integer edition, boolean isBestseller, boolean isReference, Date publishingDate, String editor, TypeDocument type) {
         this.id = id;

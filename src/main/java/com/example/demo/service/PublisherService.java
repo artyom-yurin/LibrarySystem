@@ -12,11 +12,11 @@ public class PublisherService {
         this.publisherRepository = publisherRepository;
     }
 
-    public Publisher findById(Integer id){
+    public Publisher findById(Integer id) {
         return publisherRepository.findById(id);
     }
 
-    public Publisher findByPublisherName(String publisherName){
+    public Publisher findByPublisherName(String publisherName) {
         return publisherRepository.findByPublisherName(publisherName);
     }
 }

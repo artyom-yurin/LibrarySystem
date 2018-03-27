@@ -38,28 +38,26 @@ public class DocumentContr {
         this.publisherService = publisherService;
     }
 
-    public void addDocumentTest(DocumentModel documentModel){
+    public void addDocumentTest(DocumentModel documentModel) {
         TypeDocument type = typeDocumentService.findByTypeName(documentModel.getType().getTypeName());
-        if(type == null) throw new TypeNotFoundException();
+        if (type == null) throw new TypeNotFoundException();
         Set<Author> authors = new HashSet<>();
-        if(documentModel.getAuthors() != null) {
+        if (documentModel.getAuthors() != null) {
             for (Author author : documentModel.getAuthors()) {
-                if(author.getId() != null){
+                if (author.getId() != null) {
                     authors.add(authorService.findById(author.getId()));
-                }
-                else if(author.getFirstName() != null){
+                } else if (author.getFirstName() != null) {
                     authors.add(authorService.findByFirstName(author.getFirstName()));
+                } else {
+                    authors.add(authorService.findByLastName(author.getLastName()));
                 }
-                else{ authors.add(authorService.findByLastName(author.getLastName())); }
             }
         }
         Publisher publisher = null;
-        if(documentModel.getPublisher() != null)
-        {
-            if(documentModel.getPublisher().getId() != null) {
+        if (documentModel.getPublisher() != null) {
+            if (documentModel.getPublisher().getId() != null) {
                 publisher = publisherService.findById(documentModel.getPublisher().getId());
-            }
-            else{
+            } else {
                 publisher = publisherService.findByPublisherName(documentModel.getPublisher().getPublisherName());
             }
         }
@@ -68,27 +66,25 @@ public class DocumentContr {
         this.documentService.save(document);
     }
 
-    public void updateDocumentTest(DocumentModel documentModel)
-    {
+    public void updateDocumentTest(DocumentModel documentModel) {
         TypeDocument type = typeDocumentService.findByTypeName(documentModel.getType().getTypeName());
         if (type == null) throw new TypeNotFoundException();
         Set<Author> authors = new HashSet<>();
-        if(documentModel.getAuthors() != null) {
+        if (documentModel.getAuthors() != null) {
             for (Author author : documentModel.getAuthors()) {
-                if(author.getId() != null){
+                if (author.getId() != null) {
                     authors.add(authorService.findById(author.getId()));
-                }
-                else if(author.getFirstName() != null){
+                } else if (author.getFirstName() != null) {
                     authors.add(authorService.findByFirstName(author.getFirstName()));
+                } else {
+                    authors.add(authorService.findByLastName(author.getLastName()));
                 }
-                else{ authors.add(authorService.findByLastName(author.getLastName())); }
             }
         }
         Publisher publisher;
-        if(documentModel.getPublisher().getId() != null) {
+        if (documentModel.getPublisher().getId() != null) {
             publisher = publisherService.findById(documentModel.getPublisher().getId());
-        }
-        else{
+        } else {
             publisher = publisherService.findByPublisherName(documentModel.getPublisher().getPublisherName());
         }
         Document document = new Document(documentModel.getTitle(), authors, documentModel.getPrice(), documentModel.getCount(), documentModel.getTags(), publisher, documentModel.getEdition(), documentModel.isBestseller(), documentModel.isReference(), documentModel.getPublishingDate(), documentModel.getEditor(), documentModel.getType());
@@ -96,30 +92,27 @@ public class DocumentContr {
         this.documentService.save(document);
     }
 
-    public void removeDocumentTest(Document document)
-    {
+    public void removeDocumentTest(Document document) {
         this.documentService.remove(document.getId());
     }
 
-    public void removeDocumentIdTest(Integer id)
-    {
+    public void removeDocumentIdTest(Integer id) {
         this.documentService.remove(documentService.findById(id).getId());
     }
 
-    public Document getDocumentTest(Integer id)
-    {
+    public Document getDocumentTest(Integer id) {
         Document findDocument = documentService.findById(id);
         if (findDocument == null) throw new DocumentNotFoundException();
         return findDocument;
     }
 
-    public Iterable<Document> getDocumentsTest(){
+    public Iterable<Document> getDocumentsTest() {
         return this.documentService.getAllDocuments();
     }
 
-    public int getAmountTest(){
+    public int getAmountTest() {
         int count = 0;
-        for(Document document : getDocumentsTest()){
+        for (Document document : getDocumentsTest()) {
             count += document.getCount();
         }
         return count;

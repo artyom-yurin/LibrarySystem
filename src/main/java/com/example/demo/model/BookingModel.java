@@ -4,7 +4,8 @@ public class BookingModel {
     private String user_name;
     private Integer book_id;
 
-    public BookingModel(){}
+    public BookingModel() {
+    }
 
     public BookingModel(String user_name, Integer book_id) {
         this.user_name = user_name;

@@ -8,11 +8,11 @@ import org.springframework.stereotype.Service;
 public class TypeBookingService {
     private TypeBookingRepository typeBookingRepository;
 
-    public TypeBookingService (TypeBookingRepository typeBookingRepository) {
+    public TypeBookingService(TypeBookingRepository typeBookingRepository) {
         this.typeBookingRepository = typeBookingRepository;
     }
 
-    public TypeBooking findByTypeName(String name){
+    public TypeBooking findByTypeName(String name) {
         return this.typeBookingRepository.findByTypeName(name);
     }
 }
