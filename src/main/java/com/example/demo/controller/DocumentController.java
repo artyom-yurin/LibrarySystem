@@ -96,16 +96,6 @@ public class DocumentController {
 
     @Transactional
     @DeleteMapping("/document/remove")
-    public void removeDocument(@RequestBody Document document, HttpServletRequest request) {
-        ParserToken token = TokenAuthenticationService.getAuthentication(request);
-        if (token == null) throw new UnauthorizedException();
-        if (!token.role.equals("admin")) throw new AccessDeniedException();
-
-        this.documentService.remove(document.getId());
-    }
-
-    @Transactional
-    @DeleteMapping("/document/removeid")
     public void removeDocumentId(@RequestParam(value = "id", defaultValue = "-1") Integer id, HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null) throw new UnauthorizedException();
@@ -114,7 +104,12 @@ public class DocumentController {
         if (id == -1)
             throw new InvalidIdException();
 
-        this.documentService.remove(documentService.findById(id).getId());
+        Document document = documentService.findById(id);
+
+        if (document == null)
+            throw new UserNotFoundException();
+
+        this.documentService.remove(id);
     }
 
     @GetMapping("/document/find")

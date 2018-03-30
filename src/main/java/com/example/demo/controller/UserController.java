@@ -87,21 +87,19 @@ public class UserController {
 
     @Transactional
     @DeleteMapping("/user/remove")
-    public void removeUser(@RequestBody UserModel userModel, HttpServletRequest request) {
+    public void removeUser(@RequestParam(value = "id", defaultValue = "-1") Integer id, HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null) throw new UnauthorizedException();
-        if (token.role.equals("admin")) {
-            if (userModel.getId() == null) {
-                throw new InvalidIdException();
-            }
-            User user = userService.findById(userModel.getId());
-            if (user == null) {
-                throw new UserNotFoundException();
-            }
-            userService.remove(user.getId());
-            return;
+        if (!token.role.equals("admin"))
+            throw new AccessDeniedException();
+        if (id == -1) {
+            throw new InvalidIdException();
         }
-        throw new AccessDeniedException();
+        User user = userService.findById(id);
+        if (user == null) {
+            throw new UserNotFoundException();
+        }
+        userService.remove(id);
     }
 
     @GetMapping("/user/users")
