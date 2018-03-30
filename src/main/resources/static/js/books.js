@@ -108,7 +108,7 @@ function updateBooks() {
                     currentBook += "</dd>\n";
                 }
 
-                alert(books_json[book]["id"]);
+
                 //close div for book
                 currentBook +=
                     "</dl>" +
@@ -167,11 +167,31 @@ function addBook() {
     let isBestseller = $("#isBestseller").val();
     let isReference = $("#isReference").val();
     let type = $("#type").val();
-    let authors = $("#authors").val().split(",");
+    let authors = $("#authors").val().split(',');
 
-    for(let author in authors){
-        console.log(author);
+    let numberOfAuthors = authors.length;
+
+    let jsonAuthors = '[';
+    for (let author in authors) {
+        alert(author + " this is author");
+
+        numberOfAuthors--;
+        jsonAuthors += '{';
+        let tmp = author.split(':');
+        jsonAuthors += 'name:';
+        jsonAuthors += tmp[0].trim();
+        jsonAuthors += ',';
+        jsonAuthors += 'surname:';
+        jsonAuthors += tmp[1].trim();
+        jsonAuthors += '}';
+        if (numberOfAuthors > 0)
+            jsonAuthors += ',';
     }
+    jsonAuthors += ']';
+
+    console.log("AUTHORS BELOW");
+    console.log(jsonAuthors);
+    console.log("AUTHORS ABOVE");
 
     let jsonData = JSON.stringify({
         'title': title,
@@ -181,10 +201,11 @@ function addBook() {
         'price': price,
         'isBestSeller': isBestseller,
         'isReference': isReference,
-        'type': type
-
+        'type': type,
+        'authors': jsonAuthors
     });
-
+    console.log(jsonData);
+    console.log("AUTHORS ABOVE");
     {
         $.ajax({
             url: URL_LOCALHOST + "/document/add",
