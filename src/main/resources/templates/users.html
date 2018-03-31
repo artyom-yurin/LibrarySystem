@@ -32,7 +32,7 @@
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link disabled" href="#" id="linkBooks">Books</a>
+                    <a class="nav-link disabled" href="#" id="linkBooks">Documents</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link active" href="#" id="linkUsers">Users<span
@@ -45,7 +45,7 @@
                     <a class="nav-link" href="#" id="linkLogin">Log out</a>
                 </li>
             </ul>
-            <div class="d-flex align-items-center p-0 my-1 text-white-50 bg-purple rounded box-shadow ">
+            <div class="d-flex align-items-center p-0 my-1 text-white-50 bg-purple rounded box-shadow">
                 <form class="form-inline mt-1 mt-md-0">
                     <input class="form-control mr-sm-1" type="text" placeholder="Search" aria-label="Search">
                     <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
@@ -54,6 +54,105 @@
         </div>
     </nav>
 </header>
+
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Modal Header</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form class="needs-validation" onsubmit="modifyCurrentUser()">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="firstNameModify">First name</label>
+                            <input type="text" class="form-control" id="firstNameModify" placeholder="Victor" value=""
+                                   required="required">
+                            <div class="invalid-feedback">
+                                Please enter first name.
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="lastNameModify">Last name</label>
+                            <input type="text" class="form-control" id="lastNameModify" placeholder="Rivera" value=""
+                                   required="required">
+                            <div class="invalid-feedback">
+                                Please enter last name.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="usernameModify">Username</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="usernameModify" placeholder="Username"
+                                   required="required">
+                        </div>
+                        <div class="invalid-feedback">
+                            Please enter username.
+                        </div>
+                    </div>
+
+
+                    <div class="mb-3">
+                        <label for="passwordModify">Password</label>
+                        <div class="input-group">
+                            <input type="text" id="passwordModify" class="form-control" placeholder="Password"
+                                   required="required" autocomplete="current-password">
+                        </div>
+                        <div class="invalid-feedback">
+                            Please enter password.
+                        </div>
+                    </div>
+
+
+                    <div class="mb-3">
+                        <label for="addressModify">Address</label>
+                        <input type="text" class="form-control" id="addressModify" placeholder="" required="required">
+                        <div class="invalid-feedback">
+                            Please enter your shipping address.
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="phoneModify">Phone</label>
+                        <input type="text" class="form-control" id="phoneModify" placeholder="" required="required">
+                        <div class="invalid-feedback">
+                            Please enter your shipping phone.
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-5 mb-3">
+                            <label for="roleModify">Type</label>
+                            <select class="custom-select d-block w-100" id="roleModify" required="required">
+                                <option value="">Choose...</option>
+                                <option value='student'>Patron</option>
+                                <option value='instructor'>Instructor</option>
+                                <option value='ta'>TA</option>
+                                <option value='professor'>Professor</option>
+                                <option value='admin'>Admin</option>
+                                <option value='vs'>Visiting Professor</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <hr class="mb-4">
+                    <button class="btn btn-primary btn-lg btn-block" type="submit">Modify</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
 
 <main role="main" class="container mt-5 pt-5">
     <!--Users Database-->
@@ -70,58 +169,7 @@
                 </div>
             </div>
             <div class="col-8"> <!--Here begin listOfUsers-->
-                <div class="tab-content" id="nav-tabContent">
-                    <div class="tab-pane fade show active" id="list-user1" role="tabpanel"
-                         aria-labelledby="list-home-list">
-                        <dl class="dl-horizontal">
-                            <dt>ID</dt>
-                            <dd>5426723</dd>
-                            <dt>Username</dt>
-                            <dd>cat123321</dd>
-                            <dt>Password</dt>
-                            <dd>qwerty123</dd>
-                            <dt>First name</dt>
-                            <dd>Victor</dd>
-                            <dt>Last name</dt>
-                            <dd>Kholodov</dd>
-                            <dt>Address</dt>
-                            <dd>Universiteskaya 7, building 1</dd>
-                            <dt>Phone</dt>
-                            <dd>+7(908)756-222-333</dd>
-                            <dt>Role</dt>
-                            <dd>Librarian</dd>
-                        </dl>
-                        <small class="d-block text-right mt-3 border-bottom border-gray pb-2">
-                            <button class="btn btn-outline-danger my-2 my-sm-0 " onclick="deleteUser()" type="submit">
-                                Delete
-                            </button>
-                        </small>
-                    </div>
-
-                    <div class="tab-pane fade" id="list-user2" role="tabpanel" aria-labelledby="list-profile-list">
-                        <dl class="dl-horizontal">
-                            <dt>ID</dt>
-                            <dd>545555656565526723</dd>
-                            <dt>Username</dt>
-                            <dd>cangrtwt123321</dd>
-                            <dt>Password</dt>
-                            <dd>qwsaaxccxcxcerty123</dd>
-                            <dt>First name</dt>
-                            <dd>VictorAAWDADWDAd</dd>
-                            <dt>Last name</dt>
-                            <dd>Kholofffsdov</dd>
-                            <dt>Address</dt>
-                            <dd>Universiteskaya 7, building 1</dd>
-                            <dt>Phone</dt>
-                            <dd>+7(908)756-222-333</dd>
-                            <dt>Role</dt>
-                            <dd>Patron</dd>
-                        </dl>
-                        <small class="d-block text-right mt-3 border-bottom border-gray pb-2">
-                            <button class="btn btn-outline-danger my-2 my-sm-0" type="submit">Delete</button>
-                        </small>
-                    </div>
-                </div>
+                <!--Don't put anything here because it will automatically fitted with users-->
             </div>
         </div>
 
@@ -200,16 +248,18 @@
                         <label for="role">Type</label>
                         <select class="custom-select d-block w-100" id="role" required="required">
                             <option value="">Choose...</option>
-                            <option>Patron</option>
-                            <option>Faculty</option>
-                            <option>Admin</option>
+                            <option value='student'>Patron</option>
+                            <option value='instructor'>Instructor</option>
+                            <option value='ta'>TA</option>
+                            <option value='professor'>Professor</option>
+                            <option value='admin'>Admin</option>
+                            <option value='vs'>Visiting Professor</option>
                         </select>
                     </div>
                 </div>
 
                 <hr class="mb-4">
-                <button class="btn btn-primary btn-lg btn-block" type="submit">Submit
-                </button>
+                <button class="btn btn-primary btn-lg btn-block" type="submit">Add User</button>
             </form>
         </div>
     </div>

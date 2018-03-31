@@ -1,4 +1,21 @@
 $(updateBooks());
+init();
+
+var currentBookId = -1;
+var bookAttributesWeHave = [];
+
+function pushNewBookAttribute(attr) {
+    for (let i in bookAttributesWeHave) {
+        if (attr === bookAttributesWeHave[i])
+            return false;
+    }
+    bookAttributesWeHave.push(attr);
+}
+
+function setCurrentBook(id) {
+    currentBookId = id;
+    fillInputsInBookModify();
+}
 
 function updateBooks() {
     $.ajax({
@@ -29,7 +46,6 @@ function updateBooks() {
             let notFirst = false;
             for (let book in books_json) {
                 //add <a> (link to particular book) for listOfBooks
-
 
                 let currentBook;
 
@@ -67,8 +83,10 @@ function updateBooks() {
 
                 //add all attributes
                 for (let bookAttributes in books_json[book]) {
+                    pushNewBookAttribute(bookAttributes)
+
                     currentBook += "<dt>" + bookAttributes + "</dt>\n";
-                    currentBook += "<dd>";
+                    currentBook += "<dd id ='" + bookAttributes + books_json[book]["id"] + "d'>";
 
                     if (bookAttributes === "publisher") {
                         currentBook += books_json[book]["publisher"]["publisherName"]
@@ -83,8 +101,7 @@ function updateBooks() {
                         for (let particular_author in books_json[book]["authors"]) {
                             listOfAuthors += books_json[book]["authors"][particular_author]["firstName"] + " " + books_json[book]["authors"][particular_author]["lastName"] + ',';
                         }
-                        currentBook = currentBook.substring(0, currentBook.length - 1);
-                        currentBook += "<dt>";
+                        listOfAuthors = listOfAuthors.trim().substring(0, listOfAuthors.length - 1);
                         currentBook += listOfAuthors;
                     }
 
@@ -113,11 +130,17 @@ function updateBooks() {
                 currentBook +=
                     "</dl>" +
                     "<small class='d-block text-right mt-3 border-bottom border-gray pb-2'>\n" +
+
+                    "<button class='btn btn-outline-primary my-2 my-sm-0' data-toggle='modal' data-target='#myModal' onclick='setCurrentBook(" +
+                    books_json[book]["id"] +
+                    ")'>Modify" +
+                    "</button>\n" +
+
                     "<button class='btn btn-outline-danger my-2 my-sm-0' onclick='deleteBook(" +
                     books_json[book]["id"] +
-                    ")' " +
-                    "type='submit'>Delete" +
+                    ")' type='submit'>Delete" +
                     "</button>\n" +
+
                     "</small>\n" +
                     "</div>\n";
 
@@ -144,7 +167,6 @@ function updateBooks() {
             outer += "</div>\n";
             outer += updateButton;
 
-
             //Final load in html. It replace everything inside <div id = "database'> which is container for our database.
             $("#database").html(outer);
         },
@@ -158,40 +180,36 @@ function updateBooks() {
     });
 }
 
+
+function modifyCurrentBook() {
+    //TODO
+    //Analogy with users. NOTE: you should read from "#...Modify" (id should contains "Modify" suffix)
+}
+
 function addBook() {
     let title = $("#title").val();
     let edition = $("#edition").val();
     let editor = $("#editor").val();
     let publisher = $("#publisher").val();
+    let publishingDate = $("#publishingDate").val();
     let price = $("#price").val();
+    let count = $("#count").val();
     let isBestseller = $("#isBestseller").val();
     let isReference = $("#isReference").val();
     let type = $("#type").val();
-    let authors = $("#authors").val().split(',');
+    let authors = $("#authors").val().trim().split(',');
+    let tags = $("#tags").val().trim().split(',');
 
-    let numberOfAuthors = authors.length;
+    let jsonAuthors = [];
 
-    let jsonAuthors = '[';
-    for (let author in authors) {
-        alert(author + " this is author");
-
-        numberOfAuthors--;
-        jsonAuthors += '{';
-        let tmp = author.split(':');
-        jsonAuthors += 'name:';
-        jsonAuthors += tmp[0].trim();
-        jsonAuthors += ',';
-        jsonAuthors += 'surname:';
-        jsonAuthors += tmp[1].trim();
-        jsonAuthors += '}';
-        if (numberOfAuthors > 0)
-            jsonAuthors += ',';
+    for (let index in authors) {
+        let tmp = authors[index].split(' ');
+        jsonAuthors.push({
+            "name": (tmp[0].trim()),
+            "surname": (tmp[1].trim())
+        });
     }
-    jsonAuthors += ']';
 
-    console.log("AUTHORS BELOW");
-    console.log(jsonAuthors);
-    console.log("AUTHORS ABOVE");
 
     let jsonData = JSON.stringify({
         'title': title,
@@ -199,36 +217,38 @@ function addBook() {
         'editor': editor,
         'publisher': publisher,
         'price': price,
-        'isBestSeller': isBestseller,
-        'isReference': isReference,
+        'count': count,
+        'bestseller': isBestseller,
+        'reference': isReference,
+        "publishingDate": publishingDate,
         'type': type,
-        'authors': jsonAuthors
+        'authors': jsonAuthors,
+        'tags': tags
     });
-    console.log(jsonData);
-    console.log("AUTHORS ABOVE");
-    {
-        $.ajax({
-            url: URL_LOCALHOST + "/document/add",
-            type: "POST", //onUpdate use put
-            headers: {
-                'Authorization': window.localStorage.getItem("Authorization"),
-                'Content-Type': "application/json"
-            },
-            contentType: "application/json; charset=utf-8",
-            data: jsonData,
-            success: function (data, status, xhr) {
-                alert("ura");
-                updateBooks();
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                alert("ne ura");
-                console.error(jqXHR);
-                console.error(textStatus);
-                console.error(errorThrown);
-            }
-        });
 
-    }
+
+    $.ajax({
+        url: URL_LOCALHOST + "/document/add",
+        type: "POST",
+        headers: {
+            'Authorization': window.localStorage.getItem("Authorization"),
+            'Content-Type': "application/json"
+        },
+        contentType: "application/json; charset=utf-8",
+        data: jsonData,
+        success: function (data, status, xhr) {
+            alert("ura");
+            updateBooks();
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            alert("ne ura");
+            console.error(jqXHR);
+            console.error(textStatus);
+            console.error(errorThrown);
+        }
+    });
+
+
 }
 
 function deleteBook(id) {
@@ -241,7 +261,6 @@ function deleteBook(id) {
         },
         success: function (users, status, xhr) {
             updateBooks();
-            alert("Book deleted");
         },
         error: function (users, status, xhr) {
             alert("ne ura");
@@ -249,4 +268,47 @@ function deleteBook(id) {
             console.error(xhr);
         }
     });
+}
+
+function fillInputsInBookModify() {
+    console.log("attributes begin");
+    for (let index in bookAttributesWeHave) {
+        if (bookAttributesWeHave[index] === "id")
+            continue;
+
+        console.log(bookAttributesWeHave[index]);
+
+        let toReplace = "#" + map.get(bookAttributesWeHave[index]) + "Modify";
+        let replaceWith = $("#" + bookAttributesWeHave[index] + currentBookId + 'd')[0].innerHTML;
+        //alert("toReplace = " + toReplace + "\nreplaceWith = " + replaceWith);
+        $(toReplace).val(replaceWith);
+    }
+    console.log("attributes end");
+}
+
+var map;
+
+function init() {
+    map = new Map();
+    // let title = $("#title").val();
+    // let edition = $("#edition").val();
+    // let editor = $("#editor").val();
+    // let publisher = $("#publisher").val();
+    // let price = $("#price").val();
+    // let isBestseller = $("#isBestseller").val();
+    // let isReference = $("#isReference").val();
+    // let type = $("#type").val();
+    // let authors = $("#authors").val().trim().split(',');
+    // let tags = $("#tags").val().trim().split(',');
+
+    map.set("title", "title");
+    map.set("edition", "edition");
+    map.set("editor", "editor");
+    map.set("publisher", "publisher");
+    map.set("price", "price");
+    map.set("bestseller", "isBestseller");
+    map.set("reference", "isReference");
+    map.set("type", "type");
+    map.set("authors", "authors");
+    map.set("tags", "tags");
 }

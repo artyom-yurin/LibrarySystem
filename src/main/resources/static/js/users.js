@@ -1,5 +1,22 @@
-$(updateUsers());  // it will be called when document will be loaded
-                   // P.S. document - it is html.
+$(updateUsers());
+init();
+
+var currentUserId = -1;
+
+var userAttributesWeHave = [];
+
+function pushNewUserAttribute(attr) {
+    for (let i in userAttributesWeHave) {
+        if (attr === userAttributesWeHave[i])
+            return false;
+    }
+    userAttributesWeHave.push(attr);
+}
+
+function setCurrentUser(id) {
+    currentUserId = id;
+    fillInputsInUserModify();
+}
 
 function updateUsers() {
     $.ajax({
@@ -65,8 +82,10 @@ function updateUsers() {
 
                 //add all attributes
                 for (let userAttribute in users[user]) {
-                    currentUser += "<dt>" + userAttribute + "</dt>\n";
-                    currentUser += "<dd>";
+                    pushNewUserAttribute(userAttribute);
+
+                    currentUser += "<dt id='" + userAttribute + users[user]["id"] + "'>" + userAttribute + "</dt>\n";
+                    currentUser += "<dd id= '" + userAttribute + users[user]["id"] + "d'>";
 
                     if (userAttribute === "role") { // here we need "if" because role has 2 (key : value) pairs, not only one
                         currentUser += users[user]["role"]["name"]
@@ -83,9 +102,16 @@ function updateUsers() {
                 currentUser +=
                     "</dl>" +
                     "<small class='d-block text-right mt-3 border-bottom border-gray pb-2'>\n" +
-                    "<button class='btn btn-outline-danger my-2 my-sm-0' onclick='deleteUser(" + users[user]["id"] + ")' " +
-                    "type='submit'>Delete" +
+
+                    "<button class='btn btn-outline-primary my-2 my-sm-0' data-toggle=\"modal\" data-target=\"#myModal\" " +
+                    "onclick='setCurrentUser(" + users[user]["id"] + ")' >Modify" +
                     "</button>\n" +
+
+                    "<button class='btn btn-outline-danger my-2 my-sm-0' onclick='deleteUser(" +
+                    users[user]["id"] +
+                    ")' type='submit'>Delete" +
+                    "</button>\n" +
+
                     "</small>\n" +
                     "</div>\n";
 
@@ -145,31 +171,30 @@ function addUser() {
         "username": username,
         "login": username,
         "password": password,
-        "role": role
+        "position": role
     });
 
-    {
-        $.ajax({
-            url: URL_LOCALHOST + "/user/add",
-            type: "POST", //onUpdate use put
-            headers: {
-                'Authorization': window.localStorage.getItem("Authorization"),
-                'Content-Type': "application/json"
-            },
-            contentType: "application/json; charset=utf-8",
-            data: jsonData,
-            success: function (data, status, xhr) {
-                alert("User added");
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                alert("Fail User addition");
-                console.error(jqXHR);
-                console.error(textStatus);
-                console.error(errorThrown);
-            }
-        });
 
-    }
+    $.ajax({
+        url: URL_LOCALHOST + "/user/add",
+        type: "POST", //onUpdate use put
+        headers: {
+            'Authorization': window.localStorage.getItem("Authorization"),
+            'Content-Type': "application/json"
+        },
+        data: jsonData,
+        success: function (data, status, xhr) {
+            updateUsers();
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            alert("Fail User addition");
+            console.error(jqXHR);
+            console.error(textStatus);
+            console.error(errorThrown);
+        }
+    });
+
+
 }
 
 function deleteUser(id) {
@@ -182,16 +207,83 @@ function deleteUser(id) {
         },
         success: function (users, status, xhr) {
             updateUsers();
-            alert("ura");
         },
         error: function (users, status, xhr) {
-            alert("ne ura");
+            alert("Failed user delete");
             console.error(status);
             console.error(xhr);
         }
     });
 }
 
+function modifyCurrentUser() {
+    let firstName = $("#firstNameModify").val();
+    let lastName = $("#lastNameModify").val();
+    let username = $("#usernameModify").val();
+    let password = $("#passwordModify").val();
+    let phone = $("#phoneModify").val();
+    let address = $("#addressModify").val();
+    let role = $("#roleModify").val();
 
 
+    let jsonData = JSON.stringify({
+        "name": firstName,
+        "surname": lastName,
+        "address": address,
+        "phone": phone,
+        "username": username,
+        "login": username,
+        "password": password,
+        "position": role,
+        "id": currentUserId
+    });
 
+    console.info(jsonData);
+    $.ajax({
+        url: URL_LOCALHOST + "/user/update",
+        type: "PUT",
+        headers: {
+            'Authorization': window.localStorage.getItem("Authorization"),
+            'Content-Type': "application/json"
+        },
+        contentType: "application/json",
+        data: jsonData,
+        success: function (data, status, xhr) {
+            updateUsers();
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            alert("Fail User modifying");
+            console.error(jqXHR);
+            console.error(textStatus);
+            console.error(errorThrown);
+        }
+    });
+}
+
+function fillInputsInUserModify() {
+    for (let index in userAttributesWeHave) {
+        if (userAttributesWeHave[index] === "id")
+            continue;
+
+        console.log(userAttributesWeHave[index]);
+
+        let toReplace = "#" + map.get(userAttributesWeHave[index]) + "Modify";
+        let replaceWith = $("#" + userAttributesWeHave[index] + currentUserId + 'd')[0].innerHTML;
+
+        $(toReplace).val(replaceWith);
+    }
+}
+
+var map;
+
+function init() {
+    map = new Map();
+
+    map.set('name', 'firstName');
+    map.set('surname', 'lastName');
+    map.set('phoneNumber', 'phone');
+    map.set('address', 'address');
+    map.set('role', 'role');
+    map.set('username', 'username');
+    map.set('password', 'password');
+}
