@@ -34,7 +34,7 @@ function updateRequests() {
                 let currentRequest;
 
                 //open div for request
-                if (!requests_json[request]["close"] && requests_json[request]["hasBackRequest"]){
+               // if (!requests_json[request]["close"] && requests_json[request]["hasBackRequest"]){
                     if (notFirst) {
                         currentRequest =
                             "<div class='tab-pane fade' id=\'" + requests_json[request]["id"] +
@@ -72,12 +72,17 @@ function updateRequests() {
                     currentRequest += "<dd>";
 
                     if (requestAttributes === "document") {
-                        let doc = requests_json[request]["document"]["title"];
-                        currentRequest += doc;
+                        let temp = requests_json[request]["document"]["title"];
+                        currentRequest += temp;
                     }
-
+                    if (requestAttributes === "typeBooking") {
+                        let temp = requests_json[request]["typeBooking"]["typeName"];
+                        currentRequest += temp;
+                    }
                     if (requestAttributes === "user") {
-                        currentRequest += requests_json[request]["user"]["name"] + " " + requests_json[request]["user"]["surname"];
+                        let temp = requests_json[request]["user"]["name"] + " " + requests_json[request]["user"]["surname"];
+                        currentRequest += temp;
+
                     }
 
                     if (requestAttributes === "returnDate") {
@@ -92,12 +97,11 @@ function updateRequests() {
                     currentRequest += "</dd>\n";
                 }
 
-
                 //close div for request
                 currentRequest +=
                     "</dl>" +
                     "<small class='d-block text-right mt-3 border-bottom border-gray pb-2'>\n" +
-                    "<button class='btn btn-outline-success my-2 my-sm-0' onclick='acceptRequest()' " +
+                    "<button class='btn btn-outline-success my-2 my-sm-0' onclick='acceptRequest(" + requests_json[request]["id"] + ")' " +
                     "type='submit'>Accept" +
                     "</button>\n" +
                     "</small>\n" +
@@ -105,7 +109,7 @@ function updateRequests() {
 
 
                 updatedRequests += currentRequest;
-                }
+                //}
             }
 
             //close listOfRequests block
@@ -141,28 +145,23 @@ function updateRequests() {
         }
     });
 }
-function acceptRequest(id){
-    let jsonData = {
-        "id": id
-    };
 
+function acceptRequest(id){
+    alert(id);
     $.ajax({
-        url: URL_LOCALHOST + "/booking/close",
+        url: URL_LOCALHOST + "/booking/close?id=" + id,
         type: "PUT",
         headers: {
             'Authorization': window.localStorage.getItem("Authorization"),
         },
-        data: jsonData,
-        dataType: "json",
-        success: function (books_json, status, xhr){
-            alert("Ura")
+        success: function (requests_json, status, xhr) {
+            updateUsers();
+            alert("ura");
         },
-        error: function (jqXHR, textStatus, errorThrown) {
+        error: function (requests_json, status, xhr) {
             alert("ne ura");
-
-            console.error(jqXHR);
-            console.error(textStatus);
-            console.error(errorThrown);
+            console.error(status);
+            console.error(xhr);
         }
     });
 }
