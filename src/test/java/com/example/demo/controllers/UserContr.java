@@ -30,7 +30,7 @@ public class UserContr {
         }
         Role role = roleService.findByPosition(userModel.getPosition());
         if (role == null) throw new RoleNotFoundException();
-        user = new User(userModel.getName(), userModel.getSurname(), userModel.getAddress(), userModel.getPhoneNumber(), role, userModel.getUsername(), userModel.getPassword());
+        user = new User(userModel.getName(), userModel.getSurname(), userModel.getAddress(), userModel.getPhone(), role, userModel.getUsername(), userModel.getPassword());
         user.setId(-1);
         userService.save(user);
     }
@@ -45,7 +45,7 @@ public class UserContr {
         }
         Role role = roleService.findByPosition(userModel.getPosition());
         if (role == null) throw new RoleNotFoundException();
-        user = new User(userModel.getName(), userModel.getSurname(), userModel.getAddress(), userModel.getPhoneNumber(), role, userModel.getUsername(), userModel.getPassword());
+        user = new User(userModel.getName(), userModel.getSurname(), userModel.getAddress(), userModel.getPhone(), role, userModel.getUsername(), userModel.getPassword());
         user.setId(userModel.getId());
         userService.save(user);
     }

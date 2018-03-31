@@ -56,7 +56,7 @@ public class UserController {
             }
             Role role = roleService.findByPosition(userModel.getPosition().toLowerCase());
             if (role == null) throw new RoleNotFoundException();
-            user = new User(userModel.getName(), userModel.getSurname(), userModel.getAddress(), userModel.getPhoneNumber(), role, userModel.getUsername(), userModel.getPassword());
+            user = new User(userModel.getName(), userModel.getSurname(), userModel.getAddress(), userModel.getPhone(), role, userModel.getUsername(), userModel.getPassword());
             userService.save(user);
             return;
         }
@@ -77,7 +77,7 @@ public class UserController {
             }
             Role role = roleService.findByPosition(userModel.getPosition().toLowerCase());
             if (role == null) throw new RoleNotFoundException();
-            user = new User(userModel.getName(), userModel.getSurname(), userModel.getAddress(), userModel.getPhoneNumber(), role, userModel.getUsername(), userModel.getPassword());
+            user = new User(userModel.getName(), userModel.getSurname(), userModel.getAddress(), userModel.getPhone(), role, userModel.getUsername(), userModel.getPassword());
             user.setId(userModel.getId());
             userService.save(user);
             return;
