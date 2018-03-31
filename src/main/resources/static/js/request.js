@@ -2,7 +2,7 @@ $(updateRequests());
 
 function updateRequests() {
     $.ajax({
-        url: URL_LOCALHOST + "/booking/findall",
+        url: URL_LOCALHOST + "/booking/findback",
         type: "GET",
         headers: {
             'Authorization': window.localStorage.getItem("Authorization"),
@@ -33,8 +33,6 @@ function updateRequests() {
 
                 let currentRequest;
 
-                //open div for request
-               // if (!requests_json[request]["close"] && requests_json[request]["hasBackRequest"]){
                     if (notFirst) {
                         currentRequest =
                             "<div class='tab-pane fade' id=\'" + requests_json[request]["id"] +
@@ -74,26 +72,31 @@ function updateRequests() {
                     if (requestAttributes === "document") {
                         let temp = requests_json[request]["document"]["title"];
                         currentRequest += temp;
+                        currentRequest = currentRequest.replace("[object Object]","");
                     }
                     if (requestAttributes === "typeBooking") {
                         let temp = requests_json[request]["typeBooking"]["typeName"];
                         currentRequest += temp;
+                        currentRequest = currentRequest.replace("[object Object]","");
                     }
                     if (requestAttributes === "user") {
                         let temp = requests_json[request]["user"]["name"] + " " + requests_json[request]["user"]["surname"];
                         currentRequest += temp;
+                        currentRequest = currentRequest.replace("[object Object]","");
 
                     }
 
                     if (requestAttributes === "returnDate") {
                         let date = new Date(requests_json[request]["returnDate"]);
                         currentRequest += date.toString();
+                        currentRequest = currentRequest.replace("[object Object]","");
                     }
 
                     else {
-                        currentRequest += requests_json[request][requestAttributes]
+                        currentRequest += requests_json[request][requestAttributes];
+                        currentRequest = currentRequest.replace("[object Object]","");
                     }
-
+                    currentRequest = currentRequest.replace("[object Object]","");
                     currentRequest += "</dd>\n";
                 }
 
@@ -109,7 +112,7 @@ function updateRequests() {
 
 
                 updatedRequests += currentRequest;
-                //}
+
             }
 
             //close listOfRequests block
@@ -131,8 +134,6 @@ function updateRequests() {
             outer += updatedRequests;
             outer += "</div>\n";
             outer += updateButton;
-
-
             //Final load in html. It replace everything inside <div id = "database'> which is container for our database.
             $("#database").html(outer);
         },
@@ -155,11 +156,11 @@ function acceptRequest(id){
             'Authorization': window.localStorage.getItem("Authorization"),
         },
         success: function (requests_json, status, xhr) {
-            updateUsers();
-            alert("ura");
+            updateRequests();
+            alert("Request has been accepted");
         },
         error: function (requests_json, status, xhr) {
-            alert("ne ura");
+            alert("Failed");
             console.error(status);
             console.error(xhr);
         }

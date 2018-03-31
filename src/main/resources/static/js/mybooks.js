@@ -1,6 +1,45 @@
-function returnBook(){
+$(updateMyBooks());
 
+function returnBook(id){
+    $.ajax({
+        url: URL_LOCALHOST + "/booking/return?id=" + id,
+        type: "PUT",
+        headers: {
+            'Authorization': window.localStorage.getItem("Authorization"),
+        },
+        success: function (mybooks_json , status, xhr) {
+            updateMyBooks();
+            alert("Book has been returned");
+        },
+        error: function (mybooks_json, status, xhr) {
+            alert("Book can't be returned");
+            console.error(status);
+            console.error(xhr);
+        }
+    });
 }
+
+function renewBook(id){
+    $.ajax({
+        url: URL_LOCALHOST + "/booking/renew?id=" + id,
+        type: "PUT",
+        headers: {
+            'Authorization': window.localStorage.getItem("Authorization"),
+        },
+        success: function (mybooks_json , status, xhr) {
+            updateMyBooks();
+            alert("Book has been renewed");
+        },
+        error: function (mybooks_json, status, xhr) {
+            alert("Failed");
+            console.error(status);
+            console.error(xhr);
+        }
+    });
+}
+
+
+
 
 function updateMyBooks(){
     $.ajax({
@@ -16,7 +55,7 @@ function updateMyBooks(){
             console.info(mybooks_json);
 
             let outer =
-                "<h4 class=\"border-bottom border-gray pb-2 mb-0\">Mybooks database</h4>\n" +
+                "<h4 class=\"border-bottom border-gray pb-2 mb-0\">My books database</h4>\n" +
                 "\n" +
                 "<div class=\"row mt-2 \\\">";
 
@@ -35,8 +74,6 @@ function updateMyBooks(){
 
                 let currentMybook;
 
-                //open div for mybook
-                // if (!mybooks_json[mybook]["close"] && mybooks_json[mybook]["hasBackRequest"]){
                 if (notFirst) {
                     currentMybook =
                         "<div class='tab-pane fade' id=\'" + mybooks_json[mybook]["id"] +
@@ -76,42 +113,50 @@ function updateMyBooks(){
                     if (mybooksAttributes === "document") {
                         let temp = mybooks_json[mybook]["document"]["title"];
                         currentMybook += temp;
+                        currentMybook = currentMybook.replace("[object Object]","");
                     }
                     if (mybooksAttributes === "typeBooking") {
                         let temp = mybooks_json[mybook]["typeBooking"]["typeName"];
                         currentMybook += temp;
+                        currentMybook = currentMybook.replace("[object Object]","");
                     }
                     if (mybooksAttributes === "user") {
                         let temp = mybooks_json[mybook]["user"]["name"] + " " + mybooks_json[mybook]["user"]["surname"];
                         currentMybook += temp;
+                        currentMybook = currentMybook.replace("[object Object]","");
 
                     }
 
                     if (mybooksAttributes === "returnDate") {
                         let date = new Date(mybooks_json[mybook]["returnDate"]);
                         currentMybook += date.toString();
+                        currentMybook = currentMybook.replace("[object Object]","");
                     }
 
                     else {
-                        currentMybook += mybooks_json[mybook][mybooksAttributes]
+                        currentMybook += mybooks_json[mybook][mybooksAttributes];
+                        currentMybook = currentMybook.replace("[object Object]","");
                     }
-
+                    currentMybook = currentMybook.replace("[object Object]","");
                     currentMybook += "</dd>\n";
                 }
 
                 //close div for mybook
                 currentMybook +=
                     "</dl>" +
-                    // "<small class='d-block text-right mt-3 border-bottom border-gray pb-2'>\n" +
-                    // "<button class='btn btn-outline-success my-2 my-sm-0' onclick='acceptRequest(" + mybooks_json[mybook]["id"] + ")' " +
-                    // "type='submit'>Accept" +
-                    // "</button>\n" +
-                    // "</small>\n" +
+                    "<small class='d-block text-right mt-3 border-bottom border-gray pb-2'>\n" +
+                    "<button class='btn btn-outline-danger my-2 my-sm-0' onclick='returnBook(" + mybooks_json[mybook]["id"] + ")' " +
+                    "type='submit'>Return book" +
+                    "</button>\n" +
+                    "<button class='btn btn-outline-success my-2 my-sm-0' onclick='renewBook(" + mybooks_json[mybook]["id"] + ")' " +
+                    "type='submit'>Renew book" +
+                    "</button>\n" +
+                    "</small>\n" +
                     "</div>\n";
 
 
                 updatedMyooks += currentMybook;
-                //}
+
             }
 
             //close listOfMybooks block
@@ -147,3 +192,26 @@ function updateMyBooks(){
         }
     });
 }
+
+
+
+
+// function findbooking(id){
+//     $.ajax({
+//         url: URL_LOCALHOST + "/booking/find?id=" + "2",
+//         type: "GET",
+//         headers: {
+//             'Authorization': window.localStorage.getItem("Authorization"),
+//         },
+//         success: function (mybooks_json, status, xhr) {
+//             console.info("Responding json: ");
+//             console.info(mybooks_json);
+//             alert("Book has been returned");
+//         },
+//         error: function (mybooks_json, status, xhr) {
+//             alert("Book can't be returned");
+//             console.error(status);
+//             console.error(xhr);
+//         }
+//     });
+// }

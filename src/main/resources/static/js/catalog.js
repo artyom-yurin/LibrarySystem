@@ -14,7 +14,7 @@ function updateCatalog() {
                 console.info(books_json);
 
                 let outer =
-                    "<h4 class=\"border-bottom border-gray pb-2 mb-0\">Books database</h4>\n" +
+                    "<h4 class=\"border-bottom border-gray pb-2 mb-0\">My books database</h4>\n" +
                     "\n" +
                     "<div class=\"row mt-2 \\\">";
 
@@ -83,8 +83,7 @@ function updateCatalog() {
                             for (let particular_author in books_json[book]["authors"]) {
                                 listOfAuthors += books_json[book]["authors"][particular_author]["firstName"] + " " + books_json[book]["authors"][particular_author]["lastName"] + ',';
                             }
-                            currentBook = currentBook.substring(0, currentBook.length - 1);
-                            currentBook += "<dt>";
+                            listOfAuthors = listOfAuthors.trim().substring(0, listOfAuthors.length - 1);
                             currentBook += listOfAuthors;
                         }
 
@@ -157,19 +156,18 @@ function updateCatalog() {
 
 }
 function chekoutDocument(id){
-        alert(id);
         $.ajax({
             url: URL_LOCALHOST + "/booking/request?id=" + id,
             type: "POST",
             headers: {
                 'Authorization': window.localStorage.getItem("Authorization"),
             },
-            success: function (dovuments_json, status, xhr) {
+            success: function (books_json, status, xhr) {
                 updateCatalog();
                 alert("Book has been taked");
             },
-            error: function (dovuments_json, status, xhr) {
-                alert("ne ura");
+            error: function (books_json, status, xhr) {
+                alert("Book can't be taken");
                 console.error(status);
                 console.error(xhr);
             }
