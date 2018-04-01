@@ -301,8 +301,7 @@ public class BookingController {
 
         PriorityQueue<Booking> queue = getQueueForBookById(booking.getDocument().getId());
 
-
-        if ("outstanding".equals(queue.peek().getTypeBooking().getTypeName())) {
+        if (queue.size() > 0 && "outstanding".equals(queue.peek().getTypeBooking().getTypeName())) {
             throw new UnableRenewException();
         }
 
