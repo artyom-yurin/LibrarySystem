@@ -158,29 +158,50 @@
                     </div>
 
 
-                    <div class="mb-3">
-                        <label for="isReferenceModify">isReference</label>
-                        <div class="input-group">
-                            <input type="checkbox" class="form-control" id="isReferenceModify">
+                    <!--<div class="mb-3">-->
+                        <!--<label for="isReferenceModify">isReference</label>-->
+                        <!--<div class="input-group">-->
+                            <!--<input type="checkbox" class="form-control" id="isReferenceModify">-->
+                        <!--</div>-->
+                    <!--</div>-->
+
+                    <div class="row">
+                        <div class="col-md-5 mb-3">
+                            <label for="isReferenceModify">isReference</label>
+                            <select class="custom-select d-block w-100" id="isReferenceModify" required="required">
+                                <option value="">Choose...</option>
+                                <option value='true'>true</option>
+                                <option value='false'>false</option>
+                            </select>
                         </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="isBestsellerModify">isBestseller</label>
-                        <div class="input-group">
-                            <input type="checkbox" class="form-control" id="isBestsellerModify">
+                    <!--<div class="mb-3">-->
+                        <!--<label for="isBestsellerModify">isBestseller</label>-->
+                        <!--<div class="input-group">-->
+                            <!--<input type="checkbox" class="form-control" id="isBestsellerModify">-->
+                        <!--</div>-->
+                    <!--</div>-->
+
+                    <div class="row">
+                        <div class="col-md-5 mb-3">
+                            <label for="isBestsellerModify">isBestseller</label>
+                            <select class="custom-select d-block w-100" id="isBestsellerModify" required="required">
+                                <option value="">Choose...</option>
+                                <option value='true'>true</option>
+                                <option value='false'>false</option>
+                            </select>
                         </div>
                     </div>
-
 
                     <div class="row">
                         <div class="col-md-5 mb-3">
                             <label for="roleModify">Type</label>
                             <select class="custom-select d-block w-100" id="roleModify" required="required">
                                 <option value="">Choose...</option>
-                                <option>AVMaterial</option>
-                                <option>Book</option>
-                                <option>Journal</option>
+                                <option value='avmaterials'>AVMaterial</option>
+                                <option value='book'>Book</option>
+                                <option value='journal'>Journal</option>
                             </select>
                         </div>
                     </div>
@@ -319,31 +340,52 @@
                     </div>
                 </div>
 
-
-                <div class="mb-3">
-                    <div class="input-group">
-                    <label for="isReference">isReference</label>
-                        <input type="checkbox" class="form-control" id="isReference">
+                <div class="row">
+                    <div class="col-md-5 mb-3">
+                        <label for="isReference">isReference</label>
+                        <select class="custom-select d-block w-100" id="isReference" required="required">
+                            <option value="">Choose...</option>
+                            <option value='true'>true</option>
+                            <option value='false'>false</option>
+                        </select>
                     </div>
                 </div>
 
-                <div class="mb-3">
-                    <div class="input-group">
-                    <label for="isBestseller">isBestseller</label>
-
-                        <input type="checkbox" class="form-control" id="isBestseller">
+                <div class="row">
+                    <div class="col-md-5 mb-3">
+                        <label for="isBestseller">isBestseller</label>
+                        <select class="custom-select d-block w-100" id="isBestseller" required="required">
+                            <option value="">Choose...</option>
+                            <option value='true'>true</option>
+                            <option value='false'>false</option>
+                        </select>
                     </div>
                 </div>
+
+                <!--<div class="mb-3">-->
+                    <!--<div class="input-group">-->
+                    <!--<label for="isReference">isReference</label>-->
+                        <!--<input type="checkbox" class="form-control" id="isReference">-->
+                    <!--</div>-->
+                <!--</div>-->
+
+                <!--<div class="mb-3">-->
+                    <!--<div class="input-group">-->
+                    <!--<label for="isBestseller">isBestseller</label>-->
+
+                        <!--<input type="checkbox" class="form-control" id="isBestseller">-->
+                    <!--</div>-->
+                <!--</div>-->
 
 
                 <div class="row">
                     <div class="col-md-5 mb-3">
-                        <label for="role">Type</label>
-                        <select class="custom-select d-block w-100" id="role" required="required">
+                        <label for="type">Type</label>
+                        <select class="custom-select d-block w-100" id="type" required="required">
                             <option value="">Choose...</option>
-                            <option value="avmaterials">AVMaterial</option>
-                            <option value="book">Book</option>
-                            <option value="journal">Journal</option>
+                            <option value='avmaterials'>AVMaterial</option>
+                            <option value='book'>Book</option>
+                            <option value='journal'>Journal</option>
                         </select>
                     </div>
                 </div>

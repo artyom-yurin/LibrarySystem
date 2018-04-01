@@ -205,27 +205,29 @@ function addBook() {
     for (let index in authors) {
         let tmp = authors[index].split(' ');
         jsonAuthors.push({
-            "name": (tmp[0].trim()),
-            "surname": (tmp[1].trim())
+            "firstName": (tmp[0].trim()),
+            "lastName": (tmp[1].trim())
         });
     }
 
+    publishingDate = Date.parse(publishingDate);
 
     let jsonData = JSON.stringify({
-        'title': title,
-        'edition': edition,
-        'editor': editor,
-        'publisher': publisher,
-        'price': price,
-        'count': count,
-        'bestseller': isBestseller,
-        'reference': isReference,
+        "title": title,
+        "edition": edition,
+        "editor": editor,
+        "publisherName": publisher,
+        "price": price,
+        "count": count,
+        "bestseller": isBestseller,
+        "reference": isReference,
         "publishingDate": publishingDate,
-        'type': type,
-        'authors': jsonAuthors,
-        'tags': tags
+        "typeName": type,
+        "authors": jsonAuthors,
+        "tags": tags
     });
 
+    console.log(jsonData);
 
     $.ajax({
         url: URL_LOCALHOST + "/document/add",
@@ -259,10 +261,10 @@ function deleteBook(id) {
         headers: {
             'Authorization': window.localStorage.getItem("Authorization"),
         },
-        success: function (users, status, xhr) {
+        success: function (books_json, status, xhr) {
             updateBooks();
         },
-        error: function (users, status, xhr) {
+        error: function (books_json, status, xhr) {
             alert("ne ura");
             console.error(status);
             console.error(xhr);
