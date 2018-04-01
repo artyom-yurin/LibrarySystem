@@ -34,7 +34,7 @@ function sendLoginAndPassword() {
             }
 
         }
-    );
+    );8
 }
 
 // Constants
