@@ -48,7 +48,6 @@ var linkToMyBooks = URL_LOCALHOST + '/myBooks.html';
 
 window.onbeforeunload = function(){
     localStorage.clear();
-    console.log("All keys successfully deleted from localStorage");
 };
 
 
