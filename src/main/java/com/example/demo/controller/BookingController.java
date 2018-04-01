@@ -1,21 +1,21 @@
 package com.example.demo.controller;
 
+import com.example.demo.entity.Notification;
 import com.example.demo.entity.booking.Booking;
 import com.example.demo.entity.document.Document;
 import com.example.demo.entity.user.User;
 import com.example.demo.exception.*;
-import com.example.demo.service.BookingService;
-import com.example.demo.service.DocumentService;
-import com.example.demo.service.TypeBookingService;
-import com.example.demo.service.UserService;
+import com.example.demo.service.*;
 import com.example.security.ParserToken;
 import com.example.security.TokenAuthenticationService;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.PriorityQueue;
 import java.util.stream.Collectors;
 
 @RestController
@@ -24,6 +24,7 @@ public class BookingController {
     private BookingService bookingService;
     private DocumentService documentService;
     private UserService userService;
+    private NotificationService notificationService;
 
     private static final long BESTSELLER_FOR_PATRON_TIME = 1209600000L;
 
@@ -40,11 +41,12 @@ public class BookingController {
     private static final long VP_TIME = 604800000L;
 
 
-    BookingController(BookingService bookingService, DocumentService documentService, UserService userService, TypeBookingService typeBookingService) {
+    BookingController(BookingService bookingService, DocumentService documentService, UserService userService, TypeBookingService typeBookingService, NotificationService notificationService) {
         this.bookingService = bookingService;
         this.documentService = documentService;
         this.userService = userService;
         this.typeBookingService = typeBookingService;
+        this.notificationService = notificationService;
     }
 
     @GetMapping("/booking/find")
@@ -215,7 +217,12 @@ public class BookingController {
             returnData.setTime(System.currentTimeMillis() + AVAILABLE_TIME);
             booking.setReturnDate(returnData);
             bookingService.save(booking);
-            //TODO: NOTIFICATION TO NEW USER THAT BOOK AVAILABLE FOR HIM
+
+            String message = "";
+            message += document.getTitle();
+            message += " is available for you";
+            Notification notification = new Notification(token.id, message);
+            notificationService.save(notification);
         } else {
             document.setCount(document.getCount() + 1);
             documentService.save(document);
@@ -269,7 +276,10 @@ public class BookingController {
         for (Booking bookItem : priorityQueue) {
             bookItem.setTypeBooking(typeBookingService.findByTypeName("close"));
             bookingService.save(bookItem);
-            //TODO: NOTIFICATION TO ALL USER IN QUEUE THAT THEIR SPACE IN QUEUE IS CANCELED
+
+            String message = "Your queue position is cancelled";
+            Notification notification = new Notification(token.id, message);
+            notificationService.save(notification);
         }
         booking.setTypeBooking(typeBookingService.findByTypeName("outstanding"));
         bookingService.save(booking);
@@ -329,7 +339,11 @@ public class BookingController {
         if ("available".equals(booking.getTypeBooking().getTypeName())) {
             booking.setTypeBooking(typeBookingService.findByTypeName("close"));
             bookingService.save(booking);
-            //TODO NOTIFICATION THAT USER LOST HIM SPACE OF QUEUE
+
+            String message = "Your queue position is cancelled";
+            Notification notification = new Notification(booking.getUser().getId(), message);
+            notificationService.save(notification);
+
             PriorityQueue<Booking> pq = getQueueForBookById(booking.getDocument().getId());
             if (pq.size() > 0) {
                 Booking newBooking = pq.peek();
@@ -338,11 +352,20 @@ public class BookingController {
                 returnData.setTime(System.currentTimeMillis() + AVAILABLE_TIME);
                 newBooking.setReturnDate(returnData);
                 bookingService.save(newBooking);
-                //TODO: NOTIFICATION TO NEW USER THAT BOOK AVAILABLE FOR HIM
+
+                String message1 = "";
+                message += booking.getDocument().getTitle();
+                message += " is available for you";
+                Notification notification1 = new Notification(booking.getUser().getId(), message);
+                notificationService.save(notification1);
             }
         } else {
             getFine(booking);
-            //TODO: NOTIFICATION TO USER THAT HE HAS A FINE
+
+            String message2 = "You have fine of ";
+            message2 += Integer.toString(booking.getFine());
+            Notification notification2 = new Notification(booking.getUser().getId(), message2);
+            notificationService.save(notification2);
         }
     }
 
@@ -371,7 +394,11 @@ public class BookingController {
             booking.setTypeBooking(typeBookingService.findByTypeName("available"));
             booking.setReturnDate(new Date(System.currentTimeMillis() + AVAILABLE_TIME));
             bookingService.save(booking);
-            //TODO: NOTIFICATION TO NEW USER THAT BOOK AVAILABLE FOR HIM
+            String message = "";
+            message += booking.getDocument().getTitle();
+            message += " is available for you";
+            Notification notification1 = new Notification(booking.getUser().getId(), message);
+            notificationService.save(notification1);
             document.setCount(document.getCount() - 1);
             documentService.save(document);
         }
