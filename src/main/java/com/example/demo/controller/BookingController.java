@@ -152,7 +152,7 @@ public class BookingController {
             throw new BookingNotFoundException();
         }
 
-        if ("available".equals(booking.getTypeBooking().getTypeName())) {
+        if (!"available".equals(booking.getTypeBooking().getTypeName())) {
             throw new AccessDeniedException();
         }
 
@@ -175,6 +175,9 @@ public class BookingController {
         } else {
             returnDate.setTime(time + AV_JOURNAL_TIME);
         }
+        booking.setTypeBooking(typeBookingService.findByTypeName("taken"));
+        booking.setReturnDate(returnDate);
+        bookingService.save(booking);
     }
 
     @PutMapping("/booking/return")
