@@ -14,7 +14,7 @@ function updateRequests() {
             console.info(requests_json);
 
             let outer =
-                "<h4 class=\"border-bottom border-gray pb-2 mb-0\">Requests database</h4>\n" +
+                "<h4 class=\"border-bottom border-gray pb-2 mb-0\">Requests to return</h4>\n" +
                 "\n" +
                 "<div class=\"row mt-2 \\\">";
 
@@ -43,7 +43,7 @@ function updateRequests() {
                             "\" data-toggle=\"list\"\n" +
                             "href=\"#" + requests_json[request]["id"] +
                             "\" role=\"tab\" aria-controls=\"list" + requests_json[request]["id"] + "\">" +
-                            requests_json[request]["id"] + "</a>";
+                            requests_json[request]["document"]["title"] + "</a>";
                     }
                     else {
                         currentRequest =
@@ -55,7 +55,7 @@ function updateRequests() {
                             "\" data-toggle=\"list\"\n" +
                             "href=\"#" + requests_json[request]["id"] +
                             "\" role=\"tab\" aria-controls=\"list" + requests_json[request]["id"] + "\">" +
-                            requests_json[request]["id"] + "</a>";
+                            requests_json[request]["document"]["title"] + "</a>";
 
                         notFirst = true;
                     }
@@ -88,7 +88,14 @@ function updateRequests() {
 
                     if (requestAttributes === "returnDate") {
                         let date = new Date(requests_json[request]["returnDate"]);
-                        currentRequest += date.toString();
+                        let day = date.getDate();
+                        if(day.toString().length == 1)
+                            day = "0" + day;
+                        let month = date.getMonth();
+                        if(month.toString().length == 1)
+                            month = "0" + month;
+                        let year = date.getFullYear();
+                        currentRequest += year + "-" + month + "-" + day;
                         currentRequest = currentRequest.replace("[object Object]","");
                     }
 
