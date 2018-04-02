@@ -18,15 +18,9 @@ import java.util.stream.Collectors;
 @RestController
 public class NotificationController {
     private NotificationService notificationService;
-    private BookingService bookingService;
-    private UserService userService;
-    private DocumentService documentService;
 
-    public NotificationController(NotificationService notificationService, BookingService bookingService, UserService userService, DocumentService documentService) {
+    public NotificationController(NotificationService notificationService) {
         this.notificationService = notificationService;
-        this.bookingService = bookingService;
-        this.userService = userService;
-        this.documentService = documentService;
     }
 
     @GetMapping("/notification/findself")

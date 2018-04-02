@@ -7,9 +7,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, Integer> {
-
-    Notification getNotificationByUser(User user);
-
     Notification getNotificationById(Integer id);
 
     void removeNotificationById(Integer id);

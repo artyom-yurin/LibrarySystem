@@ -1,5 +1,7 @@
 package com.example.demo.entity;
 
+import com.example.demo.entity.user.User;
+
 import javax.persistence.*;
 
 @Entity
@@ -10,15 +12,16 @@ public class Notification {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
     @JoinColumn(name = "USER_ID")
-    private Integer user;
+    private User user;
 
     @Column(name = "MESSAGE")
     private String message;
 
     public Notification(){}
 
-    public Notification(Integer user, String message){
+    public Notification(User user, String message) {
         this.user = user;
         this.message = message;
     }
@@ -27,11 +30,15 @@ public class Notification {
         return id;
     }
 
-    public Integer getUser() {
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public User getUser() {
         return user;
     }
 
-    public void setUser(Integer user) {
+    public void setUser(User user) {
         this.user = user;
     }
 
@@ -42,5 +49,4 @@ public class Notification {
     public void setMessage(String message) {
         this.message = message;
     }
-
 }
