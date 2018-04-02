@@ -68,11 +68,19 @@ public class IndexController {
         return new ModelAndView("request");
     }
 
-    @GetMapping("/admin/available")
-    public ModelAndView allAvailable(HttpServletRequest request) {
+    @GetMapping("/admin/confirmation")
+    public ModelAndView allConfirmation(HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null) throw new UnauthorizedException();
         if (!token.role.equals("admin")) throw new AccessDeniedException();
-        return new ModelAndView("available");
+        return new ModelAndView("confirmation");
+    }
+
+    @GetMapping("/notification")
+    public ModelAndView allAvailable(HttpServletRequest request) {
+        ParserToken token = TokenAuthenticationService.getAuthentication(request);
+        if (token == null) throw new UnauthorizedException();
+        if (token.role.equals("admin")) throw new AccessDeniedException();
+        return new ModelAndView("notification");
     }
 }
