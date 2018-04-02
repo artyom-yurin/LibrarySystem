@@ -47,7 +47,7 @@ function sendToken(path) {
             headers: {
                 'Authorization': window.localStorage.getItem("Authorization")
             },
-            //async:false,
+            async:false,
             success: function (html_data, status, xhr) {
                 document.open();
                 document.write(html_data);
@@ -56,9 +56,10 @@ function sendToken(path) {
 
             error: function (html_data, status, xhr) {
                 alert("Fail on token post-request");
+
                 console.info("Token sent was : \n");
                 console.info(window.localStorage.getItem("Authorization"));
-                alert('Error_data: \n' + html_data.responseJSON + "\n See details(responseJSON) in console");
+
                 console.error(html_data.responseJSON);
                 console.error('Error_status: \n' + status);
                 console.error('Error_xhr: \n' + xhr);

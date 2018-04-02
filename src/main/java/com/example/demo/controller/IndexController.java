@@ -76,11 +76,11 @@ public class IndexController {
         return new ModelAndView("confirmation");
     }
 
-    @GetMapping("/notification")
+    @GetMapping("/notifications")
     public ModelAndView allAvailable(HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null) throw new UnauthorizedException();
         if (token.role.equals("admin")) throw new AccessDeniedException();
-        return new ModelAndView("notification");
+        return new ModelAndView("notifications");
     }
 }
