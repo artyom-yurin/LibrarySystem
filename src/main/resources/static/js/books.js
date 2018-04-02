@@ -31,7 +31,7 @@ function updateBooks() {
             console.info(books_json);
 
             let outer =
-                "<h4 class=\"border-bottom border-gray pb-2 mb-0\">Books database</h4>\n" +
+                "<h4 class=\"border-bottom border-gray pb-2 mb-0\">Library</h4>\n" +
                 "\n" +
                 "<div class=\"row mt-2 \\\">";
 

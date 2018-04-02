@@ -14,7 +14,7 @@ function updateConfirmation() {
             console.info(confirmation_json);
 
             let outer =
-                "<h4 class=\"border-bottom border-gray pb-2 mb-0\">Confirmation</h4>\n" +
+                "<h4 class=\"border-bottom border-gray pb-2 mb-0\">Requests to checkout</h4>\n" +
                 "\n" +
                 "<div class=\"row mt-2 \\\">";
 
@@ -43,7 +43,7 @@ function updateConfirmation() {
                         "\" data-toggle=\"list\"\n" +
                         "href=\"#" + confirmation_json[confirmation]["id"] +
                         "\" role=\"tab\" aria-controls=\"list" + confirmation_json[confirmation]["id"] + "\">" +
-                        confirmation_json[confirmation]["id"] + "</a>";
+                        confirmation_json[confirmation]["document"]["title"] + "</a>";
                 }
                 else {
                     currentConfirmation =
@@ -55,7 +55,7 @@ function updateConfirmation() {
                         "\" data-toggle=\"list\"\n" +
                         "href=\"#" + confirmation_json[confirmation]["id"] +
                         "\" role=\"tab\" aria-controls=\"list" + confirmation_json[confirmation]["id"] + "\">" +
-                        confirmation_json[confirmation]["id"] + "</a>";
+                        confirmation_json[confirmation]["document"]["title"] + "</a>";
 
                     notFirst = true;
                 }
@@ -88,7 +88,14 @@ function updateConfirmation() {
 
                     if (confirmationAttributes === "returnDate") {
                         let date = new Date(confirmation_json[confirmation]["returnDate"]);
-                        currentConfirmation += date.toString();
+                        let day = date.getDate();
+                        if(day.toString().length == 1)
+                            day = "0" + day;
+                        let month = date.getMonth();
+                        if(month.toString().length == 1)
+                            month = "0" + month;
+                        let year = date.getFullYear();
+                        currentConfirmation += year + "-" + month + "-" + day;
                         currentConfirmation = currentConfirmation.replace("[object Object]","");
                     }
 
