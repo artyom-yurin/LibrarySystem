@@ -46,7 +46,7 @@ var linkToBooks = URL_LOCALHOST + 'admin/documents.html';
 var linkToRequest = URL_LOCALHOST + 'admin/requests.html';
 var linkToCatalog = URL_LOCALHOST + 'catalog.html';
 var linkToMyBooks = URL_LOCALHOST + 'myBooks.html';
-var linkToConfirmation = URL_LOCALHOST + 'confirmation.html';
+var linkToConfirmation = URL_LOCALHOST + 'admin/confirmation.html';
 var linkToNotification = URL_LOCALHOST + 'notifications.html';
 
 window.onbeforeunload = function(){
