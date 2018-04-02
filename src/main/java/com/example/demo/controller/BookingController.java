@@ -1,6 +1,5 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.Notification;
 import com.example.demo.entity.booking.Booking;
 import com.example.demo.entity.document.Document;
 import com.example.demo.entity.user.User;
@@ -221,8 +220,7 @@ public class BookingController {
             String message = "";
             message += document.getTitle();
             message += " is available for you";
-            Notification notification = new Notification(token.id, message);
-            notificationService.save(notification);
+            notificationService.newNotification(token.id, message);
         } else {
             document.setCount(document.getCount() + 1);
             documentService.save(document);
@@ -278,8 +276,7 @@ public class BookingController {
             bookingService.save(bookItem);
 
             String message = "Your queue position is cancelled";
-            Notification notification = new Notification(token.id, message);
-            notificationService.save(notification);
+            notificationService.newNotification(token.id, message);
         }
         booking.setTypeBooking(typeBookingService.findByTypeName("outstanding"));
         bookingService.save(booking);
@@ -341,8 +338,7 @@ public class BookingController {
             bookingService.save(booking);
 
             String message = "Your queue position is cancelled";
-            Notification notification = new Notification(booking.getUser().getId(), message);
-            notificationService.save(notification);
+            notificationService.newNotification(booking.getUser().getId(), message);
 
             PriorityQueue<Booking> pq = getQueueForBookById(booking.getDocument().getId());
             if (pq.size() > 0) {
@@ -356,16 +352,14 @@ public class BookingController {
                 String message1 = "";
                 message += booking.getDocument().getTitle();
                 message += " is available for you";
-                Notification notification1 = new Notification(booking.getUser().getId(), message);
-                notificationService.save(notification1);
+                notificationService.newNotification(booking.getUser().getId(), message);
             }
         } else {
             getFine(booking);
 
             String message2 = "You have fine of ";
             message2 += Integer.toString(booking.getFine());
-            Notification notification2 = new Notification(booking.getUser().getId(), message2);
-            notificationService.save(notification2);
+            notificationService.newNotification(booking.getUser().getId(), message2);
         }
     }
 
@@ -397,8 +391,7 @@ public class BookingController {
             String message = "";
             message += booking.getDocument().getTitle();
             message += " is available for you";
-            Notification notification1 = new Notification(booking.getUser().getId(), message);
-            notificationService.save(notification1);
+            notificationService.newNotification(booking.getUser().getId(), message);
             document.setCount(document.getCount() - 1);
             documentService.save(document);
         }

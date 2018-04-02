@@ -34,4 +34,9 @@ public class NotificationService {
     public void removeNotificationById(Integer id){
         notificationRepository.removeNotificationById(id);
     }
+
+    public void newNotification(Integer userId, String message){
+        Notification notification = new Notification(userId, message);
+        notificationRepository.save(notification);
+    }
 }
