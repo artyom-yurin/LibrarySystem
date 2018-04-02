@@ -1,16 +1,19 @@
 <!DOCTYPE html>
-<html lang="en"><head>
-    <title>Catalog</title>
-    <!--Required Meta tags-->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <!--Bootstrap Style Sheets-->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <!--Custom Style Sheets-->
-    <link rel="stylesheet" href="css/main.css">
-</head>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><!DOCTYPE html>
+        <html lang="en"><head>
+            <title>Control Request</title>
+            <!--Required Meta tags-->
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+            <!--Bootstrap Style Sheets-->
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+            <!--Custom Style Sheets-->
+            <link rel="stylesheet" href="css/main.css">
+        </head>
 <body>
-
 <header>
     <!-- Fixed navbar -->
     <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
@@ -21,13 +24,16 @@
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link active" href="#" id="linkCatalog">Catalog<span class="sr-only">(current)</span></a>
+                    <a class="nav-link disabled" href="#" id="linkBooks">Books</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#" id="linkMyBooks">My Books</a>
+                    <a class="nav-link disabled" href="#" id="linkUsers">Users</a>
                 </li>
                 <li class="nav-item ">
-                    <a class="nav-link" href="#" id="linkNotifications">Notifications</a>
+                    <a class="nav-link disabled" href="#" id="linkRequest">Request<span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link active" href="#" id="linkConfirmation">Confirmation<span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#" id="linkLogin">Log out</a>
@@ -44,20 +50,26 @@
 </header>
 
 <main role="main" class="container mt-5 pt-5">
-    <!--Users Database-->
-    <div class="my-3 p-3 bg-white rounded box-shadow" id="database"><h4 class="border-bottom border-gray pb-2 mb-0">Books database</h4>
+    <!--Booking database-->
+    <div class="my-3 p-3 bg-white rounded box-shadow" id="database"><h4 class="border-bottom border-gray pb-2 mb-0">Requests database</h4>
 
         <div class="row mt-2 \"><div class="col-4">
             <div class="list-group" id="list-tab" role="tablist">
-                <a class="list-group-item list-group-item-action active show" id="list3" data-toggle="list" href="#3" role="tab" aria-controls="list3">PPP</a><a class="list-group-item list-group-item-action" id="list4" data-toggle="list" href="#4" role="tab" aria-controls="list4">OP</a><a class="list-group-item list-group-item-action" id="list5" data-toggle="list" href="#5" role="tab" aria-controls="list5">LOK</a> </div>
+                <a class="list-group-item list-group-item-action active show" id="list2" data-toggle="list" href="#2" role="tab" aria-controls="list2">2</a><a class="list-group-item list-group-item-action" id="list3" data-toggle="list" href="#3" role="tab" aria-controls="list3">3</a> </div>
         </div>
             <div class="col-8">
                 <div class="tab-content" id="nav-tabContent">
+                    <div class="tab-pane fade show active" id="2" role="tabpanel" aria-labelledby="list2">
+
+                        </dl><small class="d-block text-right mt-3 border-bottom border-gray pb-2">
+                        <button class="btn btn-outline-success my-2 my-sm-0" onclick="acceptRequest()" type="submit">Accept</button>
+                    </small>
+                    </div>
                 </div>
             </div>
         </div>
         <small class="d-block text-right mt-3">
-            <button class="btn btn-outline-primary my-2 my-sm-0" type="button" onclick="updateCatalog()">Update</button>
+            <button class="btn btn-outline-primary my-2 my-sm-0" type="button" onclick="updateRequests()">Update</button>
         </small>
     </div>
 </main>
@@ -72,7 +84,8 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <!--Custom Scripts-->
 <script src="js/linker.js"></script>
-<script src="js/catalog.js"></script>
+<script src="js/confirmation.js"></script>
+
 
 
 </body></html>

@@ -32,6 +32,9 @@
                 <li class="nav-item ">
                     <a class="nav-link disabled" href="#" id="linkRequest">Request</a>
                 </li>
+                <li class="nav-item ">
+                    <a class="nav-link disabled" href="#" id="linkConfirmation">Confirmation<span class="sr-only">(current)</span></a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#" id="linkLogin">Log out</a>
                 </li>
@@ -54,7 +57,7 @@
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Modal Header</h4>
+                <h4 class="modal-title">Modify Document</h4>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
@@ -169,7 +172,6 @@
                         <div class="col-md-5 mb-3">
                             <label for="isReferenceModify">isReference</label>
                             <select class="custom-select d-block w-100" id="isReferenceModify" required="required">
-                                <option value="">Choose...</option>
                                 <option value='true'>true</option>
                                 <option value='false'>false</option>
                             </select>
@@ -187,7 +189,6 @@
                         <div class="col-md-5 mb-3">
                             <label for="isBestsellerModify">isBestseller</label>
                             <select class="custom-select d-block w-100" id="isBestsellerModify" required="required">
-                                <option value="">Choose...</option>
                                 <option value='true'>true</option>
                                 <option value='false'>false</option>
                             </select>
@@ -198,7 +199,6 @@
                         <div class="col-md-5 mb-3">
                             <label for="typeModify">Type</label>
                             <select class="custom-select d-block w-100" id="typeModify" required="required">
-                                <option value="">Choose...</option>
                                 <option value='avmaterials'>AVMaterial</option>
                                 <option value='book'>Book</option>
                                 <option value='journal'>Journal</option>
@@ -246,7 +246,6 @@
             <h4 class="mb-3">Add Document</h4>
             <form class="needs-validation" onsubmit="addBook()">
                 <div class="row">
-
                     <div class="col-md-6 mb-3">
                         <label for="title">Title</label>
                         <input type="text" class="form-control" id="title" placeholder="Touch of Class"
@@ -277,7 +276,7 @@
 
                 <div class="mb-3">
                     <label for="authors">Authors</label>
-                    <input type="text" class="form-control" id="authors" placeholder="Cormen:Ly, Bertrand:Mayer"
+                    <input type="text" class="form-control" id="authors" placeholder="Cormen Ly, Bertrand Mayer"
                            required="required"
                            autocomplete="authors">
                     <div class="invalid-feedback">
@@ -344,7 +343,6 @@
                     <div class="col-md-5 mb-3">
                         <label for="isReference">isReference</label>
                         <select class="custom-select d-block w-100" id="isReference" required="required">
-                            <option value="">Choose...</option>
                             <option value='true'>true</option>
                             <option value='false'>false</option>
                         </select>
@@ -355,7 +353,6 @@
                     <div class="col-md-5 mb-3">
                         <label for="isBestseller">isBestseller</label>
                         <select class="custom-select d-block w-100" id="isBestseller" required="required">
-                            <option value="">Choose...</option>
                             <option value='true'>true</option>
                             <option value='false'>false</option>
                         </select>
@@ -366,7 +363,6 @@
                     <div class="col-md-5 mb-3">
                         <label for="type">Type</label>
                         <select class="custom-select d-block w-100" id="type" required="required">
-                            <option value="">Choose...</option>
                             <option value='avmaterials'>AVMaterial</option>
                             <option value='book'>Book</option>
                             <option value='journal'>Journal</option>
@@ -375,7 +371,7 @@
                 </div>
 
                 <hr class="mb-4">
-                <button class="btn btn-primary btn-lg btn-block" type="submit" onsubmit="">Add new Book</button>
+                <button class="btn btn-primary btn-lg btn-block" type="submit">Add new Book</button>
             </form>
         </div>
     </div>

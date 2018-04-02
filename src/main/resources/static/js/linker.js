@@ -6,6 +6,8 @@ $(window).on("load", function () {
         $('#' + 'linkLogin').attr("href", "#");
         $('#' + 'linkRequest').attr("href", "#");
         $('#' + 'linkBooks').attr("href", "#");
+        $('#' + 'linkConfirmation').attr("href", "#");
+        $('#' + 'linkNotifications').attr("href", "#");
     }
 );
 
@@ -14,6 +16,12 @@ $('#' + 'linkUsers').on("click", function () {
 });
 $('#' + 'linkRequest').on("click", function () {
     sendToken(linkToRequest);
+});
+$('#' + 'linkConfirmation').on("click", function () {
+    sendToken(linkToConfirmation);
+});
+$('#' + 'linkNotifications').on("click", function () {
+    sendToken(linkToNotification);
 });
 $('#' + 'linkBooks').on("click", function () {
     sendToken(linkToBooks);

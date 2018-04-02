@@ -71,7 +71,6 @@ function updateMyBooks(){
             for (let mybook in mybooks_json) {
                 //add <a> (link to particular mybook) for listOfMybooks
 
-
                 let currentMybook;
 
                 if (notFirst) {
