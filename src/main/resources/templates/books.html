@@ -72,7 +72,7 @@
 
                         <div class="col-md-6 mb-3">
                             <label for="editionModify">Edition</label>
-                            <input type="number" class="form-control" id="editionModify" placeholder="2" value=""
+                            <input type="number" min="0" step="1" class="form-control" id="editionModify" placeholder="2" value=""
                                    required="required">
                             <div class="invalid-feedback">
                                 Please enter last name.
@@ -93,12 +93,12 @@
                     <div class="mb-3">
                         <label for="authorsModify">Authors</label>
                         <input type="text" class="form-control" id="authorsModify"
-                               placeholder="Cormen:Ly, Bertrand:Mayer" required="required"
+                               placeholder="Cormen Ly, Bertrand Mayer" required="required"
                                autocomplete="authors">
                         <div class="invalid-feedback">
                             Please enter authors and divide each with ','. In addition separate name and surname with
                             ':'
-                            Ex: Billy:Willing, Cormen:Ly, Bertrand:Mayer.
+                            Ex: Billy Willing, Cormen Ly, Bertrand Mayer.
                         </div>
                     </div>
 
@@ -136,7 +136,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text">₽</span>
                             <div class="input-group">
-                                <input type="number" id="priceModify" class="form-control" placeholder="1000"
+                                <input type="number" min="0" step="1" id="priceModify" class="form-control" placeholder="1000"
                                        required="required">
                             </div>
                             <div class="invalid-feedback">
@@ -149,7 +149,7 @@
                         <label for="countModify">Count</label>
                         <div class="input-group-prepend">
                             <div class="input-group">
-                                <input type="number" id="countModify" class="form-control" placeholder="7" required="required">
+                                <input type="number" min="0" step="1" id="countModify" class="form-control" placeholder="7" required="required">
                             </div>
                             <div class="invalid-feedback">
                                 Please enter count.
@@ -258,10 +258,10 @@
 
                     <div class="col-md-6 mb-3">
                         <label for="edition">Edition</label>
-                        <input type="number" class="form-control" id="edition" placeholder="2" value=""
+                        <input type="number" min="0" step="1" class="form-control" id="edition" placeholder="2"
                                required="required" autocomplete="edition">
                         <div class="invalid-feedback">
-                            Please enter last name.
+                            Please enter Edition.
                         </div>
                     </div>
                 </div>
@@ -319,7 +319,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">₽</span>
                         <div class="input-group">
-                            <input type="number" id="price" class="form-control" placeholder="1000" required="required"
+                            <input type="number" min="0" step="1" id="price" class="form-control" placeholder="1000" required="required"
                                    autocomplete="price">
                         </div>
                         <div class="invalid-feedback">
@@ -332,7 +332,7 @@
                     <label for="count">Count</label>
                     <div class="input-group-prepend">
                         <div class="input-group">
-                            <input type="number" id="count" class="form-control" placeholder="7" required="required" autocomplete="count">
+                            <input type="number" min="0" step="1" id="count" class="form-control" placeholder="7" required="required" autocomplete="count">
                         </div>
                         <div class="invalid-feedback">
                             Please enter count.
@@ -361,22 +361,6 @@
                         </select>
                     </div>
                 </div>
-
-                <!--<div class="mb-3">-->
-                    <!--<div class="input-group">-->
-                    <!--<label for="isReference">isReference</label>-->
-                        <!--<input type="checkbox" class="form-control" id="isReference">-->
-                    <!--</div>-->
-                <!--</div>-->
-
-                <!--<div class="mb-3">-->
-                    <!--<div class="input-group">-->
-                    <!--<label for="isBestseller">isBestseller</label>-->
-
-                        <!--<input type="checkbox" class="form-control" id="isBestseller">-->
-                    <!--</div>-->
-                <!--</div>-->
-
 
                 <div class="row">
                     <div class="col-md-5 mb-3">

@@ -107,7 +107,14 @@ function updateBooks() {
 
                     else if (bookAttributes === "publishingDate") {
                         let date = new Date(books_json[book]["publishingDate"]);
-                        currentBook += date.toString();
+                        let day = date.getDate();
+                        if(day.toString().length == 1)
+                            day = "0" + day;
+                        let month = date.getMonth();
+                        if(month.toString().length == 1)
+                            month = "0" + month;
+                        let year = date.getFullYear();
+                        currentBook += year + "-" + month + "-" + day;
                     }
 
                     else if (bookAttributes === "tags") {
@@ -207,7 +214,7 @@ function modifyCurrentBook() {
     }
 
     publishingDate = Date.parse(publishingDate);
-
+    console.log(publishingDate);
     let jsonData = JSON.stringify({
         "title": title,
         "edition": edition,
@@ -342,7 +349,7 @@ function fillInputsInBookModify() {
 
         let toReplace = "#" + map.get(bookAttributesWeHave[index]) + "Modify";
         let replaceWith = $("#" + bookAttributesWeHave[index] + currentBookId + 'd')[0].innerHTML;
-        //alert("toReplace = " + toReplace + "\nreplaceWith = " + replaceWith);
+        alert("toReplace = " + toReplace + "\nreplaceWith = " + replaceWith);
         $(toReplace).val(replaceWith);
     }
     console.log("attributes end");
@@ -352,27 +359,19 @@ var map;
 
 function init() {
     map = new Map();
-    // let title = $("#title").val();
-    // let edition = $("#edition").val();
-    // let editor = $("#editor").val();
-    // let publisher = $("#publisher").val();
-    // let price = $("#price").val();
-    // let isBestseller = $("#isBestseller").val();
-    // let isReference = $("#isReference").val();
-    // let type = $("#type").val();
-    // let authors = $("#authors").val().trim().split(',');
-    // let tags = $("#tags").val().trim().split(',');
+
 
     map.set("title", "title");
     map.set("edition", "edition");
     map.set("editor", "editor");
     map.set("publisher", "publisher");
     map.set("price", "price");
+    map.set("count", "count");
+    map.set("publishingDate", "publishingDate");
     map.set("bestseller", "isBestseller");
     map.set("reference", "isReference");
     map.set("type", "type");
     map.set("authors", "authors");
     map.set("tags", "tags");
 
-    console.log(map);
 }
