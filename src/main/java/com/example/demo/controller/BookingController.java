@@ -7,6 +7,7 @@ import com.example.demo.exception.*;
 import com.example.demo.service.*;
 import com.example.security.ParserToken;
 import com.example.security.TokenAuthenticationService;
+import javafx.geometry.Pos;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -314,6 +315,17 @@ public class BookingController {
         bookingService.save(booking);
     }
 
+    @GetMapping("/booking/queue")
+    public Iterable<Booking> getQueueForBook(@RequestParam(value = "id", defaultValue = "-1") Integer id, HttpServletRequest request) {
+        ParserToken token = TokenAuthenticationService.getAuthentication(request);
+        if (token == null)
+            throw new UnauthorizedException();
+        if (!token.role.equals("admin")) throw new AccessDeniedException();
+        if (documentService.findById(id) == null) throw new DocumentNotFoundException();
+
+        return getQueueForBookById(id);
+    }
+
     public List<Booking> findActiveBookings() {
         return bookingService.findAll()
                 .stream()
@@ -395,28 +407,29 @@ public class BookingController {
         }
     }
 
-    public enum Positions {
-        PROFESSOR, VP, TA, INSTRUCTOR, STUDENT
+    public enum Priority {
+        PROFESSOR, VP, TA, INSTRUCTOR, STUDENT, OUTSTANDING
     }
 
     private class MyComparator implements Comparator<Booking> {
         public int compare(Booking x, Booking y) {
-            return convertToEnum(y.getUser().getRole().getPosition()).compareTo(convertToEnum(x.getUser().getRole().getPosition()));
+            return convertToEnum(y).compareTo(convertToEnum(x));
         }
     }
 
-    private Positions convertToEnum(String position) {
-        switch (position.toLowerCase()) {
+    private Priority convertToEnum(Booking booking) {
+        if ("outstanding".equals(booking.getTypeBooking().getTypeName())) return Priority.OUTSTANDING;
+        switch (booking.getUser().getRole().getName().toLowerCase()) {
             case "student":
-                return Positions.STUDENT;
+                return Priority.STUDENT;
             case "instructor":
-                return Positions.INSTRUCTOR;
+                return Priority.INSTRUCTOR;
             case "ta":
-                return Positions.TA;
+                return Priority.TA;
             case "professor":
-                return Positions.PROFESSOR;
+                return Priority.PROFESSOR;
             case "vp":
-                return Positions.VP;
+                return Priority.VP;
         }
         throw new RoleNotFoundException();
     }
