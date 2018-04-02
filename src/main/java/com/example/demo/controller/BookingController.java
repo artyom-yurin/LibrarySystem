@@ -100,7 +100,10 @@ public class BookingController {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null) throw new UnauthorizedException();
         if (!token.role.equals("admin")) throw new AccessDeniedException();
-        return bookingService.findAll();
+        return bookingService.findAll()
+                .stream()
+                .filter(booking -> ("available".equals(booking.getTypeBooking().getTypeName())))
+                .collect(Collectors.toList());
     }
 
     @PostMapping("/booking/request")
