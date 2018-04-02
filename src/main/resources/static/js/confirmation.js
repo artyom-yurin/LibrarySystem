@@ -1,137 +1,137 @@
-$(updateRequests());
+$(updateConfirmation());
 
-function updateRequests() {
+function updateConfirmation() {
     $.ajax({
-        url: URL_LOCALHOST + "/booking/find",
+        url: URL_LOCALHOST + "/booking/findavailable",
         type: "GET",
         headers: {
             'Authorization': window.localStorage.getItem("Authorization"),
         },
         dataType: "json", // by this property ajax will automatically parse json which we get from response
 
-        success: function (requests_json, status, xhr) {
+        success: function (confirmation_json, status, xhr) {
             console.info("Responding json: ");
-            console.info(requests_json);
+            console.info(confirmation_json);
 
             let outer =
-                "<h4 class=\"border-bottom border-gray pb-2 mb-0\">Requests database</h4>\n" +
+                "<h4 class=\"border-bottom border-gray pb-2 mb-0\">Confirmation</h4>\n" +
                 "\n" +
                 "<div class=\"row mt-2 \\\">";
 
             //this list is not array, but list of <a>
-            let listOfRequests =
+            let listOfConfirmation =
                 "<div class=\"col-4\">\n" +
                 "<div class=\"list-group\" id=\"list-tab\" role=\"tablist\">\n";
 
-            let updatedRequests = "<div class=\"col-8\">\n" +
+            let updatedConfirmation = "<div class=\"col-8\">\n" +
                 "<div class=\"tab-content\" id=\"nav-tabContent\">\n";
 
             let notFirst = false;
-            for (let request in requests_json) {
-                //add <a> (link to particular request) for listOfRequests
+            for (let confirmation in confirmation_json) {
+                //add <a> (link to particular confirmation) for listOfConfirmation
 
 
-                let currentRequest;
+                let currentConfirmation;
 
                 if (notFirst) {
-                    currentRequest =
-                        "<div class='tab-pane fade' id=\'" + requests_json[request]["id"] +
-                        "\' role='tabpanel' aria-labelledby='list" + requests_json[request]["id"] + "\'>\n";
+                    currentConfirmation =
+                        "<div class='tab-pane fade' id=\'" + confirmation_json[confirmation]["id"] +
+                        "\' role='tabpanel' aria-labelledby='list" + confirmation_json[confirmation]["id"] + "\'>\n";
 
-                    listOfRequests +=
-                        "<a class=\"list-group-item list-group-item-action\" id=\"list" + requests_json[request]["id"] +
+                    listOfConfirmation +=
+                        "<a class=\"list-group-item list-group-item-action\" id=\"list" + confirmation_json[confirmation]["id"] +
                         "\" data-toggle=\"list\"\n" +
-                        "href=\"#" + requests_json[request]["id"] +
-                        "\" role=\"tab\" aria-controls=\"list" + requests_json[request]["id"] + "\">" +
-                        requests_json[request]["id"] + "</a>";
+                        "href=\"#" + confirmation_json[confirmation]["id"] +
+                        "\" role=\"tab\" aria-controls=\"list" + confirmation_json[confirmation]["id"] + "\">" +
+                        confirmation_json[confirmation]["id"] + "</a>";
                 }
                 else {
-                    currentRequest =
-                        "<div class='tab-pane fade show active' id=\'" + requests_json[request]["id"] +
-                        "\' role='tabpanel' aria-labelledby='list" + requests_json[request]["id"] + "\'>\n";
+                    currentConfirmation =
+                        "<div class='tab-pane fade show active' id=\'" + confirmation_json[confirmation]["id"] +
+                        "\' role='tabpanel' aria-labelledby='list" + confirmation_json[confirmation]["id"] + "\'>\n";
 
 
-                    listOfRequests += "<a class=\"list-group-item list-group-item-action active show\" id=\"list" + requests_json[request]["id"] +
+                    listOfConfirmation += "<a class=\"list-group-item list-group-item-action active show\" id=\"list" + confirmation_json[confirmation]["id"] +
                         "\" data-toggle=\"list\"\n" +
-                        "href=\"#" + requests_json[request]["id"] +
-                        "\" role=\"tab\" aria-controls=\"list" + requests_json[request]["id"] + "\">" +
-                        requests_json[request]["id"] + "</a>";
+                        "href=\"#" + confirmation_json[confirmation]["id"] +
+                        "\" role=\"tab\" aria-controls=\"list" + confirmation_json[confirmation]["id"] + "\">" +
+                        confirmation_json[confirmation]["id"] + "</a>";
 
                     notFirst = true;
                 }
 
-                currentRequest +=
+                currentConfirmation +=
                     "<dl class='dl-horizontal'>\n";
 
 
                 //add all attributes
-                for (let requestAttributes in requests_json[request]) {
-                    currentRequest += "<dt>" + requestAttributes + "</dt>\n";
-                    currentRequest += "<dd>";
+                for (let confirmationAttributes in confirmation_json[confirmation]) {
+                    currentConfirmation += "<dt>" + confirmationAttributes + "</dt>\n";
+                    currentConfirmation += "<dd>";
 
-                    if (requestAttributes === "document") {
-                        let temp = requests_json[request]["document"]["title"];
-                        currentRequest += temp;
-                        currentRequest = currentRequest.replace("[object Object]","");
+                    if (confirmationAttributes === "document") {
+                        let temp = confirmation_json[confirmation]["document"]["title"];
+                        currentConfirmation += temp;
+                        currentConfirmation = currentConfirmation.replace("[object Object]","");
                     }
-                    if (requestAttributes === "typeBooking") {
-                        let temp = requests_json[request]["typeBooking"]["typeName"];
-                        currentRequest += temp;
-                        currentRequest = currentRequest.replace("[object Object]","");
+                    if (confirmationAttributes === "typeBooking") {
+                        let temp = confirmation_json[confirmation]["typeBooking"]["typeName"];
+                        currentConfirmation += temp;
+                        currentConfirmation = currentConfirmation.replace("[object Object]","");
                     }
-                    if (requestAttributes === "user") {
-                        let temp = requests_json[request]["user"]["name"] + " " + requests_json[request]["user"]["surname"];
-                        currentRequest += temp;
-                        currentRequest = currentRequest.replace("[object Object]","");
+                    if (confirmationAttributes === "user") {
+                        let temp = confirmation_json[confirmation]["user"]["name"] + " " + confirmation_json[confirmation]["user"]["surname"];
+                        currentConfirmation += temp;
+                        currentConfirmation = currentConfirmation.replace("[object Object]","");
 
                     }
 
-                    if (requestAttributes === "returnDate") {
-                        let date = new Date(requests_json[request]["returnDate"]);
-                        currentRequest += date.toString();
-                        currentRequest = currentRequest.replace("[object Object]","");
+                    if (confirmationAttributes === "returnDate") {
+                        let date = new Date(confirmation_json[confirmation]["returnDate"]);
+                        currentConfirmation += date.toString();
+                        currentConfirmation = currentConfirmation.replace("[object Object]","");
                     }
 
                     else {
-                        currentRequest += requests_json[request][requestAttributes];
-                        currentRequest = currentRequest.replace("[object Object]","");
+                        currentConfirmation += confirmation_json[confirmation][confirmationAttributes];
+                        currentConfirmation = currentConfirmation.replace("[object Object]","");
                     }
-                    currentRequest = currentRequest.replace("[object Object]","");
-                    currentRequest += "</dd>\n";
+                    currentConfirmation = currentConfirmation.replace("[object Object]","");
+                    currentConfirmation += "</dd>\n";
                 }
 
-                //close div for request
-                currentRequest +=
+                //close div for confirmation
+                currentConfirmation +=
                     "</dl>" +
                     "<small class='d-block text-right mt-3 border-bottom border-gray pb-2'>\n" +
-                    "<button class='btn btn-outline-success my-2 my-sm-0' onclick='acceptRequest(" + requests_json[request]["id"] + ")' " +
+                    "<button class='btn btn-outline-success my-2 my-sm-0' onclick='acceptConfirmation(" + confirmation_json[confirmation]["id"] + ")' " +
                     "type='submit'>Accept" +
                     "</button>\n" +
                     "</small>\n" +
                     "</div>\n";
 
 
-                updatedRequests += currentRequest;
+                updatedConfirmation += currentConfirmation;
 
             }
 
-            //close listOfRequests block
-            listOfRequests +=
+            //close listOfConfirmation block
+            listOfConfirmation +=
                 " </div>\n" +
                 "</div>\n";
 
             //close UsersBlock
-            updatedRequests +=
+            updatedConfirmation +=
                 "</div>\n" +
                 "</div>\n";
 
 
             let updateButton = "<small class=\"d-block text-right mt-3\">\n" +
-                "<button class=\"btn btn-outline-primary my-2 my-sm-0\" type=\"button\" onclick=\"updateRequests()\">Update</button>\n" +
+                "<button class=\"btn btn-outline-primary my-2 my-sm-0\" type=\"button\" onclick=\"updateConfirmation()\">Update</button>\n" +
                 "</small>\n";
 
-            outer += listOfRequests;
-            outer += updatedRequests;
+            outer += listOfConfirmation;
+            outer += updatedConfirmation;
             outer += "</div>\n";
             outer += updateButton;
             //Final load in html. It replace everything inside <div id = "database'> which is container for our database.
@@ -143,6 +143,26 @@ function updateRequests() {
             console.error(jqXHR);
             console.error(textStatus);
             console.error(errorThrown);
+        }
+    });
+}
+
+function acceptConfirmation(id){
+    alert(id);
+    $.ajax({
+        url: URL_LOCALHOST + "/booking/take?id=" + id,
+        type: "PUT",
+        headers: {
+            'Authorization': window.localStorage.getItem("Authorization"),
+        },
+        success: function (requests_json, status, xhr) {
+            updateRequests();
+            alert("Request has been accepted");
+        },
+        error: function (requests_json, status, xhr) {
+            alert("Failed");
+            console.error(status);
+            console.error(xhr);
         }
     });
 }
