@@ -4,7 +4,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Size;
 
 @Entity
-public class Publisher{
+public class Publisher {
     @Id
     @Column(name = "PUBLISHER_ID")
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -13,7 +13,8 @@ public class Publisher{
     @Column(name = "PUBLISHER_NAME")
     private String publisherName;
 
-    public Publisher() {}
+    public Publisher() {
+    }
 
     public Publisher(String publisherName) {
         this.publisherName = publisherName;

@@ -7,19 +7,19 @@ import org.springframework.context.ConfigurableApplicationContext;
 @SpringBootApplication
 public class Server {
 
-	private static String[] args;
-	private static ConfigurableApplicationContext context;
+    private static String[] args;
+    private static ConfigurableApplicationContext context;
 
-	public static void main(String[] args) {
-		Server.args = args;
-		Server.context = SpringApplication.run(Server.class, args);
-	}
+    public static void main(String[] args) {
+        Server.args = args;
+        Server.context = SpringApplication.run(Server.class, args);
+    }
 
-	public static void restart() {
-		// close previous context
-		context.close();
+    public static void restart() {
+        // close previous context
+        context.close();
 
-		// and build new one
-		Server.context = SpringApplication.run(Server.class, args);
-	}
+        // and build new one
+        Server.context = SpringApplication.run(Server.class, args);
+    }
 }

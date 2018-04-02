@@ -8,8 +8,7 @@ import org.springframework.stereotype.Controller;
 public class TagController {
     private TagService tagService;
 
-    TagController(TagRepository tagRepository)
-    {
+    TagController(TagRepository tagRepository) {
         tagService = new TagService(tagRepository);
     }
 }

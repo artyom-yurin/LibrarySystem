@@ -12,8 +12,7 @@ public class TagService {
         this.tagRepository = tagRepository;
     }
 
-    Tag findById(Integer id)
-    {
+    Tag findById(Integer id) {
         return tagRepository.findById(id);
     }
 }

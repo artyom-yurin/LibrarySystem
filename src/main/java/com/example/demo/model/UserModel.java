@@ -5,20 +5,21 @@ public class UserModel {
     private String name;
     private String surname;
     private String address;
-    private String phoneNumber;
-    private String role;
+    private String phone;
+    private String position;
     private String username;
     private String password;
 
-    public  UserModel(){}
+    public UserModel() {
+    }
 
-    public UserModel(Integer id, String name, String surname, String address, String phoneNumber, String role, String username, String password) {
+    public UserModel(Integer id, String name, String surname, String address, String phone, String position, String username, String password) {
         this.id = id;
         this.name = name;
         this.surname = surname;
         this.address = address;
-        this.phoneNumber = phoneNumber;
-        this.role = role;
+        this.phone = phone;
+        this.position = position;
         this.username = username;
         this.password = password;
     }
@@ -55,20 +56,20 @@ public class UserModel {
         this.address = address;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
-    public String getRole() {
-        return role;
+    public String getPosition() {
+        return position;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setPosition(String position) {
+        this.position = position;
     }
 
     public String getUsername() {

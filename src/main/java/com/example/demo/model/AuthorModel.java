@@ -8,7 +8,8 @@ public class AuthorModel {
 
     private String lastName;
 
-    public AuthorModel() {}
+    public AuthorModel() {
+    }
 
     public AuthorModel(String firstName, String lastName) {
         this.firstName = firstName;

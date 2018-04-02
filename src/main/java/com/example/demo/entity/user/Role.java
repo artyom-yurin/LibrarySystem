@@ -12,11 +12,17 @@ public class Role {
     @Size(max = 25)
     @Column(name = "NAME")
     private String name;
+    @Size(max = 25)
+    @Column(name = "POSITION")
+    private String position;
 
-    public Role() {}
 
-    public Role(String name) {
+    public Role() {
+    }
+
+    public Role(String name, String position) {
         this.name = name;
+        this.position = position;
     }
 
     public Integer getId() {
@@ -33,5 +39,13 @@ public class Role {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
     }
 }

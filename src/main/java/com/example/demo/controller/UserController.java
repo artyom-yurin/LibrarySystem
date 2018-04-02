@@ -11,6 +11,8 @@ import com.example.demo.service.RoleService;
 import com.example.demo.service.UserService;
 import com.example.security.ParserToken;
 import com.example.security.TokenAuthenticationService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -54,9 +56,9 @@ public class UserController {
             if (user != null) {
                 throw new AlreadyUserExistException();
             }
-            Role role = roleService.findByName(userModel.getRole());
+            Role role = roleService.findByPosition(userModel.getPosition().toLowerCase());
             if (role == null) throw new RoleNotFoundException();
-            user = new User(userModel.getName(), userModel.getSurname(), userModel.getAddress(), userModel.getPhoneNumber(), role, userModel.getUsername(), userModel.getPassword());
+            user = new User(userModel.getName(), userModel.getSurname(), userModel.getAddress(), userModel.getPhone(), role, userModel.getUsername(), userModel.getPassword());
             userService.save(user);
             return;
         }
@@ -69,15 +71,15 @@ public class UserController {
         if (token == null) throw new UnauthorizedException();
         if (token.role.equals("admin")) {
             if (userModel.getId() == null) {
-                throw new NullIdException();
+                throw new InvalidIdException();
             }
             User user = userService.findById(userModel.getId());
             if (user == null) {
                 throw new UserNotFoundException();
             }
-            Role role = roleService.findByName(userModel.getRole());
+            Role role = roleService.findByPosition(userModel.getPosition().toLowerCase());
             if (role == null) throw new RoleNotFoundException();
-            user = new User(userModel.getName(), userModel.getSurname(), userModel.getAddress(), userModel.getPhoneNumber(), role, userModel.getUsername(), userModel.getPassword());
+            user = new User(userModel.getName(), userModel.getSurname(), userModel.getAddress(), userModel.getPhone(), role, userModel.getUsername(), userModel.getPassword());
             user.setId(userModel.getId());
             userService.save(user);
             return;
@@ -87,29 +89,20 @@ public class UserController {
 
     @Transactional
     @DeleteMapping("/user/remove")
-    public void removeUser(@RequestBody UserModel userModel, HttpServletRequest request) {
+    public void removeUser(@RequestParam(value = "id", defaultValue = "-1") Integer id, HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null) throw new UnauthorizedException();
-        if (token.role.equals("admin")) {
-            if (userModel.getId() == null) {
-                throw new NullIdException();
-            }
-            User user = userService.findById(userModel.getId());
-            if (user == null) {
-                throw new UserNotFoundException();
-            }
-            userService.remove(user.getId());
-            return;
+        if (!token.role.equals("admin"))
+            throw new AccessDeniedException();
+        if (id == -1) {
+            throw new InvalidIdException();
         }
-        throw new AccessDeniedException();
+        User user = userService.findById(id);
+        if (user == null) {
+            throw new UserNotFoundException();
+        }
+        userService.remove(id);
     }
-
-    /*@GetMapping("/user/find")
-    public User getUser(@RequestParam(value = "username", defaultValue = "") String username){
-        User findUser = userService.findByUsername(username);
-        if (findUser == null) throw new UserNotFoundException();
-        return findUser;
-    }*/
 
     @GetMapping("/user/users")
     public Iterable<User> getUsers(HttpServletRequest request) {

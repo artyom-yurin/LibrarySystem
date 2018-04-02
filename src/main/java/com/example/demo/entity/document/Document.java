@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.Set;
 
 @Entity
-public class Document{
+public class Document {
     @Id
     @Column(name = "DOCUMENT_ID")
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -16,7 +16,7 @@ public class Document{
     @Column(name = "TITLE")
     private String title;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinColumn(name = "AUTHOR_ID")
     private Set<Author> authors;
 
@@ -25,11 +25,11 @@ public class Document{
     @Column(name = "COUNT")
     private Integer count;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinColumn(name = "TAG_ID")
     private Set<Tag> tags;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
     @JoinColumn(name = "PUBLISHER_ID")
     private Publisher publisher;
 
@@ -42,18 +42,19 @@ public class Document{
     @Column(name = "REFERENCE", columnDefinition = "TINYINT(1)")
     private boolean isReference;
 
-    @Column(name = "PUBLISHING_DATE",columnDefinition = "DATETIME")
+    @Column(name = "PUBLISHING_DATE", columnDefinition = "DATETIME")
     private Date publishingDate;
 
     @Size(max = 100)
     @Column(name = "EDITOR")
     private String editor;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
     @JoinColumn(name = "TYPE_ID")
-    private  TypeDocument type;
+    private TypeDocument type;
 
-    public Document() {}
+    public Document() {
+    }
 
     public Document(String title, Set<Author> authors, Integer price, Integer count, Set<Tag> tags, Publisher publisher, Integer edition, boolean isBestseller, boolean isReference, Date publishingDate, String editor, TypeDocument type) {
         this.title = title;

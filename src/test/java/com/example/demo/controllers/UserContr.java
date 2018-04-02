@@ -28,31 +28,31 @@ public class UserContr {
         if (user != null) {
             throw new AlreadyUserExistException();
         }
-        Role role = roleService.findByName(userModel.getRole());
+        Role role = roleService.findByPosition(userModel.getPosition());
         if (role == null) throw new RoleNotFoundException();
-        user = new User(userModel.getName(), userModel.getSurname(), userModel.getAddress(), userModel.getPhoneNumber(), role, userModel.getUsername(), userModel.getPassword());
+        user = new User(userModel.getName(), userModel.getSurname(), userModel.getAddress(), userModel.getPhone(), role, userModel.getUsername(), userModel.getPassword());
         user.setId(-1);
         userService.save(user);
     }
 
     public void updateUserTest(UserModel userModel) {
         if (userModel.getId() == null) {
-            throw new NullIdException();
+            throw new InvalidIdException();
         }
         User user = userService.findById(userModel.getId());
         if (user == null) {
             throw new UserNotFoundException();
         }
-        Role role = roleService.findByName(userModel.getRole());
+        Role role = roleService.findByPosition(userModel.getPosition());
         if (role == null) throw new RoleNotFoundException();
-        user = new User(userModel.getName(), userModel.getSurname(), userModel.getAddress(), userModel.getPhoneNumber(), role, userModel.getUsername(), userModel.getPassword());
+        user = new User(userModel.getName(), userModel.getSurname(), userModel.getAddress(), userModel.getPhone(), role, userModel.getUsername(), userModel.getPassword());
         user.setId(userModel.getId());
         userService.save(user);
     }
 
     public void removeUserTest(UserModel userModel) {
         if (userModel.getId() == null) {
-            throw new NullIdException();
+            throw new InvalidIdException();
         }
         User user = userService.findById(userModel.getId());
         if (user == null) {
@@ -75,9 +75,9 @@ public class UserContr {
         return userService.getAllUsers();
     }
 
-    public int getAmountTest(){
+    public int getAmountTest() {
         int count = 0;
-        for(User user : getUsersTest()){
+        for (User user : getUsersTest()) {
             count++;
         }
         return count;
