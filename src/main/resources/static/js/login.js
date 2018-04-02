@@ -9,12 +9,13 @@ function sendLoginAndPassword() {
     });
 
     $.ajax({
-            url: URL_LOCALHOST + "/user/login",
+            url: URL_LOCALHOST + "user/login",
             type: "POST",
             headers: {
                 'Content-Type': "application/json"
             },
             contentType: "application/json; charset=utf-8",
+            async: false,
             data: userData,
 
             success: function (html_data, status, xhr) {
@@ -34,20 +35,21 @@ function sendLoginAndPassword() {
             }
 
         }
-    );8
+    );
 }
 
 // Constants
-var URL_LOCALHOST = "http://localhost:8080";
+var URL_LOCALHOST = "http://localhost:8080/";
 
-var linkToUsers = URL_LOCALHOST + '/admin/users.html';
-var linkToBooks = URL_LOCALHOST + '/admin/documents.html';
-var linkToRequest = URL_LOCALHOST + '/admin/requests.html';
-var linkToCatalog = URL_LOCALHOST + '/catalog.html';
-var linkToMyBooks = URL_LOCALHOST + '/myBooks.html';
+var linkToUsers = URL_LOCALHOST + 'admin/users.html';
+var linkToBooks = URL_LOCALHOST + 'admin/documents.html';
+var linkToRequest = URL_LOCALHOST + 'admin/requests.html';
+var linkToCatalog = URL_LOCALHOST + 'catalog.html';
+var linkToMyBooks = URL_LOCALHOST + 'myBooks.html';
 
 window.onbeforeunload = function(){
     localStorage.clear();
+    console.log("All keys successfully deleted from localStorage");
 };
 
 

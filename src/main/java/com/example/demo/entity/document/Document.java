@@ -16,7 +16,7 @@ public class Document {
     @Column(name = "TITLE")
     private String title;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinColumn(name = "AUTHOR_ID")
     private Set<Author> authors;
 
@@ -25,11 +25,11 @@ public class Document {
     @Column(name = "COUNT")
     private Integer count;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinColumn(name = "TAG_ID")
     private Set<Tag> tags;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
     @JoinColumn(name = "PUBLISHER_ID")
     private Publisher publisher;
 
@@ -49,7 +49,7 @@ public class Document {
     @Column(name = "EDITOR")
     private String editor;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
     @JoinColumn(name = "TYPE_ID")
     private TypeDocument type;
 

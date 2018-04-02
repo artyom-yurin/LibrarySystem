@@ -22,7 +22,7 @@ public class User {
     @Size(max = 25)
     @Column(name = "PHONE")
     private String phoneNumber;
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
     @JoinColumn(name = "ROLE_ID")
     private Role role;
     @Size(max = 25)

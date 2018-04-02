@@ -69,7 +69,7 @@ public class BookingController {
         return bookingService.findAll()
                 .stream()
                 .filter(booking -> booking.getUser().getId().equals(token.id))
-                .filter(booking -> !("close".equals(booking.getTypeBooking().getTypeName())))
+                .filter(booking -> !("close".equals(booking.getTypeBooking().getTypeName()) || "return request".equals(booking.getTypeBooking().getTypeName())))
                 .collect(Collectors.toList());
     }
 
@@ -122,6 +122,8 @@ public class BookingController {
                 long time = System.currentTimeMillis();
                 returnDate.setTime(time + AVAILABLE_TIME);
                 bookingService.save(new Booking(user, document, returnDate, 0, typeBookingService.findByTypeName("available")));
+                document.setCount(document.getCount() - 1);
+                documentService.save(document);
             } else {
                 bookingService.save(new Booking(user, document, returnDate, 0, typeBookingService.findByTypeName("open")));
             }
@@ -168,8 +170,6 @@ public class BookingController {
         } else {
             returnDate.setTime(time + AV_JOURNAL_TIME);
         }
-        document.setCount(document.getCount() - 1);
-        documentService.save(document);
     }
 
     @PutMapping("/booking/return")
@@ -224,16 +224,6 @@ public class BookingController {
 
     @Transactional
     @DeleteMapping("/booking/remove")
-    public void removeBooking(@RequestBody Booking booking, HttpServletRequest request) {
-        ParserToken token = TokenAuthenticationService.getAuthentication(request);
-        if (token == null)
-            throw new UnauthorizedException();
-        if (!token.role.equals("admin")) throw new AccessDeniedException();
-        this.bookingService.removeBookingById(booking.getId());
-    }
-
-    @Transactional
-    @DeleteMapping("/booking/idremove")
     public void removeBookingById(@RequestParam(value = "id", defaultValue = "-1") Integer id, HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null)
@@ -301,8 +291,7 @@ public class BookingController {
 
         PriorityQueue<Booking> queue = getQueueForBookById(booking.getDocument().getId());
 
-
-        if ("outstanding".equals(queue.peek().getTypeBooking().getTypeName())) {
+        if (queue.size() > 0 && "outstanding".equals(queue.peek().getTypeBooking().getTypeName())) {
             throw new UnableRenewException();
         }
 
@@ -339,6 +328,12 @@ public class BookingController {
                 newBooking.setReturnDate(returnData);
                 bookingService.save(newBooking);
                 //TODO: NOTIFICATION TO NEW USER THAT BOOK AVAILABLE FOR HIM
+            }
+            else
+            {
+                Document document = booking.getDocument();
+                document.setCount(document.getCount() + 1);
+                documentService.save(document);
             }
         } else {
             getFine(booking);
