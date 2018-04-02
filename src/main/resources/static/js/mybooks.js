@@ -205,7 +205,7 @@ function updateMyBooks(){
 //         success: function (mybooks_json, status, xhr) {
 //             console.info("Responding json: ");
 //             console.info(mybooks_json);
-//             alert("Book has been returned");
+//
 //         },
 //         error: function (mybooks_json, status, xhr) {
 //             alert("Book can't be returned");

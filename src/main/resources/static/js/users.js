@@ -198,7 +198,6 @@ function addUser() {
 }
 
 function deleteUser(id) {
-    alert(id);
     $.ajax({
         url: URL_LOCALHOST + "/user/remove?id=" + id,
         type: "DELETE",

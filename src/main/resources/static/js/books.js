@@ -306,7 +306,7 @@ function addBook() {
         contentType: "application/json; charset=utf-8",
         data: jsonData,
         success: function (data, status, xhr) {
-            alert("ura");
+
             updateBooks();
         },
         error: function (jqXHR, textStatus, errorThrown) {
@@ -321,7 +321,7 @@ function addBook() {
 }
 
 function deleteBook(id) {
-    alert(id);
+
     $.ajax({
         url: URL_LOCALHOST + "/document/remove?id=" + id,
         type: "DELETE",
@@ -349,7 +349,6 @@ function fillInputsInBookModify() {
 
         let toReplace = "#" + map.get(bookAttributesWeHave[index]) + "Modify";
         let replaceWith = $("#" + bookAttributesWeHave[index] + currentBookId + 'd')[0].innerHTML;
-        alert("toReplace = " + toReplace + "\nreplaceWith = " + replaceWith);
         $(toReplace).val(replaceWith);
     }
     console.log("attributes end");
