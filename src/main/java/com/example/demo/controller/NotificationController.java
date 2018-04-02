@@ -30,7 +30,7 @@ public class NotificationController {
         if (token.role.equals("admin")) throw new AccessDeniedException();
         return notificationService.findAll()
                 .stream()
-                .filter(booking -> booking.getUser().equals(token.id))
+                .filter(booking -> booking.getUser().getId().equals(token.id))
                 .collect(Collectors.toList());
     }
 }
