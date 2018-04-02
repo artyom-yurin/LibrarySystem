@@ -182,8 +182,68 @@ function updateBooks() {
 
 
 function modifyCurrentBook() {
-    //TODO
-    //Analogy with users. NOTE: you should read from "#...Modify" (id should contains "Modify" suffix)
+
+    let title = $("#titleModify").val();
+    let edition = $("#editionModify").val();
+    let editor = $("#editorModify").val();
+    let publisher = $("#publisherModify").val();
+    let publishingDate = $("#publishingDateModify").val();
+    let price = $("#priceModify").val();
+    let count = $("#countModify").val();
+    let isBestseller = $("#isBestsellerModify").val();
+    let isReference = $("#isReferenceModify").val();
+    let type = $("#typeModify").val();
+    let authors = $("#authorsModify").val().trim().split(',');
+    let tags = $("#tagsModify").val().trim().split(',');
+
+    let jsonAuthors = [];
+
+    for (let index in authors) {
+        let tmp = authors[index].split(' ');
+        jsonAuthors.push({
+            "firstName": (tmp[0].trim()),
+            "lastName": (tmp[1].trim())
+        });
+    }
+
+    publishingDate = Date.parse(publishingDate);
+
+    let jsonData = JSON.stringify({
+        "title": title,
+        "edition": edition,
+        "editor": editor,
+        "publisherName": publisher,
+        "price": price,
+        "count": count,
+        "bestseller": isBestseller,
+        "reference": isReference,
+        "publishingDate": publishingDate,
+        "type": type,
+        "authors": jsonAuthors,
+        "tags": tags
+    });
+
+    console.info(jsonData);
+    $.ajax({
+        url: URL_LOCALHOST + "/document/update",
+        type: "PUT",
+        headers: {
+            'Authorization': window.localStorage.getItem("Authorization"),
+            'Content-Type': "application/json"
+        },
+        contentType: "application/json",
+        data: jsonData,
+        success: function (data, status, xhr) {
+            updateUsers();
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            alert("Fail book modifying");
+            console.error(jqXHR);
+            console.error(textStatus);
+            console.error(errorThrown);
+        }
+    });
+
 }
 
 function addBook() {
@@ -222,7 +282,7 @@ function addBook() {
         "bestseller": isBestseller,
         "reference": isReference,
         "publishingDate": publishingDate,
-        "typeName": type,
+        "type": type,
         "authors": jsonAuthors,
         "tags": tags
     });
@@ -313,4 +373,6 @@ function init() {
     map.set("type", "type");
     map.set("authors", "authors");
     map.set("tags", "tags");
+
+    console.log(map);
 }
