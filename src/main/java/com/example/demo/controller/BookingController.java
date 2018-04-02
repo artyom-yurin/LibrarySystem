@@ -227,7 +227,7 @@ public class BookingController {
             String message = "";
             message += document.getTitle();
             message += " is available for you";
-            notificationService.newNotification(token.id, message);
+            notificationService.newNotification(booking.getUser().getId(), message);
         } else {
             document.setCount(document.getCount() + 1);
             documentService.save(document);
@@ -273,7 +273,7 @@ public class BookingController {
             bookingService.save(bookItem);
 
             String message = "Your queue position is cancelled";
-            notificationService.newNotification(token.id, message);
+            notificationService.newNotification(bookItem.getUser().getId(), message);
         }
         booking.setTypeBooking(typeBookingService.findByTypeName("outstanding"));
         bookingService.save(booking);
@@ -346,7 +346,6 @@ public class BookingController {
 
             String message = "Your queue position is cancelled";
             notificationService.newNotification(booking.getUser().getId(), message);
-
             PriorityQueue<Booking> pq = getQueueForBookById(booking.getDocument().getId());
             if (pq.size() > 0) {
                 Booking newBooking = pq.peek();
@@ -355,11 +354,10 @@ public class BookingController {
                 returnData.setTime(System.currentTimeMillis() + AVAILABLE_TIME);
                 newBooking.setReturnDate(returnData);
                 bookingService.save(newBooking);
-
-                String message1 = "";
+                message = "";
                 message += booking.getDocument().getTitle();
                 message += " is available for you";
-                notificationService.newNotification(booking.getUser().getId(), message);
+                notificationService.newNotification(newBooking.getUser().getId(), message);
             }
             else
             {
@@ -369,10 +367,9 @@ public class BookingController {
             }
         } else {
             getFine(booking);
-
-            String message2 = "You have fine of ";
-            message2 += Integer.toString(booking.getFine());
-            notificationService.newNotification(booking.getUser().getId(), message2);
+            String message = "You have fine of ";
+            message += Integer.toString(booking.getFine());
+            notificationService.newNotification(booking.getUser().getId(), message);
         }
     }
 
