@@ -155,7 +155,6 @@ function updateRequests() {
 }
 
 function acceptRequest(id){
-    alert(id);
     $.ajax({
         url: URL_LOCALHOST + "/booking/close?id=" + id,
         type: "PUT",
@@ -164,7 +163,6 @@ function acceptRequest(id){
         },
         success: function (requests_json, status, xhr) {
             updateRequests();
-            alert("Request has been accepted");
         },
         error: function (requests_json, status, xhr) {
             alert("Failed");

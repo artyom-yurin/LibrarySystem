@@ -164,7 +164,6 @@ function chekoutDocument(id){
             },
             success: function (books_json, status, xhr) {
                 updateCatalog();
-                alert("Book has been taked");
             },
             error: function (books_json, status, xhr) {
                 alert("Book can't be taken");

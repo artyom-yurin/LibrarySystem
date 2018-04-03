@@ -36,7 +36,7 @@ $('#' + 'linkMyBooks').on("click", function () {
 
 $('#' + 'linkLogin').on("click", function () {
     window.localStorage.clear();
-    alert("All keys successfully deleted from localStorage");
+    //alert("All keys successfully deleted from localStorage");
     window.location.href = URL_LOCALHOST;
 });
 
