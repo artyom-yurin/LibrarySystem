@@ -66,17 +66,19 @@ public class SystemTest {
 
     public void addUsers()
     {
+        userController.addUser(new UserModel(-1, "Sergey", "Afonso", "Via Margutta, 3", "30001", "Professor", "ser", "123"));
 
+        userController.addUser(new UserModel(-1, "Nadia", "Teixeira", "Via Sacra, 13", " 30002", "Professor", "nad", "123"));
+
+        userController.addUser(new UserModel(-1, "Elvira", "Espindola", "Via del Corso, 22", "30003", "Professor", "elv", "123"));
+
+        userController.addUser(new UserModel(-1, "Andrey", "Velo", "Avenida Mazatlan 250", "30004", "Student", "and", "123"));
+
+        userController.addUser(new UserModel(-1, "Veronika", "Rama", "Stret Atocha, 27", "30005", "VP", "ver", "123"));
     }
 
     public void addDocuments()
     {
-
-    }
-
-
-    @Test
-    public void test1() {
         /*Set<Author> authors0 = new HashSet<>();
         Author tempAuthor = new Author("Thomas H", "Cormen");
         authorRepository.save(tempAuthor);
@@ -97,6 +99,11 @@ public class SystemTest {
         Publisher publisher0 = new Publisher(("MIT Press").toLowerCase());
         publisherRepository.save(publisher0);
         publisher0 = publisherRepository.findByPublisherName(("MIT Press").toLowerCase());*/
+    }
+
+
+    @Test
+    public void test1() {
         addUsers();
         addDocuments();
 
