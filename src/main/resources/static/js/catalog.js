@@ -89,7 +89,14 @@ function updateCatalog() {
 
                         else if (bookAttributes === "publishingDate") {
                             let date = new Date(books_json[book]["publishingDate"]);
-                            currentBook += date.toString();
+                            let day = date.getDate();
+                            if(day.toString().length == 1)
+                                day = "0" + day;
+                            let month = date.getMonth();
+                            if(month.toString().length == 1)
+                                month = "0" + month;
+                            let year = date.getFullYear();
+                            currentBook += year + "-" + month + "-" + day;
                         }
 
                         else if (bookAttributes === "tags") {
