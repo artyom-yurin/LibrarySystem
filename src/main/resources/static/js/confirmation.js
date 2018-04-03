@@ -162,7 +162,7 @@ function acceptConfirmation(id){
             'Authorization': window.localStorage.getItem("Authorization"),
         },
         success: function (requests_json, status, xhr) {
-            updateRequests();
+            updateConfirmation();
         },
         error: function (requests_json, status, xhr) {
             alert("Failed");

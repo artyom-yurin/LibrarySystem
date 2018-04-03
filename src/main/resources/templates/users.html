@@ -70,7 +70,7 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
-                <form class="needs-validation" onsubmit="modifyCurrentUser()">
+                <form class="needs-validation" id="modifyUserForm" onsubmit="modifyCurrentUser()">
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="firstNameModify">First name</label>
@@ -141,7 +141,7 @@
                                 <option value='ta'>TA</option>
                                 <option value='professor'>Professor</option>
                                 <option value='admin'>Admin</option>
-                                <option value='vs'>Visiting Professor</option>
+                                <option value='vp'>Visiting Professor</option>
                             </select>
                         </div>
                     </div>
@@ -186,7 +186,7 @@
         <div class="col-md-8 order-md mb-4">
             <!--Deal with Users-->
             <h4 class="mb-3">Add User</h4>
-            <form class="needs-validation" onsubmit="addUser()">
+            <form class="needs-validation" id="addUserForm" onsubmit="addUser()">
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="firstName">First name</label>
