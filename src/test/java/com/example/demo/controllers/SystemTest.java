@@ -79,7 +79,7 @@ public class SystemTest {
 
     public void addDocuments()
     {
-        /*Set<Author> authors0 = new HashSet<>();
+        Set<Author> authors0 = new HashSet<>();
         Author tempAuthor = new Author("Thomas H", "Cormen");
         authorRepository.save(tempAuthor);
         authors0.add(authorRepository.findByLastName("Cormen"));
@@ -98,7 +98,37 @@ public class SystemTest {
 
         Publisher publisher0 = new Publisher(("MIT Press").toLowerCase());
         publisherRepository.save(publisher0);
-        publisher0 = publisherRepository.findByPublisherName(("MIT Press").toLowerCase());*/
+        publisher0 = publisherRepository.findByPublisherName(("MIT Press").toLowerCase());
+        documentController.addDocument(new DocumentModel(1, "Introduction to Algorithms", authors0, 5000, 3, new HashSet<Tag>(), publisher0, 3, false, false, new Date(1230768000000L), "", typeDocumentService.findByTypeName("book")));
+
+        Set<Author> authors1 = new HashSet<>();
+        tempAuthor = new Author("Erich", "Gamma");
+        authorRepository.save(tempAuthor);
+        authors1.add(authorRepository.findByLastName("Gamma"));
+
+        tempAuthor = new Author("Ralph", "Johnson");
+        authorRepository.save(tempAuthor);
+        authors1.add(authorRepository.findByLastName("Johnson"));
+
+        tempAuthor = new Author("John", "Vlissides");
+        authorRepository.save(tempAuthor);
+        authors1.add(authorRepository.findByLastName("Vlissides"));
+
+        tempAuthor = new Author("Richard", "Helm");
+        authorRepository.save(tempAuthor);
+        authors1.add(authorRepository.findByLastName("Helm"));
+
+        Publisher publisher1 = new Publisher("Addison-Wesley Professional".toLowerCase());
+        publisherRepository.save(publisher1);
+        publisher1 = publisherRepository.findByPublisherName("Addison-Wesley Professional".toLowerCase());
+        documentController.addDocument(new DocumentModel(1, "Design Patterns: Elements of Reusable Object-Oriented Software", authors1, 1700, 3, new HashSet<Tag>(), publisher1, 1, true, false, new Date(1041379200000L), "", typeDocumentService.findByTypeName("book")));
+
+        Set<Author> authors3 = new HashSet<>();
+        tempAuthor = new Author("Tony", "Hoare");
+        authorRepository.save(tempAuthor);
+        authors3.add(authorRepository.findByLastName("Hoare"));
+
+        documentController.addDocument(new DocumentModel(1, "Null References: The Billion Dollar Mistake", authors3, 700, 2, new HashSet<Tag>(), null, 0, false, false, null, "", typeDocumentService.findByTypeName("avmaterial")));
     }
 
 
