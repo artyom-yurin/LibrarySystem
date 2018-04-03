@@ -1,9 +1,9 @@
 $(updateUsers());
 init();
-$("#addUserForm").submit(function(e) {
+$("#addUserForm").submit(function (e) {
     e.preventDefault();
 });
-$("#modifyUserForm").submit(function(e) {
+$("#modifyUserForm").submit(function (e) {
     e.preventDefault();
 });
 var currentUserId = -1;
@@ -21,6 +21,155 @@ function pushNewUserAttribute(attr) {
 function setCurrentUser(id) {
     currentUserId = id;
     fillInputsInUserModify();
+}
+
+function showUserRequests(id) {
+    $.ajax({
+        url: URL_LOCALHOST + "/booking/find?id=" + id,
+        type: "GET",
+        headers: {
+            'Authorization': window.localStorage.getItem("Authorization"),
+        },
+        dataType: "json", // by this property ajax will automatically parse json which we get from response
+
+        success: function (requests_json, status, xhr) {
+            console.info("Responding json: ");
+            console.info(requests_json);
+
+            let outer =
+                "<div class=\"modal-dialog\">" +
+                "<div class=\"modal-content\">" +
+                "<div class=\"modal-header\">" +
+                "<h4 class=\"modal-title\">Current User Requests</h4>" +
+                "<button type=\"button\" class=\"close\" data-dismiss=\"modal\">×</button>"
+                + "</div>";
+
+
+            outer += "<div class=\"row mt-2 \">";
+
+            //this list is not array, but list of <a>
+            let listOfRequests =
+                "<div class=\"col-4\">\n" +
+                "<div class=\"list-group\" id=\"new-list-tab\" role=\"tablist\">\n";
+
+            let updatedRequests = "<div class=\"col-8\">\n" +
+                "<div class=\"tab-content\" id=\"new-nav-tabContent\">\n";
+
+            let notFirst = false;
+            for (let request in requests_json) {
+                //add <a> (link to particular request) for listOfRequests
+
+
+                let currentRequest;
+
+                if (notFirst) {
+                    currentRequest =
+                        "<div class='tab-pane fade' id=\'" + requests_json[request]["id"] +
+                        "\' role='tabpanel' aria-labelledby='list" + requests_json[request]["id"] + "\'>\n";
+
+                    listOfRequests +=
+                        "<a class=\"list-group-item list-group-item-action\" id=\"list" + requests_json[request]["id"] +
+                        "\" data-toggle=\"list\"\n" +
+                        "href=\"#" + requests_json[request]["id"] +
+                        "\" role=\"tab\" aria-controls=\"list" + requests_json[request]["id"] + "\">" +
+                        requests_json[request]["document"]["title"] + "</a>";
+                }
+                else {
+                    currentRequest =
+                        "<div class='tab-pane fade show active' id=\'" + requests_json[request]["id"] +
+                        "\' role='tabpanel' aria-labelledby='list" + requests_json[request]["id"] + "\'>\n";
+
+
+                    listOfRequests += "<a class=\"list-group-item list-group-item-action active show\" id=\"list" + requests_json[request]["id"] +
+                        "\" data-toggle=\"list\"\n" +
+                        "href=\"#" + requests_json[request]["id"] +
+                        "\" role=\"tab\" aria-controls=\"list" + requests_json[request]["id"] + "\">" +
+                        requests_json[request]["document"]["title"] + "</a>";
+
+                    notFirst = true;
+                }
+
+
+                //add all attributes
+                for (let requestAttributes in requests_json[request]) {
+                    currentRequest += "<dt>" + requestAttributes + "</dt>\n";
+                    currentRequest += "<dd>";
+
+                    if (requestAttributes === "document") {
+                        let temp = requests_json[request]["document"]["title"];
+                        currentRequest += temp;
+                        currentRequest = currentRequest.replace("[object Object]", "");
+                    }
+                    if (requestAttributes === "typeBooking") {
+                        let temp = requests_json[request]["typeBooking"]["typeName"];
+                        currentRequest += temp;
+                        currentRequest = currentRequest.replace("[object Object]", "");
+                    }
+                    if (requestAttributes === "user") {
+                        let temp = requests_json[request]["user"]["name"] + " " + requests_json[request]["user"]["surname"];
+                        currentRequest += temp;
+                        currentRequest = currentRequest.replace("[object Object]", "");
+
+                    }
+
+                    if (requestAttributes === "returnDate") {
+                        let date = new Date(requests_json[request]["returnDate"]);
+                        let day = date.getDate();
+                        if (day.toString().length == 1)
+                            day = "0" + day;
+                        let month = date.getMonth();
+                        if (month.toString().length == 1)
+                            month = "0" + month;
+                        let year = date.getFullYear();
+                        currentRequest += year + "-" + month + "-" + day;
+                        currentRequest = currentRequest.replace("[object Object]", "");
+                    }
+
+                    else {
+                        currentRequest += requests_json[request][requestAttributes];
+                        currentRequest = currentRequest.replace("[object Object]", "");
+                    }
+                    currentRequest = currentRequest.replace("[object Object]", "");
+                    currentRequest += "</dd>\n";
+                }
+
+                //close div for request
+                currentRequest += "</dl>" +
+                    "</div>\n";
+
+
+                updatedRequests += currentRequest;
+
+            }
+
+            //close listOfRequests block
+            listOfRequests +=
+                " </div>\n" +
+                "</div>\n";
+
+            //close UsersBlock
+            updatedRequests +=
+                "</div>\n" +
+                "</div>\n";
+
+            outer += listOfRequests;
+            outer += updatedRequests;
+            outer += "</div>\n";
+            outer += "</div>\n";
+            outer += "</div>\n";
+
+            //Final load in html. It replace everything inside <div id = "database'> which is container for our database.
+            $("#userRequests").html(outer);
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            alert("failed in getting requests");
+
+            console.error(jqXHR);
+            console.error(textStatus);
+            console.error(errorThrown);
+        }
+    });
+
 }
 
 function updateUsers() {
@@ -107,6 +256,11 @@ function updateUsers() {
                 currentUser +=
                     "</dl>" +
                     "<small class='d-block text-right mt-3 border-bottom border-gray pb-2'>\n" +
+
+                    "<button class='btn btn-outline-primary my-2 my-sm-0' data-toggle=\"modal\" data-target=\"#userRequests\" onclick='showUserRequests(" +
+                    users[user]["id"] +
+                    ")' type='submit'>Show user requests" +
+                    "</button>\n" +
 
                     "<button class='btn btn-outline-primary my-2 my-sm-0' data-toggle=\"modal\" data-target=\"#myModal\" " +
                     "onclick='setCurrentUser(" + users[user]["id"] + ")' >Modify" +

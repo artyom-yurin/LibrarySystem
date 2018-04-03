@@ -1,3 +1,16 @@
+$(checkIfUserIsAlreadyLogged());
+
+function checkIfUserIsAlreadyLogged() {
+    alert('checkBegin');
+    if (localStorage.getItem('Authorization') != null) {
+        alert("checkTrue");
+        document.open();
+        document.write(localStorage.getItem('lastPage'));
+        document.close();
+    }
+    alert("checkEND");
+}
+
 function sendLoginAndPassword() {
     let user = $("#inputUsername").val();
     let pass = $("#inputPassword").val();
@@ -49,9 +62,9 @@ var linkToMyBooks = URL_LOCALHOST + 'myBooks.html';
 var linkToConfirmation = URL_LOCALHOST + 'admin/confirmation.html';
 var linkToNotification = URL_LOCALHOST + 'notifications.html';
 
-window.onbeforeunload = function(){
-    localStorage.clear();
-    console.log("All keys successfully deleted from localStorage");
+window.onbeforeunload = function () {
+    localStorage.setItem('lastPage', $("html")[0]);
 };
+
 
 

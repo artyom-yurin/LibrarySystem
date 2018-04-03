@@ -109,7 +109,6 @@ function updateNotifications() {
 
 
                 updatedConfirmation += currentConfirmation;
-
             }
 
             //close listOfConfirmation block
