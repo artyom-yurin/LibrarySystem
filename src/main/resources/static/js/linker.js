@@ -26,7 +26,6 @@ $('#' + 'linkNotifications').on("click", function () {
 $('#' + 'linkBooks').on("click", function () {
     sendToken(linkToBooks);
 });
-
 $('#' + 'linkCatalog').on("click", function () {
     sendToken(linkToCatalog);
 });
@@ -36,7 +35,7 @@ $('#' + 'linkMyBooks').on("click", function () {
 
 $('#' + 'linkLogin').on("click", function () {
     window.localStorage.clear();
-    //alert("All keys successfully deleted from localStorage");
+    console.log("All keys successfully deleted from localStorage");
     window.location.href = URL_LOCALHOST;
 });
 
