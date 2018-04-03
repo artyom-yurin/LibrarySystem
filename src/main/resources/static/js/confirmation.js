@@ -111,9 +111,6 @@ function updateConfirmation() {
                 currentConfirmation +=
                     "</dl>" +
                     "<small class='d-block text-right mt-3 border-bottom border-gray pb-2'>\n" +
-                    "<button class='btn btn-outline-danger my-2 my-sm-0' onclick='outstandRequest(" + confirmation_json[confirmation]["id"] + ")' " +
-                    "type='submit'>Outstanding Request" +
-                    "</button>\n" +
                     "<button class='btn btn-outline-success my-2 my-sm-0' onclick='acceptConfirmation(" + confirmation_json[confirmation]["id"] + ")' " +
                     "type='submit'>Accept" +
                     "</button>\n" +
@@ -144,6 +141,7 @@ function updateConfirmation() {
             outer += updatedConfirmation;
             outer += "</div>\n";
             outer += updateButton;
+
             //Final load in html. It replace everything inside <div id = "database'> which is container for our database.
             $("#database").html(outer);
         },
