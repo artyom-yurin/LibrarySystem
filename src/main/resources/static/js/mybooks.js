@@ -83,7 +83,7 @@ function updateMyBooks(){
                         "\" data-toggle=\"list\"\n" +
                         "href=\"#" + mybooks_json[mybook]["id"] +
                         "\" role=\"tab\" aria-controls=\"list" + mybooks_json[mybook]["id"] + "\">" +
-                        mybooks_json[mybook]["id"] + "</a>";
+                        mybooks_json[mybook]["title"] + "</a>";
                 }
                 else {
                     currentMybook =
@@ -95,7 +95,7 @@ function updateMyBooks(){
                         "\" data-toggle=\"list\"\n" +
                         "href=\"#" + mybooks_json[mybook]["id"] +
                         "\" role=\"tab\" aria-controls=\"list" + mybooks_json[mybook]["id"] + "\">" +
-                        mybooks_json[mybook]["id"] + "</a>";
+                        mybooks_json[mybook]["title"] + "</a>";
 
                     notFirst = true;
                 }
