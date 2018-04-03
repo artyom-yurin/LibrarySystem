@@ -1,5 +1,12 @@
 $(updateBooks());
 init();
+$("#addBookForm").submit(function(e) {
+    e.preventDefault();
+});
+$("#modifyBookForm").submit(function(e) {
+    e.preventDefault();
+});
+
 
 var currentBookId = -1;
 var bookAttributesWeHave = [];
@@ -306,7 +313,6 @@ function addBook() {
         contentType: "application/json; charset=utf-8",
         data: jsonData,
         success: function (data, status, xhr) {
-
             updateBooks();
         },
         error: function (jqXHR, textStatus, errorThrown) {

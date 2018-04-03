@@ -61,7 +61,7 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
-                <form class="needs-validation" onsubmit="modifyCurrentBook()">
+                <form class="needs-validation" id ="modifyBookForm" onsubmit="modifyCurrentBook()">
                     <div class="row">
 
                         <div class="col-md-6 mb-3">
@@ -244,7 +244,7 @@
         <div class="col-md-8 order-md mb-4">
             <!--Deal with Books-->
             <h4 class="mb-3">Add Document</h4>
-            <form class="needs-validation" onsubmit="addBook()">
+            <form class="needs-validation" id="addBookForm" onsubmit="addBook()">
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="title">Title</label>
