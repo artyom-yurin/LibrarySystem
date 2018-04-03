@@ -198,7 +198,8 @@ public class SystemTest {
         pq = bookingController.getQueueForBook(d3.getId());
 
         assert(pq.size() == 1);
-        //TODO: CHECK NOTIFICATIONS
+        assert ("Your queue position is cancelled".equals(notificationController.findMyNotifications(v.getId()).get(0).getMessage()));
+        assert ("Your queue position is cancelled".equals(notificationController.findMyNotifications(p3.getId()).get(0).getMessage()));
 
         clearDB();
     }
@@ -229,16 +230,13 @@ public class SystemTest {
 
         bookingController.requestDocumentById(d3.getId(), p3.getId(), System.currentTimeMillis());
 
-        PriorityQueue<Booking> pq = bookingController.getQueueForBook(d3.getId());
-        Integer firstQueueBookingIndex = pq.poll().getId();
-
         bookingController.closeBooking(bookingController.findMyBooking(p2.getId()).get(0).getId(), System.currentTimeMillis());
 
-        pq = bookingController.getQueueForBook(d3.getId());
+        PriorityQueue<Booking> pq = bookingController.getQueueForBook(d3.getId());
 
         assert (pq.size() == 2);
         assert ("available".equals(bookingController.findMyBooking(s.getId()).get(0).getTypeBooking().getTypeName()));
-        //TODO: CHECK NOTIFICATIONS
+        assert ("Null References: The Billion Dollar Mistake is available for you".equals(notificationController.findMyNotifications(s.getId()).get(0).getMessage()));
         clearDB();
     }
 
