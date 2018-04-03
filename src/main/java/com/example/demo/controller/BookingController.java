@@ -419,7 +419,7 @@ public class BookingController {
 
     private Priority convertToEnum(Booking booking) {
         if ("outstanding".equals(booking.getTypeBooking().getTypeName())) return Priority.OUTSTANDING;
-        switch (booking.getUser().getRole().getName().toLowerCase()) {
+        switch (booking.getUser().getRole().getPosition().toLowerCase()) {
             case "student":
                 return Priority.STUDENT;
             case "instructor":

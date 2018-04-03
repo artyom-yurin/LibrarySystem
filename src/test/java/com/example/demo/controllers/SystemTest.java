@@ -1,7 +1,8 @@
 package com.example.demo.controllers;
 
 import com.example.demo.controller.BookingContr;
-import com.example.demo.entity.Notification;
+import com.example.demo.entity.booking.Booking;
+import com.example.demo.entity.document.*;
 import com.example.demo.entity.document.Author;
 import com.example.demo.entity.document.Publisher;
 import com.example.demo.entity.document.Tag;
@@ -21,6 +22,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.PriorityQueue;
 import java.util.Set;
 
 @RunWith(SpringRunner.class)
@@ -53,15 +55,14 @@ public class SystemTest {
     @Autowired
     BookingRepository bookingRepository;
 
-    @Before
-    @After
-    public void clearDB() {
-        userRepository.deleteAll();
-        documentRepository.deleteAll();
-        publisherRepository.deleteAll();
-        authorRepository.deleteAll();
-        bookingRepository.deleteAll();
+    public void clearDB()
+    {
         notificationRepository.deleteAll();
+        bookingRepository.deleteAll();
+        documentRepository.deleteAll();
+        authorRepository.deleteAll();
+        publisherRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     public void addUsers()
@@ -131,17 +132,192 @@ public class SystemTest {
         documentController.addDocument(new DocumentModel(1, "Null References: The Billion Dollar Mistake", authors3, 700, 2, new HashSet<Tag>(), null, 0, false, false, null, "", typeDocumentService.findByTypeName("avmaterial")));
     }
 
+    @Test
+    public void test6() {
+        clearDB();
+        addUsers();
+        addDocuments();
+        User p1 = userRepository.findByUsername("ser");
+        User p2 = userRepository.findByUsername("nad");
+        User p3 = userRepository.findByUsername("elv");
+        User s = userRepository.findByUsername("and");
+        User v = userRepository.findByUsername("ver");
+
+        Document d1 = documentRepository.findByTitle("Introduction to Algorithms");
+        Document d2 = documentRepository.findByTitle("Design Patterns: Elements of Reusable Object-Oriented Software");
+        Document d3 = documentRepository.findByTitle("Null References: The Billion Dollar Mistake");
+
+        bookingController.requestDocumentById(d3.getId(), p1.getId(), System.currentTimeMillis());
+
+        bookingController.requestDocumentById(d3.getId(), p2.getId(),  System.currentTimeMillis());
+
+        bookingController.requestDocumentById(d3.getId(), s.getId(), System.currentTimeMillis());
+
+        bookingController.requestDocumentById(d3.getId(), v.getId(), System.currentTimeMillis());
+
+        bookingController.requestDocumentById(d3.getId(), p3.getId(), System.currentTimeMillis());
+
+        PriorityQueue<Booking> pq = bookingController.getQueueForBook(d3.getId());
+        assert(pq.size() == 3);
+        assert(pq.poll().getUser().getUsername().equals("and"));
+        assert(pq.poll().getUser().getUsername().equals("ver"));
+        assert(pq.poll().getUser().getUsername().equals("elv"));
+
+        clearDB();
+    }
 
     @Test
-    public void test1() {
+    public void test7() {
+        clearDB();
         addUsers();
         addDocuments();
 
-        userRepository.deleteAll();
-        documentRepository.deleteAll();
-        publisherRepository.deleteAll();
-        authorRepository.deleteAll();
-        bookingRepository.deleteAll();
-        notificationRepository.deleteAll();
+        User p1 = userRepository.findByUsername("ser");
+        User p2 = userRepository.findByUsername("nad");
+        User p3 = userRepository.findByUsername("elv");
+        User s = userRepository.findByUsername("and");
+        User v = userRepository.findByUsername("ver");
+
+        Document d1 = documentRepository.findByTitle("Introduction to Algorithms");
+        Document d2 = documentRepository.findByTitle("Design Patterns: Elements of Reusable Object-Oriented Software");
+        Document d3 = documentRepository.findByTitle("Null References: The Billion Dollar Mistake");
+
+        bookingController.requestDocumentById(d3.getId(), p1.getId(), System.currentTimeMillis());
+
+        bookingController.requestDocumentById(d3.getId(), p2.getId(),  System.currentTimeMillis());
+
+        bookingController.requestDocumentById(d3.getId(), s.getId(), System.currentTimeMillis());
+
+        bookingController.requestDocumentById(d3.getId(), v.getId(), System.currentTimeMillis());
+
+        bookingController.requestDocumentById(d3.getId(), p3.getId(), System.currentTimeMillis());
+        PriorityQueue<Booking> pq = bookingController.getQueueForBook(d3.getId());
+
+        bookingController.makeOutstandingRequest(pq.poll().getId());
+
+        pq = bookingController.getQueueForBook(d3.getId());
+
+        assert(pq.size() == 1);
+        //TODO: CHECK NOTIFICATIONS
+
+        clearDB();
+    }
+
+    @Test
+    public void test8() {
+        clearDB();
+        addUsers();
+        addDocuments();
+
+        User p1 = userRepository.findByUsername("ser");
+        User p2 = userRepository.findByUsername("nad");
+        User p3 = userRepository.findByUsername("elv");
+        User s = userRepository.findByUsername("and");
+        User v = userRepository.findByUsername("ver");
+
+        Document d1 = documentRepository.findByTitle("Introduction to Algorithms");
+        Document d2 = documentRepository.findByTitle("Design Patterns: Elements of Reusable Object-Oriented Software");
+        Document d3 = documentRepository.findByTitle("Null References: The Billion Dollar Mistake");
+
+        bookingController.requestDocumentById(d3.getId(), p1.getId(), System.currentTimeMillis());
+
+        bookingController.requestDocumentById(d3.getId(), p2.getId(),  System.currentTimeMillis());
+
+        bookingController.requestDocumentById(d3.getId(), s.getId(), System.currentTimeMillis());
+
+        bookingController.requestDocumentById(d3.getId(), v.getId(), System.currentTimeMillis());
+
+        bookingController.requestDocumentById(d3.getId(), p3.getId(), System.currentTimeMillis());
+
+        PriorityQueue<Booking> pq = bookingController.getQueueForBook(d3.getId());
+        Integer firstQueueBookingIndex = pq.poll().getId();
+
+        bookingController.closeBooking(bookingController.findMyBooking(p2.getId()).get(0).getId(), System.currentTimeMillis());
+
+        pq = bookingController.getQueueForBook(d3.getId());
+
+        assert (pq.size() == 2);
+        assert ("available".equals(bookingController.findMyBooking(s.getId()).get(0).getTypeBooking().getTypeName()));
+        //TODO: CHECK NOTIFICATIONS
+        clearDB();
+    }
+
+    @Test
+    public void test9() {
+        clearDB();
+        addUsers();
+        addDocuments();
+
+        User p1 = userRepository.findByUsername("ser");
+        User p2 = userRepository.findByUsername("nad");
+        User p3 = userRepository.findByUsername("elv");
+        User s = userRepository.findByUsername("and");
+        User v = userRepository.findByUsername("ver");
+
+        Document d1 = documentRepository.findByTitle("Introduction to Algorithms");
+        Document d2 = documentRepository.findByTitle("Design Patterns: Elements of Reusable Object-Oriented Software");
+        Document d3 = documentRepository.findByTitle("Null References: The Billion Dollar Mistake");
+
+        bookingController.requestDocumentById(d3.getId(), p1.getId(), System.currentTimeMillis());
+
+        bookingController.requestDocumentById(d3.getId(), p2.getId(),  System.currentTimeMillis());
+
+        bookingController.requestDocumentById(d3.getId(), s.getId(), System.currentTimeMillis());
+
+        bookingController.requestDocumentById(d3.getId(), v.getId(), System.currentTimeMillis());
+
+        bookingController.requestDocumentById(d3.getId(), p3.getId(), System.currentTimeMillis());
+
+        Integer p1Index = bookingController.findMyBooking(p1.getId()).get(0).getId();
+
+        bookingController.takeDocumentByBookingId(p1Index, 1522627200000L);
+        bookingController.renewBook(p1Index);
+
+        assert (1525046400000L == bookingRepository.findOne(p1Index).getReturnDate().getTime());
+
+        clearDB();
+    }
+
+    @Test
+    public void test10() {
+        clearDB();
+        addUsers();
+        addDocuments();
+
+        User p1 = userRepository.findByUsername("ser");
+        User p2 = userRepository.findByUsername("nad");
+        User p3 = userRepository.findByUsername("elv");
+        User s = userRepository.findByUsername("and");
+        User v = userRepository.findByUsername("ver");
+
+        Document d1 = documentRepository.findByTitle("Introduction to Algorithms");
+        Document d2 = documentRepository.findByTitle("Design Patterns: Elements of Reusable Object-Oriented Software");
+        Document d3 = documentRepository.findByTitle("Null References: The Billion Dollar Mistake");
+
+        bookingController.requestDocumentById(d1.getId(), p1.getId(), 1522022400000L);
+        bookingController.requestDocumentById(d1.getId(), v.getId(), 1522022400000L);
+        Integer p1Index = bookingController.findMyBooking(p1.getId()).get(0).getId();
+
+        bookingController.takeDocumentByBookingId(p1Index, 1522022400000L);
+        bookingController.renewBook(p1Index);
+
+        Integer vIndex = bookingController.findMyBooking(v.getId()).get(0).getId();
+
+        bookingController.takeDocumentByBookingId(vIndex, 1522022400000L);
+        bookingController.renewBook(vIndex);
+
+        try {
+            bookingController.renewBook(p1Index);
+            assert(false);
+        }
+        catch (Exception ignored)
+        {}
+
+
+        bookingController.renewBook(vIndex);
+        assert (1525651200000L == bookingRepository.findOne(p1Index).getReturnDate().getTime());
+        assert (1523836800000L == bookingRepository.findOne(vIndex).getReturnDate().getTime());
+
+        clearDB();
     }
 }
