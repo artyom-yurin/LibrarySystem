@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -20,7 +21,7 @@ public class NotificationContr {
         this.notificationService = notificationService;
     }
 
-    public Iterable<Notification> findMyNotifications(Integer id){
+    public List<Notification> findMyNotifications(Integer id){
         return notificationService.findAll()
                 .stream()
                 .filter(booking -> booking.getUser().getId().equals(id))

@@ -17,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 @RestController
 public class UserContr {
@@ -55,6 +56,7 @@ public class UserContr {
             userService.save(user);
     }
 
+    @Transactional
     public void removeUser(Integer id) {
         if (id == -1) {
             throw new InvalidIdException();
@@ -66,7 +68,7 @@ public class UserContr {
         userService.remove(id);
     }
 
-    public Iterable<User> getUsers() {
+    public List<User> getUsers() {
         throw new AccessDeniedException();
     }
 }

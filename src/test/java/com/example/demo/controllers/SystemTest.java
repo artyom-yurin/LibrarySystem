@@ -1,5 +1,7 @@
 package com.example.demo.controllers;
 
+import com.example.demo.controller.BookingContr;
+import com.example.demo.entity.Notification;
 import com.example.demo.entity.document.Author;
 import com.example.demo.entity.document.Publisher;
 import com.example.demo.entity.document.Tag;
@@ -8,6 +10,7 @@ import com.example.demo.model.DocumentModel;
 import com.example.demo.model.UserModel;
 import com.example.demo.repository.*;
 import com.example.demo.service.TypeDocumentService;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,7 +26,7 @@ import java.util.Set;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ActiveProfiles(profiles = "test")
-public class UserContrTest {
+public class SystemTest {
     @Autowired
     UserContr userController;
     @Autowired
@@ -31,7 +34,14 @@ public class UserContrTest {
     @Autowired
     BookingContr bookingController;
     @Autowired
+    SystemContr systemController;
+    @Autowired
+    NotificationContr notificationController;
+
+    @Autowired
     TypeDocumentService typeDocumentService;
+    @Autowired
+    NotificationRepository notificationRepository;
     @Autowired
     UserRepository userRepository;
     @Autowired
@@ -44,17 +54,30 @@ public class UserContrTest {
     BookingRepository bookingRepository;
 
     @Before
+    @After
     public void clearDB() {
         userRepository.deleteAll();
         documentRepository.deleteAll();
         publisherRepository.deleteAll();
         authorRepository.deleteAll();
         bookingRepository.deleteAll();
+        notificationRepository.deleteAll();
     }
+
+    public void addUsers()
+    {
+
+    }
+
+    public void addDocuments()
+    {
+
+    }
+
 
     @Test
     public void test1() {
-        Set<Author> authors0 = new HashSet<>();
+        /*Set<Author> authors0 = new HashSet<>();
         Author tempAuthor = new Author("Thomas H", "Cormen");
         authorRepository.save(tempAuthor);
         authors0.add(authorRepository.findByLastName("Cormen"));
@@ -73,13 +96,15 @@ public class UserContrTest {
 
         Publisher publisher0 = new Publisher(("MIT Press").toLowerCase());
         publisherRepository.save(publisher0);
-        publisher0 = publisherRepository.findByPublisherName(("MIT Press").toLowerCase());
-
+        publisher0 = publisherRepository.findByPublisherName(("MIT Press").toLowerCase());*/
+        addUsers();
+        addDocuments();
 
         userRepository.deleteAll();
         documentRepository.deleteAll();
         publisherRepository.deleteAll();
         authorRepository.deleteAll();
         bookingRepository.deleteAll();
+        notificationRepository.deleteAll();
     }
 }

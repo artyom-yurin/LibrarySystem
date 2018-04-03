@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -109,7 +110,7 @@ public class DocumentContr {
         return findDocument;
     }
 
-    public Iterable<Document> getDocuments() {
-        return this.documentService.getAllDocuments();
+    public List<Document> getDocuments() {
+        return documentService.getAllDocuments();
     }
 }

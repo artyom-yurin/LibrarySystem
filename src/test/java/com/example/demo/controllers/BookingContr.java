@@ -49,7 +49,7 @@ public class BookingContr {
         this.notificationService = notificationService;
     }
 
-    public Iterable<Booking> findBookingByUserId(Integer id) {
+    public List<Booking> findBookingByUserId(Integer id) {
         if (id == -1)
             throw new InvalidIdException();
         return bookingService.findAll()
@@ -59,7 +59,7 @@ public class BookingContr {
                 .collect(Collectors.toList());
     }
 
-    public Iterable<Booking> findMyBooking(Integer userId) {
+    public List<Booking> findMyBooking(Integer userId) {
         return bookingService.findAll()
                 .stream()
                 .filter(booking -> booking.getUser().getId().equals(userId))
@@ -67,7 +67,7 @@ public class BookingContr {
                 .collect(Collectors.toList());
     }
 
-    public Iterable<Booking> findReturnBooks() {
+    public List<Booking> findReturnBooks() {
         return bookingService.findAll()
                 .stream()
                 .filter(booking -> !"close".equals(booking.getTypeBooking().getTypeName()))
@@ -75,11 +75,11 @@ public class BookingContr {
                 .collect(Collectors.toList());
     }
 
-    public Iterable<Booking> findAllBookings() {
+    public List<Booking> findAllBookings() {
         return bookingService.findAll();
     }
 
-    public Iterable<Booking> findAvailableBookings() {
+    public List<Booking> findAvailableBookings() {
         return bookingService.findAll()
                 .stream()
                 .filter(booking -> ("available".equals(booking.getTypeBooking().getTypeName())))
@@ -258,7 +258,7 @@ public class BookingContr {
         bookingService.save(booking);
     }
 
-    public Iterable<Booking> getQueueForBook(Integer id) {
+    public PriorityQueue<Booking> getQueueForBook(Integer id) {
         if (documentService.findById(id) == null) throw new DocumentNotFoundException();
 
         return getQueueForBookById(id);
