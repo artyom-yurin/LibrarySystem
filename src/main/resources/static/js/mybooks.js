@@ -9,7 +9,7 @@ function returnBook(id){
         },
         success: function (mybooks_json , status, xhr) {
             updateMyBooks();
-            alert("Book has been returned");
+
         },
         error: function (mybooks_json, status, xhr) {
             alert("Book can't be returned");
@@ -28,7 +28,7 @@ function renewBook(id){
         },
         success: function (mybooks_json , status, xhr) {
             updateMyBooks();
-            alert("Book has been renewed");
+
         },
         error: function (mybooks_json, status, xhr) {
             alert("Failed");
