@@ -1,11 +1,11 @@
 $(updateBooks());
 init();
-$("#addBookForm").submit(function(e) {
-    e.preventDefault();
-});
-$("#modifyBookForm").submit(function(e) {
-    e.preventDefault();
-});
+// $("#addBookForm").submit(function(e) {
+//     e.preventDefault();
+// });
+// $("#modifyBookForm").submit(function(e) {
+//     e.preventDefault();
+// });
 
 
 var currentBookId = -1;
@@ -380,3 +380,4 @@ function init() {
     map.set("tags", "tags");
 
 }
+

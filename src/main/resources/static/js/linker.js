@@ -30,12 +30,14 @@ $('#' + 'linkCatalog').on("click", function () {
     sendToken(linkToCatalog);
 });
 $('#' + 'linkMyBooks').on("click", function () {
+
     sendToken(linkToMyBooks);
 });
 
 $('#' + 'linkLogin').on("click", function () {
     window.localStorage.clear();
     console.log("All keys successfully deleted from localStorage");
+
     window.location.href = URL_LOCALHOST;
 });
 
@@ -46,8 +48,10 @@ function sendToken(path) {
             headers: {
                 'Authorization': window.localStorage.getItem("Authorization")
             },
-            async:false,
+            async: false,
             success: function (html_data, status, xhr) {
+                window.localStorage.setItem('page', html_data);
+
                 document.open();
                 document.write(html_data);
                 document.close();
@@ -55,14 +59,11 @@ function sendToken(path) {
 
             error: function (html_data, status, xhr) {
                 alert("Fail on token post-request");
-
-                console.info("Token sent was : \n");
-                console.info(window.localStorage.getItem("Authorization"));
-
-                console.error(html_data.responseJSON);
                 console.error('Error_status: \n' + status);
                 console.error('Error_xhr: \n' + xhr);
             }
         }
     );
 }
+
+

@@ -1,11 +1,11 @@
 $(updateUsers());
 init();
-$("#addUserForm").submit(function(e) {
-    e.preventDefault();
-});
-$("#modifyUserForm").submit(function(e) {
-    e.preventDefault();
-});
+// $("#addUserForm").submit(function(e) {
+//     e.preventDefault();
+// });
+// $("#modifyUserForm").submit(function(e) {
+//     e.preventDefault();
+// });
 var currentUserId = -1;
 
 var userAttributesWeHave = [];
@@ -451,3 +451,4 @@ function init() {
     map.set('username', 'username');
     map.set('password', 'password');
 }
+

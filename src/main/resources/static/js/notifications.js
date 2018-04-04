@@ -69,31 +69,31 @@ function updateNotifications() {
                     if (notificationAttribute === "document") {
                         let temp = notifications_json[notification]["document"]["title"];
                         currentConfirmation += temp;
-                      //  currentConfirmation = currentConfirmation.replace("[object Object]","");
+                        currentConfirmation = currentConfirmation.replace("[object Object]","");
                     }
                     if (notificationAttribute === "typeBooking") {
                         let temp = notifications_json[notification]["typeBooking"]["typeName"];
                         currentConfirmation += temp;
-                        //currentConfirmation = currentConfirmation.replace("[object Object]","");
+                        currentConfirmation = currentConfirmation.replace("[object Object]","");
                     }
                     if (notificationAttribute === "user") {
                         let temp = notifications_json[notification]["user"]["name"] + " " + notifications_json[notification]["user"]["surname"];
                         currentConfirmation += temp;
-                       // currentConfirmation = currentConfirmation.replace("[object Object]","");
+                        currentConfirmation = currentConfirmation.replace("[object Object]","");
 
                     }
 
                     if (notificationAttribute === "returnDate") {
                         let date = new Date(notifications_json[notification]["returnDate"]);
                         currentConfirmation += date.toString();
-                       // currentConfirmation = currentConfirmation.replace("[object Object]","");
+                        currentConfirmation = currentConfirmation.replace("[object Object]","");
                     }
 
                     else {
                         currentConfirmation += notifications_json[notification][notificationAttribute];
-                       // currentConfirmation = currentConfirmation.replace("[object Object]","");
+                        currentConfirmation = currentConfirmation.replace("[object Object]","");
                     }
-                   // currentConfirmation = currentConfirmation.replace("[object Object]","");
+                    currentConfirmation = currentConfirmation.replace("[object Object]","");
                     currentConfirmation += "</dd>\n";
                 }
 

@@ -174,3 +174,4 @@ function acceptConfirmation(id){
         }
     });
 }
+
