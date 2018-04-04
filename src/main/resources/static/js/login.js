@@ -11,7 +11,7 @@ var linkToNotification = URL_LOCALHOST + 'notifications.html';
 
 //We call it from login's body
 function checkIfUserIsAlreadyLogged() {
-    if (localStorage.getItem('Authorization') != null) {
+    if (localStorage.getItem('Authorization') != null && localStorage.getItem('page') != null) {
         var tmp = localStorage.getItem('page');
 
         console.log(tmp);
