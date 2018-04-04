@@ -209,6 +209,8 @@ public class BookingContr {
 
         PriorityQueue<Booking> priorityQueue = getQueueForBookById(booking.getDocument().getId());
 
+        if (priorityQueue.size() == 0) throw new QueueEmptyException();
+
         Booking firstBooking = priorityQueue.peek();
 
         if ("outstanding".equals(firstBooking.getTypeBooking().getTypeName()))
@@ -233,10 +235,6 @@ public class BookingContr {
 
         if (booking == null) {
             throw new BookingNotFoundException();
-        }
-
-        if (booking.getDocument().isBestseller()) {
-            throw new UnableRenewBestsellerException();
         }
 
         if (!"vp".equals(booking.getUser().getRole().getName()) && "renew".equals(booking.getTypeBooking().getTypeName())) {

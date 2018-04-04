@@ -11,6 +11,7 @@ import com.example.demo.model.DocumentModel;
 import com.example.demo.model.UserModel;
 import com.example.demo.repository.*;
 import com.example.demo.service.TypeDocumentService;
+import org.hibernate.boot.jaxb.SourceType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -143,18 +144,20 @@ public class SystemTest {
         Document d1 = documentRepository.findByTitle("Introduction to Algorithms");
         Document d2 = documentRepository.findByTitle("Design Patterns: Elements of Reusable Object-Oriented Software");
 
-        bookingController.requestDocumentById(d1.getId(), p1.getId(), 	1525305600000L);
+        bookingController.requestDocumentById(d1.getId(), p1.getId(), 	1520208000000L);
 
-        bookingController.requestDocumentById(d2.getId(), p1.getId(), 	1525305600000L);
+        bookingController.requestDocumentById(d2.getId(), p1.getId(), 	1520208000000L);
 
-        bookingController.returnDocumentById(d2.getId());
+        bookingController.takeDocumentByBookingId(bookingController.findMyBooking(p1.getId()).get(0).getId(), 1520208000000L);
 
-        bookingController.takeDocumentByBookingId(bookingController.findMyBooking(p1.getId()).get(0).getId(), 1525305600000L);
+        bookingController.takeDocumentByBookingId(bookingController.findMyBooking(p1.getId()).get(1).getId(), 1520208000000L);
+
+        bookingController.closeBooking(bookingController.findMyBooking(p1.getId()).get(1).getId(), 1522627200000L);
 
         Booking booking = bookingController.findMyBooking(p1.getId()).get(0);
 
         assert(booking.getFine() == 0);
-        assert(booking.getReturnDate().getTime() > time);
+        assert(booking.getReturnDate().getTime() == time);
 
         clearDB();
     }
@@ -172,20 +175,22 @@ public class SystemTest {
         Document d1 = documentRepository.findByTitle("Introduction to Algorithms");
         Document d2 = documentRepository.findByTitle("Design Patterns: Elements of Reusable Object-Oriented Software");
 
-        bookingController.requestDocumentById(d1.getId(), p1.getId(), 1525305600000L);
-        bookingController.takeDocumentByBookingId(bookingController.findMyBooking(p1.getId()).get(0).getId(), 1525305600000L);
-        bookingController.requestDocumentById(d2.getId(), p1.getId(), 1525305600000L);
-        bookingController.takeDocumentByBookingId(bookingController.findMyBooking(p1.getId()).get(1).getId(), 1525305600000L);
+        bookingController.requestDocumentById(d1.getId(), p1.getId(), 1520208000000L);
+        bookingController.takeDocumentByBookingId(bookingController.findMyBooking(p1.getId()).get(0).getId(), 1520208000000L);
+        bookingController.requestDocumentById(d2.getId(), p1.getId(), 1520208000000L);
+        bookingController.takeDocumentByBookingId(bookingController.findMyBooking(p1.getId()).get(1).getId(), 1520208000000L);
 
-        bookingController.requestDocumentById(d1.getId(), s.getId(), 1525305600000L);
-        bookingController.takeDocumentByBookingId(bookingController.findMyBooking(s.getId()).get(0).getId(), 1525305600000L);
-        bookingController.requestDocumentById(d2.getId(), s.getId(), 1525305600000L);
-        bookingController.takeDocumentByBookingId(bookingController.findMyBooking(s.getId()).get(1).getId(), 1525305600000L);
+        bookingController.requestDocumentById(d1.getId(), s.getId(), 1520208000000L);
+        bookingController.takeDocumentByBookingId(bookingController.findMyBooking(s.getId()).get(0).getId(), 1520208000000L);
+        bookingController.requestDocumentById(d2.getId(), s.getId(), 1520208000000L);
+        bookingController.takeDocumentByBookingId(bookingController.findMyBooking(s.getId()).get(1).getId(), 1520208000000L);
 
-        bookingController.requestDocumentById(d1.getId(), v.getId(), 1525305600000L);
-        bookingController.takeDocumentByBookingId(bookingController.findMyBooking(v.getId()).get(0).getId(), 1525305600000L);
-        bookingController.requestDocumentById(d2.getId(), v.getId(), 1525305600000L);
-        bookingController.takeDocumentByBookingId(bookingController.findMyBooking(v.getId()).get(1).getId(), 1525305600000L);
+        bookingController.requestDocumentById(d1.getId(), v.getId(), 1520208000000L);
+        bookingController.takeDocumentByBookingId(bookingController.findMyBooking(v.getId()).get(0).getId(), 1520208000000L);
+        bookingController.requestDocumentById(d2.getId(), v.getId(), 1520208000000L);
+        bookingController.takeDocumentByBookingId(bookingController.findMyBooking(v.getId()).get(1).getId(), 1520208000000L);
+
+        systemController.systemUpdate(time);
 
         Booking bookingP1 = bookingController.findMyBooking(p1.getId()).get(0);
         Booking bookingP2 = bookingController.findMyBooking(p1.getId()).get(1);
@@ -197,18 +202,18 @@ public class SystemTest {
         Booking bookingV2 = bookingController.findMyBooking(v.getId()).get(1);
 
         assert(bookingP1.getFine() == 0);
-        assert(bookingP1.getReturnDate().getTime() > time);
+        assert(bookingP1.getReturnDate().getTime() == time);
         assert(bookingP2.getFine() == 0);
-        assert(bookingP2.getReturnDate().getTime() > time);
+        assert(bookingP2.getReturnDate().getTime() == time);
 
-        assert(bookingS1.getFine() >= 700);
-        assert(time - bookingS1.getReturnDate().getTime() == 604800000);
-        assert(bookingS2.getFine() >= 1400);
+        assert(bookingS1.getFine() == 700);
+        assert(time - bookingS1.getReturnDate().getTime() == 604800000L);
+        assert(bookingS2.getFine() == 1400);
         assert(time - bookingS2.getReturnDate().getTime() == 1209600000L);
 
-        assert(bookingV1.getFine() >= 2100);
+        assert(bookingV1.getFine() == 2100);
         assert(time - bookingV1.getReturnDate().getTime() == 1814400000L);
-        assert(bookingV2.getFine() >= 1700);
+        assert(bookingV2.getFine() == 1700);
         assert(time - bookingV2.getReturnDate().getTime() == 1814400000L);
 
         clearDB();
@@ -227,22 +232,22 @@ public class SystemTest {
         Document d1 = documentRepository.findByTitle("Introduction to Algorithms");
         Document d2 = documentRepository.findByTitle("Design Patterns: Elements of Reusable Object-Oriented Software");
 
-        bookingController.requestDocumentById(d1.getId(), p1.getId(), 1521590400000L);
-        bookingController.takeDocumentByBookingId(bookingController.findMyBooking(p1.getId()).get(0).getId(), 1521590400000L);
+        bookingController.requestDocumentById(d1.getId(), p1.getId(), 1522281600000L);
+        bookingController.takeDocumentByBookingId(bookingController.findMyBooking(p1.getId()).get(0).getId(), 1522281600000L);
 
-        bookingController.requestDocumentById(d2.getId(), s.getId(), 1521590400000L);
-        bookingController.takeDocumentByBookingId(bookingController.findMyBooking(s.getId()).get(0).getId(), 1521590400000L);
+        bookingController.requestDocumentById(d2.getId(), s.getId(), 1522281600000L);
+        bookingController.takeDocumentByBookingId(bookingController.findMyBooking(s.getId()).get(0).getId(), 1522281600000L);
 
-        bookingController.requestDocumentById(d2.getId(), v.getId(), 1521590400000L);
-        bookingController.takeDocumentByBookingId(bookingController.findMyBooking(v.getId()).get(0).getId(), 1521590400000L);
+        bookingController.requestDocumentById(d2.getId(), v.getId(), 1522281600000L);
+        bookingController.takeDocumentByBookingId(bookingController.findMyBooking(v.getId()).get(0).getId(), 1522281600000L);
 
         bookingController.renewBook(bookingController.findMyBooking(p1.getId()).get(0).getId());
         bookingController.renewBook(bookingController.findMyBooking(s.getId()).get(0).getId());
         bookingController.renewBook(bookingController.findMyBooking(v.getId()).get(0).getId());
 
-        assert(bookingController.findMyBooking(p1.getId()).get(0).getReturnDate().getTime() >= 1525046400000L);
-        assert(bookingController.findMyBooking(s.getId()).get(0).getReturnDate().getTime() >= 1523836800000L);
-        assert(bookingController.findMyBooking(v.getId()).get(0).getReturnDate().getTime() >= 1523232000000L);
+        assert(bookingController.findMyBooking(p1.getId()).get(0).getReturnDate().getTime() == 1525910400000L);
+        assert(bookingController.findMyBooking(s.getId()).get(0).getReturnDate().getTime() == 1524700800000L);
+        assert(bookingController.findMyBooking(v.getId()).get(0).getReturnDate().getTime() == 1523491200000L);
 
         clearDB();
     }
@@ -255,31 +260,45 @@ public class SystemTest {
 
         User p1 = userRepository.findByUsername("ser");
         User p2 = userRepository.findByUsername("nad");
+        User p3 = userRepository.findByUsername("elv");
         User s = userRepository.findByUsername("and");
         User v = userRepository.findByUsername("ver");
 
         Document d1 = documentRepository.findByTitle("Introduction to Algorithms");
         Document d2 = documentRepository.findByTitle("Design Patterns: Elements of Reusable Object-Oriented Software");
 
-        bookingController.requestDocumentById(d1.getId(), p1.getId(), 1521590400000L);
-        bookingController.takeDocumentByBookingId(bookingController.findMyBooking(p1.getId()).get(0).getId(), 1521590400000L);
+        bookingController.requestDocumentById(d1.getId(), p1.getId(), 1522281600000L);
+        bookingController.takeDocumentByBookingId(bookingController.findMyBooking(p1.getId()).get(0).getId(), 1522281600000L);
 
-        bookingController.requestDocumentById(d2.getId(), s.getId(), 1521590400000L);
-        bookingController.takeDocumentByBookingId(bookingController.findMyBooking(s.getId()).get(0).getId(), 1521590400000L);
+        bookingController.requestDocumentById(d2.getId(), s.getId(), 1522281600000L);
+        bookingController.takeDocumentByBookingId(bookingController.findMyBooking(s.getId()).get(0).getId(), 1522281600000L);
 
-        bookingController.requestDocumentById(d2.getId(), v.getId(), 1521590400000L);
-        bookingController.takeDocumentByBookingId(bookingController.findMyBooking(v.getId()).get(0).getId(), 1521590400000L);
+        bookingController.requestDocumentById(d2.getId(), v.getId(), 1522281600000L);
+        bookingController.takeDocumentByBookingId(bookingController.findMyBooking(v.getId()).get(0).getId(), 1522281600000L);
 
-        bookingController.requestDocumentById(d2.getId(), p2.getId(), 1521590400000L);
+        bookingController.requestDocumentById(d2.getId(), p3.getId(), 1522281600000L);
+        bookingController.takeDocumentByBookingId(bookingController.findMyBooking(p3.getId()).get(0).getId(), 1522281600000L);
+
+        bookingController.requestDocumentById(d2.getId(), p2.getId(), 1522281600000L);
         bookingController.makeOutstandingRequest(bookingController.findMyBooking(p2.getId()).get(0).getId());
 
         bookingController.renewBook(bookingController.findMyBooking(p1.getId()).get(0).getId());
-        bookingController.renewBook(bookingController.findMyBooking(s.getId()).get(0).getId());
-        bookingController.renewBook(bookingController.findMyBooking(v.getId()).get(0).getId());
 
-        assert(bookingController.findMyBooking(p1.getId()).get(0).getReturnDate().getTime() >= 1525046400000L);
-        assert(bookingController.findMyBooking(s.getId()).get(0).getReturnDate().getTime() >= 1523491200000L);
-        assert(bookingController.findMyBooking(v.getId()).get(0).getReturnDate().getTime() >= 1522886400000L);
+        try {
+            bookingController.renewBook(bookingController.findMyBooking(s.getId()).get(0).getId());
+            assert (false);
+        }
+        catch (Exception ignore) {}
+
+        try {
+            bookingController.renewBook(bookingController.findMyBooking(v.getId()).get(0).getId());
+            assert (false);
+        }
+        catch (Exception ignore) {}
+
+        assert(bookingController.findMyBooking(p1.getId()).get(0).getReturnDate().getTime() == 1525910400000L);
+        assert(bookingController.findMyBooking(s.getId()).get(0).getReturnDate().getTime() == 1523491200000L);
+        assert(bookingController.findMyBooking(v.getId()).get(0).getReturnDate().getTime() == 1522886400000L);
 
         clearDB();
     }
