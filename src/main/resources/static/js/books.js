@@ -145,6 +145,11 @@ function updateBooks() {
                     "</dl>" +
                     "<small class='d-block text-right mt-3 border-bottom border-gray pb-2'>\n" +
 
+                    "<button class='btn btn-outline-primary my-2 my-sm-0' data-toggle='modal' data-target='#queueList' onclick='showQueue(" +
+                    books_json[book]["id"] +
+                    ")'>Show Queue" +
+                    "</button>\n" +
+
                     "<button class='btn btn-outline-primary my-2 my-sm-0' data-toggle='modal' data-target='#myModal' onclick='setCurrentBook(" +
                     books_json[book]["id"] +
                     ")'>Modify" +
@@ -193,7 +198,6 @@ function updateBooks() {
         }
     });
 }
-
 
 function modifyCurrentBook() {
 
@@ -380,4 +384,173 @@ function init() {
     map.set("tags", "tags");
 
 }
+
+function showQueue(id) {
+    $.ajax({
+        url: URL_LOCALHOST + "/booking/queue?id=" + id,
+        type: "GET",
+        headers: {
+            'Authorization': window.localStorage.getItem("Authorization"),
+        },
+        dataType: "json", // by this property ajax will automatically parse json which we get from response
+
+        success: function (queue_json, status, xhr) {
+            console.info("Responding json: ");
+            console.info(queue_json);
+
+            let outer =
+                "<div class=\"modal-dialog\">" +
+                "<div class=\"modal-content\">" +
+                "<div class=\"modal-header\">" +
+                "<h4 class=\"modal-title\">Queue for current book</h4>" +
+                "<button type=\"button\" class=\"close\" data-dismiss=\"modal\">×</button>"
+                + "</div>";
+
+
+            outer += "<div class=\"row mt-2 \">";
+
+            //this list is not array, but list of <a>
+            let listOfQueue =
+                "<div class=\"col-4\">\n" +
+                "<div class=\"list-group\" id=\"new-list-tab\" role=\"tablist\">\n";
+
+            let updatedQueue = "<div class=\"col-8\">\n" +
+                "<div class=\"tab-content\" id=\"new-nav-tabContent\">\n";
+
+            let notFirst = false;
+            for (let queue in queue_json) {
+                //add <a> (link to particular queue) for listOfQueue
+
+
+                let currentQueue;
+
+                if (notFirst) {
+                    currentQueue =
+                        "<div class='tab-pane fade' id=\'" + queue_json[queue]["id"] +
+                        "\' role='tabpanel' aria-labelledby='list" + queue_json[queue]["id"] + "\'>\n";
+
+                    listOfQueue +=
+                        "<a class=\"list-group-item list-group-item-action\" id=\"list" + queue_json[queue]["id"] +
+                        "\" data-toggle=\"list\"\n" +
+                        "href=\"#" + queue_json[queue]["id"] +
+                        "\" role=\"tab\" aria-controls=\"list" + queue_json[queue]["id"] + "\">" +
+                        queue_json[queue]["document"]["title"] + "</a>";
+                }
+                else {
+                    currentQueue =
+                        "<div class='tab-pane fade show active' id=\'" + queue_json[queue]["id"] +
+                        "\' role='tabpanel' aria-labelledby='list" + queue_json[queue]["id"] + "\'>\n";
+
+
+                    listOfQueue += "<a class=\"list-group-item list-group-item-action active show\" id=\"list" + queue_json[queue]["id"] +
+                        "\" data-toggle=\"list\"\n" +
+                        "href=\"#" + queue_json[queue]["id"] +
+                        "\" role=\"tab\" aria-controls=\"list" + queue_json[queue]["id"] + "\">" +
+                        queue_json[queue]["document"]["title"] + "</a>";
+
+                    notFirst = true;
+                }
+
+
+                //add all attributes
+                for (let queueAttributes in queue_json[queue]) {
+                    currentQueue += "<dt>" + queueAttributes + "</dt>\n";
+                    currentQueue += "<dd>";
+
+                    if (queueAttributes === "document") {
+                        let temp = queue_json[queue]["document"]["title"];
+                        currentQueue += temp;
+                        currentQueue = currentQueue.replace("[object Object]", "");
+                    }
+                    if (queueAttributes === "typeBooking") {
+                        let temp = queue_json[queue]["typeBooking"]["typeName"];
+                        currentQueue += temp;
+                        currentQueue = currentQueue.replace("[object Object]", "");
+                    }
+                    if (queueAttributes === "user") {
+                        let temp = queue_json[queue]["user"]["name"] + " " + queue_json[queue]["user"]["surname"];
+                        currentQueue += temp;
+                        currentQueue = currentQueue.replace("[object Object]", "");
+
+                    }
+
+                    if (queueAttributes === "returnDate") {
+                        let date = new Date(queue_json[queue]["returnDate"]);
+                        let day = date.getDate();
+                        if (day.toString().length == 1)
+                            day = "0" + day;
+                        let month = date.getMonth();
+                        if (month.toString().length == 1)
+                            month = "0" + month;
+                        let year = date.getFullYear();
+                        currentQueue += year + "-" + month + "-" + day;
+                        currentQueue = currentQueue.replace("[object Object]", "");
+                    }
+
+                    else {
+                        currentQueue += queue_json[queue][queueAttributes];
+                        currentQueue = currentQueue.replace("[object Object]", "");
+                    }
+                    currentQueue = currentQueue.replace("[object Object]", "");
+                    currentQueue += "</dd>\n";
+                }
+
+                //close div for queue
+                currentQueue += "</dl>" +
+                    "<small class=\"d-block text-right mt-3\">\n" +
+                    "<button class=\"btn btn-outline-danger my-2 my-sm-0\" type=\"button\" onclick=\"makeOutstanding(" + queue_json[queue]["id"] + "," + id + ")\">makeOutstanding</button>\n" +
+                    "</small>\n" +
+                    "</div>\n";
+
+
+                updatedQueue += currentQueue;
+
+            }
+
+            //close listOfQueue block
+            listOfQueue +=
+                " </div>\n" +
+                "</div>\n";
+
+            //close UsersBlock
+            updatedQueue +=
+                "</div>\n" +
+                "</div>\n";
+
+            outer += listOfQueue;
+            outer += updatedQueue;
+            outer += "</div>\n";
+            outer += "</div>\n";
+            outer += "</div>\n";
+
+            //Final load in html. It replace everything inside <div id = "database'> which is container for our database.
+            $("#queueList").html(outer);
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            alert("failed in getting requests");
+
+            console.error(jqXHR);
+            console.error(textStatus);
+            console.error(errorThrown);
+        }
+    });
+}
+function makeOutstanding(id,idd){
+    $.ajax({
+        url: URL_LOCALHOST + "/booking/outstanding?id=" + id,
+        type: "PUT",
+        headers: {
+            'Authorization': window.localStorage.getItem("Authorization"),
+        },
+        success: function (requests_json, status, xhr) {
+            showQueue(idd);
+        },
+        error: function (requests_json, status, xhr) {
+            alert("Failed");
+            console.error(status);
+            console.error(xhr);
+        }
+    });
+}
+
 
