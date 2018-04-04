@@ -2,8 +2,8 @@ package com.example.demo.controllers;
 
 import com.example.demo.controller.BookingContr;
 import com.example.demo.entity.booking.Booking;
-import com.example.demo.entity.document.*;
 import com.example.demo.entity.document.Author;
+import com.example.demo.entity.document.Document;
 import com.example.demo.entity.document.Publisher;
 import com.example.demo.entity.document.Tag;
 import com.example.demo.entity.user.User;
@@ -11,8 +11,6 @@ import com.example.demo.model.DocumentModel;
 import com.example.demo.model.UserModel;
 import com.example.demo.repository.*;
 import com.example.demo.service.TypeDocumentService;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +52,8 @@ public class SystemTest {
     AuthorRepository authorRepository;
     @Autowired
     BookingRepository bookingRepository;
+
+    final long time = 1522627200000L;
 
     public void clearDB()
     {
@@ -130,6 +130,184 @@ public class SystemTest {
         authors3.add(authorRepository.findByLastName("Hoare"));
 
         documentController.addDocument(new DocumentModel(1, "Null References: The Billion Dollar Mistake", authors3, 700, 2, new HashSet<Tag>(), null, 0, false, false, null, "", typeDocumentService.findByTypeName("avmaterial")));
+    }
+
+    @Test
+    public void test1() {
+        clearDB();
+        addUsers();
+        addDocuments();
+
+        User p1 = userRepository.findByUsername("ser");
+
+        Document d1 = documentRepository.findByTitle("Introduction to Algorithms");
+        Document d2 = documentRepository.findByTitle("Design Patterns: Elements of Reusable Object-Oriented Software");
+
+        bookingController.requestDocumentById(d1.getId(), p1.getId(), 	1525305600000L);
+
+        bookingController.requestDocumentById(d2.getId(), p1.getId(), 	1525305600000L);
+
+        bookingController.returnDocumentById(d2.getId());
+
+        bookingController.takeDocumentByBookingId(bookingController.findMyBooking(p1.getId()).get(0).getId(), 1525305600000L);
+
+        Booking booking = bookingController.findMyBooking(p1.getId()).get(0);
+
+        assert(booking.getFine() == 0);
+        assert(booking.getReturnDate().getTime() > time);
+
+        clearDB();
+    }
+
+    @Test
+    public void test2() {
+        clearDB();
+        addUsers();
+        addDocuments();
+
+        User p1 = userRepository.findByUsername("ser");
+        User s = userRepository.findByUsername("and");
+        User v = userRepository.findByUsername("ver");
+
+        Document d1 = documentRepository.findByTitle("Introduction to Algorithms");
+        Document d2 = documentRepository.findByTitle("Design Patterns: Elements of Reusable Object-Oriented Software");
+
+        bookingController.requestDocumentById(d1.getId(), p1.getId(), 1525305600000L);
+        bookingController.takeDocumentByBookingId(bookingController.findMyBooking(p1.getId()).get(0).getId(), 1525305600000L);
+        bookingController.requestDocumentById(d2.getId(), p1.getId(), 1525305600000L);
+        bookingController.takeDocumentByBookingId(bookingController.findMyBooking(p1.getId()).get(1).getId(), 1525305600000L);
+
+        bookingController.requestDocumentById(d1.getId(), s.getId(), 1525305600000L);
+        bookingController.takeDocumentByBookingId(bookingController.findMyBooking(s.getId()).get(0).getId(), 1525305600000L);
+        bookingController.requestDocumentById(d2.getId(), s.getId(), 1525305600000L);
+        bookingController.takeDocumentByBookingId(bookingController.findMyBooking(s.getId()).get(1).getId(), 1525305600000L);
+
+        bookingController.requestDocumentById(d1.getId(), v.getId(), 1525305600000L);
+        bookingController.takeDocumentByBookingId(bookingController.findMyBooking(v.getId()).get(0).getId(), 1525305600000L);
+        bookingController.requestDocumentById(d2.getId(), v.getId(), 1525305600000L);
+        bookingController.takeDocumentByBookingId(bookingController.findMyBooking(v.getId()).get(1).getId(), 1525305600000L);
+
+        Booking bookingP1 = bookingController.findMyBooking(p1.getId()).get(0);
+        Booking bookingP2 = bookingController.findMyBooking(p1.getId()).get(1);
+
+        Booking bookingS1 = bookingController.findMyBooking(s.getId()).get(0);
+        Booking bookingS2 = bookingController.findMyBooking(s.getId()).get(1);
+
+        Booking bookingV1 = bookingController.findMyBooking(v.getId()).get(0);
+        Booking bookingV2 = bookingController.findMyBooking(v.getId()).get(1);
+
+        assert(bookingP1.getFine() == 0);
+        assert(bookingP1.getReturnDate().getTime() > time);
+        assert(bookingP2.getFine() == 0);
+        assert(bookingP2.getReturnDate().getTime() > time);
+
+        assert(bookingS1.getFine() >= 700);
+        assert(time - bookingS1.getReturnDate().getTime() == 604800000);
+        assert(bookingS2.getFine() >= 1400);
+        assert(time - bookingS2.getReturnDate().getTime() == 1209600000L);
+
+        assert(bookingV1.getFine() >= 2100);
+        assert(time - bookingV1.getReturnDate().getTime() == 1814400000L);
+        assert(bookingV2.getFine() >= 1700);
+        assert(time - bookingV2.getReturnDate().getTime() == 1814400000L);
+
+        clearDB();
+    }
+
+    @Test
+    public void test3() {
+        clearDB();
+        addUsers();
+        addDocuments();
+
+        User p1 = userRepository.findByUsername("ser");
+        User s = userRepository.findByUsername("and");
+        User v = userRepository.findByUsername("ver");
+
+        Document d1 = documentRepository.findByTitle("Introduction to Algorithms");
+        Document d2 = documentRepository.findByTitle("Design Patterns: Elements of Reusable Object-Oriented Software");
+
+        bookingController.requestDocumentById(d1.getId(), p1.getId(), 1521590400000L);
+        bookingController.takeDocumentByBookingId(bookingController.findMyBooking(p1.getId()).get(0).getId(), 1521590400000L);
+
+        bookingController.requestDocumentById(d2.getId(), s.getId(), 1521590400000L);
+        bookingController.takeDocumentByBookingId(bookingController.findMyBooking(s.getId()).get(0).getId(), 1521590400000L);
+
+        bookingController.requestDocumentById(d2.getId(), v.getId(), 1521590400000L);
+        bookingController.takeDocumentByBookingId(bookingController.findMyBooking(v.getId()).get(0).getId(), 1521590400000L);
+
+        bookingController.renewBook(bookingController.findMyBooking(p1.getId()).get(0).getId());
+        bookingController.renewBook(bookingController.findMyBooking(s.getId()).get(0).getId());
+        bookingController.renewBook(bookingController.findMyBooking(v.getId()).get(0).getId());
+
+        assert(bookingController.findMyBooking(p1.getId()).get(0).getReturnDate().getTime() >= 1525046400000L);
+        assert(bookingController.findMyBooking(s.getId()).get(0).getReturnDate().getTime() >= 1523836800000L);
+        assert(bookingController.findMyBooking(v.getId()).get(0).getReturnDate().getTime() >= 1523232000000L);
+
+        clearDB();
+    }
+
+    @Test
+    public void test4() {
+        clearDB();
+        addUsers();
+        addDocuments();
+
+        User p1 = userRepository.findByUsername("ser");
+        User p2 = userRepository.findByUsername("nad");
+        User s = userRepository.findByUsername("and");
+        User v = userRepository.findByUsername("ver");
+
+        Document d1 = documentRepository.findByTitle("Introduction to Algorithms");
+        Document d2 = documentRepository.findByTitle("Design Patterns: Elements of Reusable Object-Oriented Software");
+
+        bookingController.requestDocumentById(d1.getId(), p1.getId(), 1521590400000L);
+        bookingController.takeDocumentByBookingId(bookingController.findMyBooking(p1.getId()).get(0).getId(), 1521590400000L);
+
+        bookingController.requestDocumentById(d2.getId(), s.getId(), 1521590400000L);
+        bookingController.takeDocumentByBookingId(bookingController.findMyBooking(s.getId()).get(0).getId(), 1521590400000L);
+
+        bookingController.requestDocumentById(d2.getId(), v.getId(), 1521590400000L);
+        bookingController.takeDocumentByBookingId(bookingController.findMyBooking(v.getId()).get(0).getId(), 1521590400000L);
+
+        bookingController.requestDocumentById(d2.getId(), p2.getId(), 1521590400000L);
+        bookingController.makeOutstandingRequest(bookingController.findMyBooking(p2.getId()).get(0).getId());
+
+        bookingController.renewBook(bookingController.findMyBooking(p1.getId()).get(0).getId());
+        bookingController.renewBook(bookingController.findMyBooking(s.getId()).get(0).getId());
+        bookingController.renewBook(bookingController.findMyBooking(v.getId()).get(0).getId());
+
+        assert(bookingController.findMyBooking(p1.getId()).get(0).getReturnDate().getTime() >= 1525046400000L);
+        assert(bookingController.findMyBooking(s.getId()).get(0).getReturnDate().getTime() >= 1523491200000L);
+        assert(bookingController.findMyBooking(v.getId()).get(0).getReturnDate().getTime() >= 1522886400000L);
+
+        clearDB();
+    }
+
+    @Test
+    public void test5() {
+        clearDB();
+        addUsers();
+        addDocuments();
+
+        User p1 = userRepository.findByUsername("ser");
+        User s = userRepository.findByUsername("and");
+        User v = userRepository.findByUsername("ver");
+
+        Document d3 = documentRepository.findByTitle("Null References: The Billion Dollar Mistake");
+
+        bookingController.requestDocumentById(d3.getId(), p1.getId(), System.currentTimeMillis());
+        bookingController.takeDocumentByBookingId(bookingController.findMyBooking(p1.getId()).get(0).getId(), System.currentTimeMillis());
+
+        bookingController.requestDocumentById(d3.getId(), s.getId(), System.currentTimeMillis());
+        bookingController.takeDocumentByBookingId(bookingController.findMyBooking((s.getId())).get(0).getId(), System.currentTimeMillis());
+
+        bookingController.requestDocumentById(d3.getId(), v.getId(), System.currentTimeMillis());
+
+        assert(bookingController.getQueueForBook(d3.getId()).size() == 1);
+        assert(bookingController.getQueueForBook(d3.getId()).poll().getUser().getUsername().equals("ver"));
+
+        clearDB();
     }
 
     @Test
