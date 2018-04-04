@@ -12,7 +12,7 @@
     <link href="css/login.css" rel="stylesheet">
 </head>
 
-<body class="text-center">
+<body class="text-center" onload="checkIfUserIsAlreadyLogged()">
 
 <form class="form-signin" onsubmit="sendLoginAndPassword()">
     <img class="mb-4" src="img/LibMAN-5.svg" alt="" width="72" height="72">
@@ -21,7 +21,8 @@
     <input type="text" id="inputUsername" class="form-control" placeholder="Username" required="required"
            autofocus="autofocus" autocomplete="username">
 
-    <input type="password" id="inputPassword" class="form-control" placeholder="Password" required="required" autocomplete="current-password">
+    <input type="password" id="inputPassword" class="form-control" placeholder="Password" required="required"
+           autocomplete="current-password">
 
     <button class="btn btn-lg btn-primary btn-block" type="submit" id="submitButton">Sign in</button>
     <p class="mt-5 mb-3 text-muted">© 2018 by LibMan Team</p>
@@ -38,9 +39,9 @@
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
 
-<!--Custom Scripts-->
-<script src="js/login.js"></script>
 <!--Debug-->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<!--Custom Scripts-->
+<script src="js/login.js"></script>
 </body>
 </html>

@@ -9,7 +9,7 @@ function returnBook(id){
         },
         success: function (mybooks_json , status, xhr) {
             updateMyBooks();
-            alert("Book has been returned");
+
         },
         error: function (mybooks_json, status, xhr) {
             alert("Book can't be returned");
@@ -28,7 +28,7 @@ function renewBook(id){
         },
         success: function (mybooks_json , status, xhr) {
             updateMyBooks();
-            alert("Book has been renewed");
+
         },
         error: function (mybooks_json, status, xhr) {
             alert("Failed");
@@ -83,7 +83,7 @@ function updateMyBooks(){
                         "\" data-toggle=\"list\"\n" +
                         "href=\"#" + mybooks_json[mybook]["id"] +
                         "\" role=\"tab\" aria-controls=\"list" + mybooks_json[mybook]["id"] + "\">" +
-                        mybooks_json[mybook]["id"] + "</a>";
+                        mybooks_json[mybook]["document"]["title"] + "</a>";
                 }
                 else {
                     currentMybook =
@@ -95,7 +95,7 @@ function updateMyBooks(){
                         "\" data-toggle=\"list\"\n" +
                         "href=\"#" + mybooks_json[mybook]["id"] +
                         "\" role=\"tab\" aria-controls=\"list" + mybooks_json[mybook]["id"] + "\">" +
-                        mybooks_json[mybook]["id"] + "</a>";
+                        mybooks_json[mybook]["document"]["title"] + "</a>";
 
                     notFirst = true;
                 }
@@ -128,7 +128,14 @@ function updateMyBooks(){
 
                     if (mybooksAttributes === "returnDate") {
                         let date = new Date(mybooks_json[mybook]["returnDate"]);
-                        currentMybook += date.toString();
+                        let day = date.getDate();
+                        if(day.toString().length == 1)
+                            day = "0" + day;
+                        let month = date.getMonth();
+                        if(month.toString().length == 1)
+                            month = "0" + month;
+                        let year = date.getFullYear();
+                        currentMybook += year + "-" + month + "-" + day;
                         currentMybook = currentMybook.replace("[object Object]","");
                     }
 
@@ -205,7 +212,7 @@ function updateMyBooks(){
 //         success: function (mybooks_json, status, xhr) {
 //             console.info("Responding json: ");
 //             console.info(mybooks_json);
-//             alert("Book has been returned");
+//
 //         },
 //         error: function (mybooks_json, status, xhr) {
 //             alert("Book can't be returned");
@@ -214,3 +221,4 @@ function updateMyBooks(){
 //         }
 //     });
 // }
+

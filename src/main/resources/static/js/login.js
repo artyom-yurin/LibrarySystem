@@ -1,3 +1,28 @@
+// Constants
+var URL_LOCALHOST = "http://localhost:8080/";
+
+var linkToUsers = URL_LOCALHOST + 'admin/users.html';
+var linkToBooks = URL_LOCALHOST + 'admin/documents.html';
+var linkToRequest = URL_LOCALHOST + 'admin/requests.html';
+var linkToCatalog = URL_LOCALHOST + 'catalog.html';
+var linkToMyBooks = URL_LOCALHOST + 'myBooks.html';
+var linkToConfirmation = URL_LOCALHOST + 'admin/confirmation.html';
+var linkToNotification = URL_LOCALHOST + 'notifications.html';
+
+//We call it from login's body
+function checkIfUserIsAlreadyLogged() {
+    if (localStorage.getItem('Authorization') != null && localStorage.getItem('page') != null) {
+        var tmp = localStorage.getItem('page');
+
+        console.log(tmp);
+
+        document.open();
+        document.write(tmp);
+        document.close();
+    }
+}
+
+
 function sendLoginAndPassword() {
     let user = $("#inputUsername").val();
     let pass = $("#inputPassword").val();
@@ -5,7 +30,6 @@ function sendLoginAndPassword() {
     let userData = JSON.stringify({
         username: user,
         password: pass
-
     });
 
     $.ajax({
@@ -23,9 +47,13 @@ function sendLoginAndPassword() {
 
                 window.localStorage.setItem("Authorization", token);
 
+                window.localStorage.setItem('page', html_data);
+
                 document.open();
                 document.write(html_data);
                 document.close();
+
+
             },
 
             error: function (data, status, xhr) {
@@ -38,20 +66,6 @@ function sendLoginAndPassword() {
     );
 }
 
-// Constants
-var URL_LOCALHOST = "http://localhost:8080/";
 
-var linkToUsers = URL_LOCALHOST + 'admin/users.html';
-var linkToBooks = URL_LOCALHOST + 'admin/documents.html';
-var linkToRequest = URL_LOCALHOST + 'admin/requests.html';
-var linkToCatalog = URL_LOCALHOST + 'catalog.html';
-var linkToMyBooks = URL_LOCALHOST + 'myBooks.html';
-var linkToConfirmation = URL_LOCALHOST + 'admin/confirmation.html';
-var linkToNotification = URL_LOCALHOST + 'notifications.html';
-
-window.onbeforeunload = function(){
-    localStorage.clear();
-    console.log("All keys successfully deleted from localStorage");
-};
 
 

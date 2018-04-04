@@ -155,7 +155,6 @@ function updateConfirmation() {
 }
 
 function acceptConfirmation(id){
-    alert(id);
     $.ajax({
         url: URL_LOCALHOST + "/booking/take?id=" + id,
         type: "PUT",
@@ -163,8 +162,7 @@ function acceptConfirmation(id){
             'Authorization': window.localStorage.getItem("Authorization"),
         },
         success: function (requests_json, status, xhr) {
-            updateRequests();
-            alert("Request has been accepted");
+            updateConfirmation();
         },
         error: function (requests_json, status, xhr) {
             alert("Failed");
