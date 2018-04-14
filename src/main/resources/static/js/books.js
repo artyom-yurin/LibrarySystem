@@ -24,6 +24,10 @@ function setCurrentBook(id) {
     fillInputsInBookModify();
 }
 
+function makeCapital(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 function updateBooks() {
     $.ajax({
         url: URL_LOCALHOST + "/document/documents",
@@ -92,7 +96,14 @@ function updateBooks() {
                 for (let bookAttributes in books_json[book]) {
                     pushNewBookAttribute(bookAttributes)
 
-                    currentBook += "<dt>" + bookAttributes + "</dt>\n";
+                    if (bookAttributes === "publishingDate") {
+                        currentBook += "<dt>Publishing Date</dt>\n";
+                    }
+                    else{
+                        currentBook += "<dt>" + makeCapital(bookAttributes) + "</dt>\n";
+                    }
+
+
                     currentBook += "<dd id ='" + bookAttributes + books_json[book]["id"] + "d'>";
 
                     if (bookAttributes === "publisher") {
@@ -498,7 +509,7 @@ function showQueue(id) {
                 //close div for queue
                 currentQueue += "</dl>" +
                     "<small class=\"d-block text-right mt-3\">\n" +
-                    "<button class=\"btn btn-outline-danger my-2 my-sm-0\" type=\"button\" onclick=\"makeOutstanding(" + queue_json[queue]["id"] + "," + id + ")\">makeOutstanding</button>\n" +
+                    "<button class=\"btn btn-outline-danger mb-3 my-2 my-sm-0\" type=\"button\" onclick=\"makeOutstanding(" + queue_json[queue]["id"] + "," + id + ")\">Make Outstanding</button>\n" +
                     "</small>\n" +
                     "</div>\n";
 
