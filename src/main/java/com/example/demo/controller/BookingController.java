@@ -8,6 +8,7 @@ import com.example.demo.service.*;
 import com.example.security.ParserToken;
 import com.example.security.TokenAuthenticationService;
 import javafx.geometry.Pos;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,6 +41,8 @@ public class BookingController {
 
     private static final long VP_TIME = 604800000L;
 
+    private static final long WEEK_AFTER_END = 604800000L;
+
 
     BookingController(BookingService bookingService, DocumentService documentService, UserService userService, TypeBookingService typeBookingService, NotificationService notificationService) {
         this.bookingService = bookingService;
@@ -53,7 +56,7 @@ public class BookingController {
     public Iterable<Booking> findBookingByUserId(@RequestParam(name = "id", defaultValue = "-1") Integer id, HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null) throw new UnauthorizedException();
-        if (!token.role.equals("admin")) throw new AccessDeniedException();
+        if (!token.role.equals("librarian")) throw new AccessDeniedException();
         if (id == -1)
             throw new InvalidIdException();
         return bookingService.findAll()
@@ -67,7 +70,7 @@ public class BookingController {
     public Iterable<Booking> findMyBooking(HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null) throw new UnauthorizedException();
-        if (token.role.equals("admin")) throw new AccessDeniedException();
+        if (!(token.role.equals("patron") || token.role.equals("faculty"))) throw new AccessDeniedException();
         return bookingService.findAll()
                 .stream()
                 .filter(booking -> booking.getUser().getId().equals(token.id))
@@ -79,7 +82,7 @@ public class BookingController {
     public Iterable<Booking> findReturnBooks(HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null) throw new UnauthorizedException();
-        if (!token.role.equals("admin")) throw new AccessDeniedException();
+        if (!token.role.equals("librarian")) throw new AccessDeniedException();
 
         return bookingService.findAll()
                 .stream()
@@ -92,7 +95,7 @@ public class BookingController {
     public Iterable<Booking> findAllBookings(HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null) throw new UnauthorizedException();
-        if (!token.role.equals("admin")) throw new AccessDeniedException();
+        if (!token.role.equals("librarian")) throw new AccessDeniedException();
         return bookingService.findAll();
     }
 
@@ -100,7 +103,7 @@ public class BookingController {
     public Iterable<Booking> findAvailableBookings(HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null) throw new UnauthorizedException();
-        if (!token.role.equals("admin")) throw new AccessDeniedException();
+        if (!token.role.equals("librarian")) throw new AccessDeniedException();
         return bookingService.findAll()
                 .stream()
                 .filter(booking -> ("available".equals(booking.getTypeBooking().getTypeName())))
@@ -112,7 +115,7 @@ public class BookingController {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null)
             throw new UnauthorizedException();
-        if (token.role.equals("admin")) throw new AccessDeniedException();
+        if (!(token.role.equals("patron") || token.role.equals("faculty"))) throw new AccessDeniedException();
         if (documentId == -1)
             throw new InvalidIdException();
         Document document = documentService.findById(documentId);
@@ -142,7 +145,7 @@ public class BookingController {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null)
             throw new UnauthorizedException();
-        if (!token.role.equals("admin")) throw new AccessDeniedException();
+        if (!token.role.equals("librarian")) throw new AccessDeniedException();
 
         if (bookingId == -1)
             throw new InvalidIdException();
@@ -185,7 +188,7 @@ public class BookingController {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null)
             throw new UnauthorizedException();
-        if (token.role.equals("admin")) throw new AccessDeniedException();
+        if (!(token.role.equals("patron") || token.role.equals("faculty"))) throw new AccessDeniedException();
         if (id == -1)
             throw new InvalidIdException();
         Booking booking = bookingService.getBookingById(id);
@@ -200,7 +203,7 @@ public class BookingController {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null)
             throw new UnauthorizedException();
-        if (!token.role.equals("admin")) throw new AccessDeniedException();
+        if (!token.role.equals("librarian")) throw new AccessDeniedException();
 
         if (id == -1)
             throw new InvalidIdException();
@@ -240,7 +243,7 @@ public class BookingController {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null)
             throw new UnauthorizedException();
-        if (!token.role.equals("admin")) throw new AccessDeniedException();
+        if (!token.role.equals("librarian")) throw new AccessDeniedException();
         if (id == -1)
             throw new InvalidIdException();
         this.bookingService.removeBookingById(id);
@@ -251,7 +254,7 @@ public class BookingController {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null)
             throw new UnauthorizedException();
-        if (!token.role.equals("admin")) throw new AccessDeniedException();
+        if (!token.role.equals("librarian")) throw new AccessDeniedException();
 
         if (bookingId == -1)
             throw new InvalidIdException();
@@ -270,13 +273,13 @@ public class BookingController {
         if ("outstanding".equals(firstBooking.getTypeBooking().getTypeName()))
             throw new AlreadyHaveOutstandingRequestException();
 
-        for (Booking bookItem : priorityQueue) {
+        /*for (Booking bookItem : priorityQueue) {
             bookItem.setTypeBooking(typeBookingService.findByTypeName("close"));
             bookingService.save(bookItem);
 
             String message = "Your queue position is cancelled";
             notificationService.newNotification(bookItem.getUser().getId(), message);
-        }
+        }*/
         booking.setTypeBooking(typeBookingService.findByTypeName("outstanding"));
         bookingService.save(booking);
     }
@@ -286,7 +289,7 @@ public class BookingController {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null)
             throw new UnauthorizedException();
-        if (token.role.equals("admin")) throw new AccessDeniedException();
+        if (!(token.role.equals("patron") || token.role.equals("faculty"))) throw new AccessDeniedException();
 
         if (id == -1)
             throw new InvalidIdException();
@@ -321,7 +324,7 @@ public class BookingController {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null)
             throw new UnauthorizedException();
-        if (!token.role.equals("admin")) throw new AccessDeniedException();
+        if (!token.role.equals("librarian")) throw new AccessDeniedException();
         if (documentService.findById(id) == null) throw new DocumentNotFoundException();
 
         return getQueueForBookById(id);
@@ -402,6 +405,18 @@ public class BookingController {
             notificationService.newNotification(booking.getUser().getId(), message);
             document.setCount(document.getCount() - 1);
             documentService.save(document);
+        }
+    }
+
+    @Scheduled(initialDelay = 0L, fixedDelay = 86400000L)
+    public void systemUpdate() {
+        Long systemTime = System.currentTimeMillis();
+        for (Booking booking : findActiveBookings()) {
+            if (booking.getReturnDate().getTime() < systemTime) {
+                applyMeasures(booking);
+            } else if (booking.getReturnDate().getTime() - systemTime < WEEK_AFTER_END) {
+                //TODO: NOTIFICATION ABOUT WEEK AFTER END
+            }
         }
     }
 

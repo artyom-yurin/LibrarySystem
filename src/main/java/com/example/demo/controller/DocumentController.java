@@ -58,7 +58,8 @@ public class DocumentController {
     public void addDocument(@RequestBody DocumentModel documentModel, HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null) throw new UnauthorizedException();
-        if (!token.role.equals("admin")) throw new AccessDeniedException();
+        if (!token.role.equals("librarian")) throw new AccessDeniedException();
+
 
         TypeDocument type = typeDocumentService.findByTypeName(documentModel.getType().getTypeName());
         if (type == null) throw new TypeNotFoundException();
@@ -77,7 +78,7 @@ public class DocumentController {
     public void updateDocument(@RequestBody DocumentModel documentModel, HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null) throw new UnauthorizedException();
-        if (!token.role.equals("admin")) throw new AccessDeniedException();
+        if (!token.role.equals("librarian")) throw new AccessDeniedException();
 
         TypeDocument type = typeDocumentService.findByTypeName(documentModel.getType().getTypeName());
         if (type == null) throw new TypeNotFoundException();
@@ -99,7 +100,7 @@ public class DocumentController {
     public void removeDocumentId(@RequestParam(value = "id", defaultValue = "-1") Integer id, HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null) throw new UnauthorizedException();
-        if (!token.role.equals("admin")) throw new AccessDeniedException();
+        if (!token.role.equals("librarian")) throw new AccessDeniedException();
 
         if (id == -1)
             throw new InvalidIdException();
