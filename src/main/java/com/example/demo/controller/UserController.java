@@ -37,7 +37,7 @@ public class UserController {
         if (loginUser == null) throw new UserNotFoundException();
         if (loginUser.getPassword().equals(loginModel.getPassword())) {
             TokenAuthenticationService.addAuthentication(response, loginUser);
-            if (loginUser.getRole().getName().equals("admin")) {
+            if (loginUser.getRole().getName().equals("librarian")) {
                 return new ModelAndView("books");
             } else {
                 return new ModelAndView("catalog");

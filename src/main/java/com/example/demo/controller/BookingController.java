@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.booking.Booking;
 import com.example.demo.entity.document.Document;
+import com.example.demo.entity.user.Role;
 import com.example.demo.entity.user.User;
 import com.example.demo.exception.*;
 import com.example.demo.service.*;
@@ -38,6 +39,8 @@ public class BookingController {
     private static final long RENEW_TIME = 1209600000L;
 
     private static final long AVAILABLE_TIME = 86400000L;
+
+    private static final long DAY_TIME = 86400000L;
 
     private static final long VP_TIME = 604800000L;
 
@@ -250,38 +253,39 @@ public class BookingController {
     }
 
     @PutMapping("booking/outstanding")
-    public void makeOutstandingRequest(@RequestParam(value = "id", defaultValue = "-1") Integer bookingId, HttpServletRequest request) {
+    public void makeOutstandingRequest(@RequestParam(value = "id", defaultValue = "-1") Integer documentId, HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null)
             throw new UnauthorizedException();
         if (!token.role.equals("librarian")) throw new AccessDeniedException();
 
-        if (bookingId == -1)
+        if (documentId == -1)
             throw new InvalidIdException();
 
-        Booking booking = bookingService.getBookingById(bookingId);
-        if (booking == null) {
+        Document document = documentService.findById(documentId);
+        if (document == null) {
             throw new BookingNotFoundException();
         }
 
-        PriorityQueue<Booking> priorityQueue = getQueueForBookById(booking.getDocument().getId());
+        PriorityQueue<Booking> priorityQueue = getQueueForBookById(documentId);
 
-        if (priorityQueue.size() == 0) throw new QueueEmptyException();
-
-        Booking firstBooking = priorityQueue.peek();
-
-        if ("outstanding".equals(firstBooking.getTypeBooking().getTypeName()))
-            throw new AlreadyHaveOutstandingRequestException();
-
-        /*for (Booking bookItem : priorityQueue) {
+        for (Booking bookItem : priorityQueue) {
             bookItem.setTypeBooking(typeBookingService.findByTypeName("close"));
             bookingService.save(bookItem);
 
             String message = "Your queue position is cancelled";
             notificationService.newNotification(bookItem.getUser().getId(), message);
-        }*/
-        booking.setTypeBooking(typeBookingService.findByTypeName("outstanding"));
-        bookingService.save(booking);
+        }
+
+        for (Booking bookItem : getHoldersForBookById(documentId))
+        {
+            bookItem.setTypeBooking(typeBookingService.findByTypeName("outstanding"));
+            bookItem.setReturnDate(new Date(System.currentTimeMillis() + DAY_TIME));
+            bookingService.save(bookItem);
+
+            String message = "You have to return " + document.getTitle() + " for one day";
+            notificationService.newNotification(bookItem.getUser().getId(), message);
+        }
     }
 
     @PutMapping("/booking/renew")
@@ -303,10 +307,7 @@ public class BookingController {
         if (!"vp".equals(booking.getUser().getRole().getName()) && "renew".equals(booking.getTypeBooking().getTypeName())) {
             throw new AlreadyRenewException();
         }
-
-        PriorityQueue<Booking> queue = getQueueForBookById(booking.getDocument().getId());
-
-        if (queue.size() > 0 && "outstanding".equals(queue.peek().getTypeBooking().getTypeName())) {
+        if ("outstanding".equals(booking.getTypeBooking().getTypeName())) {
             throw new UnableRenewException();
         }
 
@@ -421,18 +422,17 @@ public class BookingController {
     }
 
     public enum Priority {
-        PROFESSOR, VP, TA, INSTRUCTOR, STUDENT, OUTSTANDING
+        PROFESSOR, VP, TA, INSTRUCTOR, STUDENT
     }
 
     private class MyComparator implements Comparator<Booking> {
         public int compare(Booking x, Booking y) {
-            return convertToEnum(y).compareTo(convertToEnum(x));
+            return convertToEnum(y.getUser().getRole()).compareTo(convertToEnum(x.getUser().getRole()));
         }
     }
 
-    private Priority convertToEnum(Booking booking) {
-        if ("outstanding".equals(booking.getTypeBooking().getTypeName())) return Priority.OUTSTANDING;
-        switch (booking.getUser().getRole().getPosition().toLowerCase()) {
+    private Priority convertToEnum(Role role) {
+        switch (role.getPosition().toLowerCase()) {
             case "student":
                 return Priority.STUDENT;
             case "instructor":
@@ -447,13 +447,23 @@ public class BookingController {
         throw new RoleNotFoundException();
     }
 
+    private List<Booking> getHoldersForBookById(Integer bookId){
+        return bookingService.findAll()
+                .stream()
+                .filter(booking -> booking.getDocument().getId().equals(bookId))
+                .filter(booking -> ("taken".equals(booking.getTypeBooking().getTypeName())
+                        || "renew".equals(booking.getTypeBooking().getTypeName())
+                        || "return request".equals(booking.getTypeBooking().getTypeName())))
+                .collect(Collectors.toList());
+    }
+
     private PriorityQueue<Booking> getQueueForBookById(Integer bookId) {
         PriorityQueue<Booking> queue = new PriorityQueue<>(new MyComparator());
 
         queue.addAll(bookingService.findAll()
                 .stream()
                 .filter(booking -> booking.getDocument().getId().equals(bookId))
-                .filter(booking -> ("open".equals(booking.getTypeBooking().getTypeName()) || "outstanding".equals(booking.getTypeBooking().getTypeName())))
+                .filter(booking -> ("open".equals(booking.getTypeBooking().getTypeName())))
                 .collect(Collectors.toList()));
 
         return queue;
