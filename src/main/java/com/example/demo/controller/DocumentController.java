@@ -71,6 +71,8 @@ public class DocumentController {
         }
         Document document = new Document(documentModel.getTitle(), authors, documentModel.getPrice(), documentModel.getCount(), documentModel.getTags(), publisher, documentModel.getEdition(), documentModel.isBestseller(), documentModel.isReference(), documentModel.getPublishingDate(), documentModel.getEditor(), type);
         this.documentService.save(document);
+
+        logService.newLog(token.id, "Added new document " + document.getTitle());
     }
 
     @PutMapping("/document/update")
@@ -92,6 +94,8 @@ public class DocumentController {
         document.setId(documentModel.getId());
         this.documentService.save(document);
         bookingController.queueAllocation(document.getId());
+
+        logService.newLog(token.id, "Updated document id " + documentModel.getId());
     }
 
     @Transactional
@@ -110,6 +114,8 @@ public class DocumentController {
             throw new UserNotFoundException();
 
         this.documentService.remove(id);
+
+        logService.newLog(token.id, "Removed document" + document.getTitle());
     }
 
     @GetMapping("/document/find")
