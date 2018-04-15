@@ -27,6 +27,7 @@ public class BookingController {
     private DocumentService documentService;
     private UserService userService;
     private NotificationService notificationService;
+    private LogService logService;
 
     private static final long BESTSELLER_FOR_PATRON_TIME = 1209600000L;
 
@@ -47,12 +48,13 @@ public class BookingController {
     private static final long WEEK_AFTER_END = 604800000L;
 
 
-    BookingController(BookingService bookingService, DocumentService documentService, UserService userService, TypeBookingService typeBookingService, NotificationService notificationService) {
+    BookingController(BookingService bookingService, DocumentService documentService, UserService userService, TypeBookingService typeBookingService, NotificationService notificationService, LogService logService) {
         this.bookingService = bookingService;
         this.documentService = documentService;
         this.userService = userService;
         this.typeBookingService = typeBookingService;
         this.notificationService = notificationService;
+        this.logService = logService;
     }
 
     @GetMapping("/booking/find")

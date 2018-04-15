@@ -6,10 +6,7 @@ import com.example.demo.entity.document.Publisher;
 import com.example.demo.entity.document.TypeDocument;
 import com.example.demo.exception.*;
 import com.example.demo.model.DocumentModel;
-import com.example.demo.service.AuthorService;
-import com.example.demo.service.DocumentService;
-import com.example.demo.service.PublisherService;
-import com.example.demo.service.TypeDocumentService;
+import com.example.demo.service.*;
 import com.example.security.ParserToken;
 import com.example.security.TokenAuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,12 +27,14 @@ public class DocumentController {
     private TypeDocumentService typeDocumentService;
     private AuthorService authorService;
     private PublisherService publisherService;
+    private LogService logService;
 
-    public DocumentController(DocumentService documentService, TypeDocumentService typeDocumentService, AuthorService authorService, PublisherService publisherService) {
+    public DocumentController(DocumentService documentService, TypeDocumentService typeDocumentService, AuthorService authorService, PublisherService publisherService, LogService logService) {
         this.documentService = documentService;
         this.typeDocumentService = typeDocumentService;
         this.authorService = authorService;
         this.publisherService = publisherService;
+        this.logService = logService;
     }
 
     private HashSet<Author> findAuthors(Set<Author> setAuthors) {

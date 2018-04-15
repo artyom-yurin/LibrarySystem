@@ -5,8 +5,10 @@ import com.example.demo.entity.user.User;
 import com.example.demo.exception.*;
 import com.example.demo.model.LoginModel;
 import com.example.demo.model.UserModel;
+import com.example.demo.repository.LogRepository;
 import com.example.demo.repository.RoleRepository;
 import com.example.demo.repository.UserRepository;
+import com.example.demo.service.LogService;
 import com.example.demo.service.RoleService;
 import com.example.demo.service.UserService;
 import com.example.security.ParserToken;
@@ -26,10 +28,12 @@ public class UserController {
 
     private UserService userService;
     private RoleService roleService;
+    private LogService logService;
 
-    public UserController(UserRepository userRepository, RoleRepository roleRepository) {
-        userService = new UserService(userRepository);
-        roleService = new RoleService(roleRepository);
+    public UserController(UserService userService, RoleService roleService, LogService logService) {
+        this.userService = userService;
+        this.roleService = roleService;
+        this.logService = logService;
     }
 
     @PostMapping("/user/login")
@@ -62,6 +66,7 @@ public class UserController {
         if (role == null) throw new RoleNotFoundException();
         user = new User(userModel.getName(), userModel.getSurname(), userModel.getAddress(), userModel.getPhone(), role, userModel.getUsername(), userModel.getPassword());
         userService.save(user);
+        logService.newLog(token.id, "Added new user " + user.getUsername());
     }
 
     @PutMapping("/user/update")
@@ -84,6 +89,8 @@ public class UserController {
         user = new User(userModel.getName(), userModel.getSurname(), userModel.getAddress(), userModel.getPhone(), role, userModel.getUsername(), userModel.getPassword());
         user.setId(userModel.getId());
         userService.save(user);
+
+        logService.newLog(token.id, "Updated user by id " + user.getId());
     }
 
     @Transactional
@@ -103,6 +110,8 @@ public class UserController {
             throw new UserNotFoundException();
         }
         userService.remove(id);
+
+        logService.newLog(token.id, "Deleted user " + user.getUsername());
     }
 
     @GetMapping("/user/users")

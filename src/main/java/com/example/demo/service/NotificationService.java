@@ -1,6 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.Notification;
+import com.example.demo.entity.information.Notification;
 import com.example.demo.entity.user.User;
 import com.example.demo.exception.UserNotFoundException;
 import com.example.demo.repository.NotificationRepository;
