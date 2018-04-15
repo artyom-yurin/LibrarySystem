@@ -137,6 +137,7 @@ public class BookingController {
                 bookingService.save(new Booking(user, document, returnDate, 0, typeBookingService.findByTypeName("available")));
                 document.setCount(document.getCount() - 1);
                 documentService.save(document);
+                logService.newLog(token.id, "Check out " + document.getTitle());
             } else {
                 bookingService.save(new Booking(user, document, returnDate, 0, typeBookingService.findByTypeName("open")));
             }
@@ -186,6 +187,7 @@ public class BookingController {
         booking.setTypeBooking(typeBookingService.findByTypeName("taken"));
         booking.setReturnDate(returnDate);
         bookingService.save(booking);
+        logService.newLog(token.id, "Confirm that " + user.getUsername() + " taken " + document.getTitle());
     }
 
     @PutMapping("/booking/return")
@@ -201,6 +203,8 @@ public class BookingController {
             throw new BookingNotFoundException();
         booking.setTypeBooking(typeBookingService.findByTypeName("return request"));
         bookingService.save(booking);
+
+        logService.newLog(token.id, "Want return " + booking.getDocument().getTitle());
     }
 
     @PutMapping("/booking/close")
@@ -240,6 +244,9 @@ public class BookingController {
             document.setCount(document.getCount() + 1);
             documentService.save(document);
         }
+
+
+        logService.newLog(token.id, "Confirm that " + booking.getUser().getUsername() + " return " + document.getTitle());
     }
 
     @Transactional
@@ -288,6 +295,9 @@ public class BookingController {
             String message = "You have to return " + document.getTitle() + " for one day";
             notificationService.newNotification(bookItem.getUser().getId(), message);
         }
+
+
+        logService.newLog(token.id, "Outstanding request to " + document.getTitle());
     }
 
     @PutMapping("/booking/renew")
