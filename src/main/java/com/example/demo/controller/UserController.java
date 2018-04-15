@@ -51,8 +51,9 @@ public class UserController {
     public void addUser(@RequestBody UserModel userModel, HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null) throw new UnauthorizedException();
-        if (!token.role.equals("librarian")) throw new AccessDeniedException();
-
+        if (!token.role.equals("admin")) {
+            if (!token.role.equals("librarian")) throw new AccessDeniedException();
+        }
         User user = userService.findByUsername(userModel.getUsername());
         if (user != null) {
             throw new AlreadyUserExistException();
@@ -67,7 +68,9 @@ public class UserController {
     public void updateUser(@RequestBody UserModel userModel, HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null) throw new UnauthorizedException();
-        if (!token.role.equals("librarian")) throw new AccessDeniedException();
+        if (!token.role.equals("admin")) {
+            if (!token.role.equals("librarian")) throw new AccessDeniedException();
+        }
 
         if (userModel.getId() == null) {
             throw new InvalidIdException();
@@ -88,8 +91,9 @@ public class UserController {
     public void removeUser(@RequestParam(value = "id", defaultValue = "-1") Integer id, HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null) throw new UnauthorizedException();
-        if (!token.role.equals("librarian")) throw new AccessDeniedException();
-
+        if (!token.role.equals("admin")) {
+            if (!token.role.equals("librarian")) throw new AccessDeniedException();
+        }
 
         if (id == -1) {
             throw new InvalidIdException();
