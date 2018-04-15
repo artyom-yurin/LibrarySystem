@@ -10,6 +10,8 @@ var currentUserId = -1;
 
 var userAttributesWeHave = [];
 
+var newRequestNumber = 0;
+
 function pushNewUserAttribute(attr) {
     for (let i in userAttributesWeHave) {
         if (attr === userAttributesWeHave[i])
@@ -259,7 +261,7 @@ function updateUsers() {
 
                     "<button class='btn btn-outline-primary my-2 my-sm-0' data-toggle=\"modal\" data-target=\"#userRequests\" onclick='showUserRequests(" +
                     users[user]["id"] +
-                    ")' type='submit'>Show user requests" +
+                    ")' type='submit'>Show user requests <span class=\"badge\" id='newRequestNumber'></span> " +
                     "</button>\n" +
 
                     "<button class='btn btn-outline-primary my-2 my-sm-0' data-toggle=\"modal\" data-target=\"#myModal\" " +
@@ -445,3 +447,18 @@ function init() {
     map.set('username', 'username');
     map.set('password', 'password');
 }
+
+// function showNumberRequests(id) {
+//     $.ajax({
+//         url: URL_LOCALHOST + "/booking/find?id=" + id,
+//         type: "GET",
+//         headers: {
+//             'Authorization': window.localStorage.getItem("Authorization"),
+//         },
+//         dataType: "json", // by this property ajax will automatically parse json which we get from response
+//         success: function (users, status, xhr) {
+//             $("#newRequestNumber").innerHTML = newRequestNumber;
+//         }
+//     });
+//
+// }
