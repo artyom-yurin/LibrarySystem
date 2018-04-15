@@ -130,6 +130,18 @@ public class BookingController {
         if (user == null)
             throw new UserNotFoundException();
         if (!document.isReference()) {
+            List<Booking> myBookings = bookingService.findAll()
+                    .stream()
+                    .filter(booking -> booking.getUser().getId().equals(token.id))
+                    .filter(booking -> !("close".equals(booking.getTypeBooking().getTypeName())))
+                    .collect(Collectors.toList());
+            for (Booking myBooking : myBookings)
+            {
+                if (myBooking.getDocument().getTitle().equals(document.getTitle()))
+                {
+                    throw new AccessDeniedException();
+                }
+            };
             Date returnDate = new Date();
             if (document.getCount() > 0) {
                 long time = System.currentTimeMillis();
@@ -137,10 +149,10 @@ public class BookingController {
                 bookingService.save(new Booking(user, document, returnDate, 0, typeBookingService.findByTypeName("available")));
                 document.setCount(document.getCount() - 1);
                 documentService.save(document);
-                logService.newLog(token.id, "Check out " + document.getTitle());
             } else {
                 bookingService.save(new Booking(user, document, returnDate, 0, typeBookingService.findByTypeName("open")));
             }
+            logService.newLog(token.id, "Check out " + document.getTitle());
         } else {
             throw new AccessDeniedException();
         }
