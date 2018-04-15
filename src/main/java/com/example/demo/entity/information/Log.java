@@ -1,7 +1,6 @@
 package com.example.demo.entity.information;
 
 import com.example.demo.entity.user.User;
-import org.springframework.data.annotation.Id;
 
 import javax.persistence.*;
 import java.util.Date;
