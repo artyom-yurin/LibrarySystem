@@ -19,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.stream.Collectors;
 
 @RestController
 public class UserController {
@@ -106,6 +107,21 @@ public class UserController {
         if (token == null) throw new UnauthorizedException();
         if (!token.role.equals("librarian"))
             throw new AccessDeniedException();
-        return userService.getAllUsers();
+        return userService.getAllUsers()
+                .stream()
+                .filter(user -> user.getRole().getName().equals("faculty") || user.getRole().getName().equals("patron") || user.getRole().getName().equals("vp"))
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping("/admin/librarians")
+    public Iterable<User> getLibrarians(HttpServletRequest request) {
+        ParserToken token = TokenAuthenticationService.getAuthentication(request);
+        if (token == null) throw new UnauthorizedException();
+        if (!token.role.equals("admin"))
+            throw new AccessDeniedException();
+        return userService.getAllUsers()
+                .stream()
+                .filter(user -> user.getRole().getName().equals("librarian"))
+                .collect(Collectors.toList());
     }
 }
