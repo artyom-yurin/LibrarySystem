@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.common.Privileges;
 import com.example.demo.entity.document.Author;
 import com.example.demo.entity.document.Document;
 import com.example.demo.entity.document.Publisher;
@@ -58,7 +59,7 @@ public class DocumentController {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null) throw new UnauthorizedException();
         if (!token.role.equals("librarian")) throw new AccessDeniedException();
-
+        if (Privileges.Privilege.Priv2.compareTo(Privileges.convertStringToPrivelege(token.position)) > 0) throw new AccessDeniedException();
 
         TypeDocument type = typeDocumentService.findByTypeName(documentModel.getType().getTypeName());
         if (type == null) throw new TypeNotFoundException();
@@ -80,6 +81,7 @@ public class DocumentController {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null) throw new UnauthorizedException();
         if (!token.role.equals("librarian")) throw new AccessDeniedException();
+        if (Privileges.Privilege.Priv1.compareTo(Privileges.convertStringToPrivelege(token.position)) > 0) throw new AccessDeniedException();
 
         TypeDocument type = typeDocumentService.findByTypeName(documentModel.getType().getTypeName());
         if (type == null) throw new TypeNotFoundException();
@@ -104,6 +106,7 @@ public class DocumentController {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null) throw new UnauthorizedException();
         if (!token.role.equals("librarian")) throw new AccessDeniedException();
+        if (Privileges.Privilege.Priv3.compareTo(Privileges.convertStringToPrivelege(token.position)) > 0) throw new AccessDeniedException();
 
         if (id == -1)
             throw new InvalidIdException();

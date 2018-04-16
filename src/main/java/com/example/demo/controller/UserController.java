@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.common.Privileges;
 import com.example.demo.entity.user.Role;
 import com.example.demo.entity.user.User;
 import com.example.demo.exception.*;
@@ -57,6 +58,7 @@ public class UserController {
         if (token == null) throw new UnauthorizedException();
         if (!token.role.equals("admin")) {
             if (!token.role.equals("librarian")) throw new AccessDeniedException();
+            if (Privileges.Privilege.Priv2.compareTo(Privileges.convertStringToPrivelege(token.position)) > 0) throw new AccessDeniedException();
         }
         User user = userService.findByUsername(userModel.getUsername());
         if (user != null) {
@@ -75,6 +77,7 @@ public class UserController {
         if (token == null) throw new UnauthorizedException();
         if (!token.role.equals("admin")) {
             if (!token.role.equals("librarian")) throw new AccessDeniedException();
+            if (Privileges.Privilege.Priv1.compareTo(Privileges.convertStringToPrivelege(token.position)) > 0) throw new AccessDeniedException();
         }
 
         if (userModel.getId() == null) {
@@ -100,6 +103,7 @@ public class UserController {
         if (token == null) throw new UnauthorizedException();
         if (!token.role.equals("admin")) {
             if (!token.role.equals("librarian")) throw new AccessDeniedException();
+            if (Privileges.Privilege.Priv3.compareTo(Privileges.convertStringToPrivelege(token.position)) > 0) throw new AccessDeniedException();
         }
 
         if (id == -1) {
