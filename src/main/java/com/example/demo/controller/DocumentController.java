@@ -92,7 +92,7 @@ public class DocumentController {
         } else {
             publisher = publisherService.findByPublisherName(documentModel.getPublisher().getPublisherName());
         }
-        Document document = new Document(documentModel.getTitle(), authors, documentModel.getPrice(), documentModel.getCount(), documentModel.getTags(), publisher, documentModel.getEdition(), documentModel.isBestseller(), documentModel.isReference(), documentModel.getPublishingDate(), documentModel.getEditor(), documentModel.getType());
+        Document document = new Document(documentModel.getTitle(), authors, documentModel.getPrice(), documentService.findById(documentModel.getId()).getCount(), documentModel.getTags(), publisher, documentModel.getEdition(), documentModel.isBestseller(), documentModel.isReference(), documentModel.getPublishingDate(), documentModel.getEditor(), documentModel.getType());
         document.setId(documentModel.getId());
         this.documentService.save(document);
         bookingController.queueAllocation(document.getId());
@@ -119,6 +119,33 @@ public class DocumentController {
         this.documentService.remove(id);
 
         logService.newLog(token.id, "Removed document" + document.getTitle());
+    }
+
+    @PutMapping("/document/copy")
+    public void updateCopies(@RequestParam(name = "id", defaultValue = "-1") Integer documentId,
+                             @RequestParam(name = "copies", defaultValue = "-1") Integer copyCount,
+                             HttpServletRequest request)
+    {
+        ParserToken token = TokenAuthenticationService.getAuthentication(request);
+        if (token == null) throw new UnauthorizedException();
+        if (!token.role.equals("librarian")) throw new AccessDeniedException();
+        if (Privileges.Privilege.Priv3.compareTo(Privileges.convertStringToPrivelege(token.position)) > 0) throw new AccessDeniedException();
+
+        if (copyCount < 0)
+        {
+            throw new InvalidCountException();
+        }
+
+        if (documentId == -1)
+            throw new InvalidIdException();
+
+        Document document = documentService.findById(documentId);
+
+        if (document == null)
+            throw new UserNotFoundException();
+
+        document.setCount(copyCount);
+        documentService.save(document);
     }
 
     @GetMapping("/document/find")
