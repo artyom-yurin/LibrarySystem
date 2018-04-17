@@ -36,54 +36,56 @@ public class SearchController {
 
         ArrayList<Document> toReturn = new ArrayList<>();
 
-        if(searchModel.getSearchType().equals("title")){
-            String[] toSearch = searchModel.getSearchQuery().split(" ");
-            for (String substring : toSearch) {
+        switch(searchModel.getSearchType()){
+            case "title":
+                String[] toSearch = searchModel.getSearchQuery().split(" ");
+                for (String substring : toSearch) {
+                    for (Document document : documentService.getAllDocuments()){
+                        if(document.getTitle().toLowerCase().contains(substring.toLowerCase()) && !toReturn.contains(document)){
+                            toReturn.add(document);
+                        }
+                    }
+                }
+                break;
+            case "author":
                 for (Document document : documentService.getAllDocuments()){
-                    if(document.getTitle().toLowerCase().contains(substring.toLowerCase()) && !toReturn.contains(document)){
+                    if(document.getAuthors().toString().toLowerCase().contains(searchModel.getSearchQuery().toLowerCase()) && !toReturn.contains(document)){
                         toReturn.add(document);
                     }
                 }
-            }
-        }
-        else if(searchModel.getSearchType().equals("author")){
-            for (Document document : documentService.getAllDocuments()){
-                if(document.getAuthors().toString().toLowerCase().contains(searchModel.getSearchQuery().toLowerCase()) && !toReturn.contains(document)){
-                    toReturn.add(document);
+                break;
+            case "tags":
+                String[] tags = searchModel.getSearchQuery().split(" ");
+                for (String substring : tags) {
+                    for (Document document : documentService.getAllDocuments()){
+                        if(document.getTags().toString().toLowerCase().contains(substring.toLowerCase()) && !toReturn.contains(document)){
+                            toReturn.add(document);
+                        }
+                    }
                 }
-            }
-        }
-        else if(searchModel.getSearchType().equals("tags")){
-            String[] toSearch = searchModel.getSearchQuery().split(" ");
-            for (String substring : toSearch) {
+                break;
+            case "edition":
+                Integer edition = Integer.parseInt(searchModel.getSearchQuery());
                 for (Document document : documentService.getAllDocuments()){
-                    if(document.getTags().toString().toLowerCase().contains(substring.toLowerCase()) && !toReturn.contains(document)){
+                    if(edition.equals(document.getEdition()) && !toReturn.contains(document)){
                         toReturn.add(document);
                     }
                 }
-            }
-        }
-        else if(searchModel.getSearchType().equals("edition")){
-            Integer edition = Integer.parseInt(searchModel.getSearchQuery());
-            for (Document document : documentService.getAllDocuments()){
-                if(edition.equals(document.getEdition()) && !toReturn.contains(document)){
-                    toReturn.add(document);
+                break;
+            case "editor":
+                for (Document document : documentService.getAllDocuments()){
+                    if(searchModel.getSearchQuery().equals(document.getEditor()) && !toReturn.contains(document)){
+                        toReturn.add(document);
+                    }
                 }
-            }
-        }
-        else if(searchModel.getSearchType().equals("editor")){
-            for (Document document : documentService.getAllDocuments()){
-                if(searchModel.getSearchQuery().equals(document.getEditor()) && !toReturn.contains(document)){
-                    toReturn.add(document);
+                break;
+            case "publisher":
+                for (Document document : documentService.getAllDocuments()){
+                    if(searchModel.getSearchQuery().equals(document.getPublisher().getPublisherName()) && !toReturn.contains(document)){
+                        toReturn.add(document);
+                    }
                 }
-            }
-        }
-        else if(searchModel.getSearchType().equals("publisher")){
-            for (Document document : documentService.getAllDocuments()){
-                if(searchModel.getSearchQuery().equals(document.getPublisher().getPublisherName()) && !toReturn.contains(document)){
-                    toReturn.add(document);
-                }
-            }
+                break;
         }
 
         return toReturn;
