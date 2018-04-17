@@ -20,6 +20,7 @@ public class TokenAuthenticationService {
 
         claims.put("Username", user.getUsername());
         claims.put("Role", user.getRole().getName());
+        claims.put("Position", user.getRole().getPosition());
 
         String JWT = Jwts.builder()
                 .setClaims(claims)
@@ -37,7 +38,7 @@ public class TokenAuthenticationService {
                     .parseClaimsJws(token.replace(TOKEN_PREFIX, ""))
                     .getBody();
 
-            return new ParserToken(Integer.parseInt(claims.getSubject()), claims.get("Username").toString(), claims.get("Role").toString());
+            return new ParserToken(Integer.parseInt(claims.getSubject()), claims.get("Username").toString(), claims.get("Role").toString(), claims.get("Position").toString());
         }
         return null;
     }

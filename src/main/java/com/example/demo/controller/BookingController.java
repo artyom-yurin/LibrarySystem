@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.common.Privileges;
 import com.example.demo.entity.booking.Booking;
 import com.example.demo.entity.document.Document;
 import com.example.demo.entity.user.Role;
@@ -27,6 +28,7 @@ public class BookingController {
     private DocumentService documentService;
     private UserService userService;
     private NotificationService notificationService;
+    private LogService logService;
 
     private static final long BESTSELLER_FOR_PATRON_TIME = 1209600000L;
 
@@ -47,12 +49,13 @@ public class BookingController {
     private static final long WEEK_AFTER_END = 604800000L;
 
 
-    BookingController(BookingService bookingService, DocumentService documentService, UserService userService, TypeBookingService typeBookingService, NotificationService notificationService) {
+    BookingController(BookingService bookingService, DocumentService documentService, UserService userService, TypeBookingService typeBookingService, NotificationService notificationService, LogService logService) {
         this.bookingService = bookingService;
         this.documentService = documentService;
         this.userService = userService;
         this.typeBookingService = typeBookingService;
         this.notificationService = notificationService;
+        this.logService = logService;
     }
 
     @GetMapping("/booking/find")
@@ -128,6 +131,18 @@ public class BookingController {
         if (user == null)
             throw new UserNotFoundException();
         if (!document.isReference()) {
+            List<Booking> myBookings = bookingService.findAll()
+                    .stream()
+                    .filter(booking -> booking.getUser().getId().equals(token.id))
+                    .filter(booking -> !("close".equals(booking.getTypeBooking().getTypeName())))
+                    .collect(Collectors.toList());
+            for (Booking myBooking : myBookings)
+            {
+                if (myBooking.getDocument().getTitle().equals(document.getTitle()))
+                {
+                    throw new AccessDeniedException();
+                }
+            };
             Date returnDate = new Date();
             if (document.getCount() > 0) {
                 long time = System.currentTimeMillis();
@@ -138,6 +153,7 @@ public class BookingController {
             } else {
                 bookingService.save(new Booking(user, document, returnDate, 0, typeBookingService.findByTypeName("open")));
             }
+            logService.newLog(token.id, "Check out " + document.getTitle());
         } else {
             throw new AccessDeniedException();
         }
@@ -184,6 +200,7 @@ public class BookingController {
         booking.setTypeBooking(typeBookingService.findByTypeName("taken"));
         booking.setReturnDate(returnDate);
         bookingService.save(booking);
+        logService.newLog(token.id, "Confirm that " + user.getUsername() + " taken " + document.getTitle());
     }
 
     @PutMapping("/booking/return")
@@ -199,6 +216,8 @@ public class BookingController {
             throw new BookingNotFoundException();
         booking.setTypeBooking(typeBookingService.findByTypeName("return request"));
         bookingService.save(booking);
+
+        logService.newLog(token.id, "Want return " + booking.getDocument().getTitle());
     }
 
     @PutMapping("/booking/close")
@@ -238,6 +257,9 @@ public class BookingController {
             document.setCount(document.getCount() + 1);
             documentService.save(document);
         }
+
+
+        logService.newLog(token.id, "Confirm that " + booking.getUser().getUsername() + " return " + document.getTitle());
     }
 
     @Transactional
@@ -258,6 +280,7 @@ public class BookingController {
         if (token == null)
             throw new UnauthorizedException();
         if (!token.role.equals("librarian")) throw new AccessDeniedException();
+        if (Privileges.Privilege.Priv2.compareTo(Privileges.convertStringToPrivelege(token.position)) > 0) throw new AccessDeniedException();
 
         if (documentId == -1)
             throw new InvalidIdException();
@@ -286,6 +309,9 @@ public class BookingController {
             String message = "You have to return " + document.getTitle() + " for one day";
             notificationService.newNotification(bookItem.getUser().getId(), message);
         }
+
+
+        logService.newLog(token.id, "Outstanding request to " + document.getTitle());
     }
 
     @PutMapping("/booking/renew")

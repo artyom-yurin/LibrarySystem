@@ -1,12 +1,9 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.Notification;
+import com.example.demo.entity.information.Notification;
 import com.example.demo.exception.AccessDeniedException;
 import com.example.demo.exception.UnauthorizedException;
-import com.example.demo.service.BookingService;
-import com.example.demo.service.DocumentService;
 import com.example.demo.service.NotificationService;
-import com.example.demo.service.UserService;
 import com.example.security.ParserToken;
 import com.example.security.TokenAuthenticationService;
 import org.springframework.web.bind.annotation.GetMapping;

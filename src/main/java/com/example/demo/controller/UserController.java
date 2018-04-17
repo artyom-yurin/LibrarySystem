@@ -1,12 +1,15 @@
 package com.example.demo.controller;
 
+import com.example.demo.common.Privileges;
 import com.example.demo.entity.user.Role;
 import com.example.demo.entity.user.User;
 import com.example.demo.exception.*;
 import com.example.demo.model.LoginModel;
 import com.example.demo.model.UserModel;
+import com.example.demo.repository.LogRepository;
 import com.example.demo.repository.RoleRepository;
 import com.example.demo.repository.UserRepository;
+import com.example.demo.service.LogService;
 import com.example.demo.service.RoleService;
 import com.example.demo.service.UserService;
 import com.example.security.ParserToken;
@@ -26,10 +29,12 @@ public class UserController {
 
     private UserService userService;
     private RoleService roleService;
+    private LogService logService;
 
-    public UserController(UserRepository userRepository, RoleRepository roleRepository) {
-        userService = new UserService(userRepository);
-        roleService = new RoleService(roleRepository);
+    public UserController(UserService userService, RoleService roleService, LogService logService) {
+        this.userService = userService;
+        this.roleService = roleService;
+        this.logService = logService;
     }
 
     @PostMapping("/user/login")
@@ -51,8 +56,10 @@ public class UserController {
     public void addUser(@RequestBody UserModel userModel, HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null) throw new UnauthorizedException();
-        if (!token.role.equals("librarian")) throw new AccessDeniedException();
-
+        if (!token.role.equals("admin")) {
+            if (!token.role.equals("librarian")) throw new AccessDeniedException();
+            if (Privileges.Privilege.Priv2.compareTo(Privileges.convertStringToPrivelege(token.position)) > 0) throw new AccessDeniedException();
+        }
         User user = userService.findByUsername(userModel.getUsername());
         if (user != null) {
             throw new AlreadyUserExistException();
@@ -61,13 +68,17 @@ public class UserController {
         if (role == null) throw new RoleNotFoundException();
         user = new User(userModel.getName(), userModel.getSurname(), userModel.getAddress(), userModel.getPhone(), role, userModel.getUsername(), userModel.getPassword());
         userService.save(user);
+        logService.newLog(token.id, "Added new user " + user.getUsername());
     }
 
     @PutMapping("/user/update")
     public void updateUser(@RequestBody UserModel userModel, HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null) throw new UnauthorizedException();
-        if (!token.role.equals("librarian")) throw new AccessDeniedException();
+        if (!token.role.equals("admin")) {
+            if (!token.role.equals("librarian")) throw new AccessDeniedException();
+            if (Privileges.Privilege.Priv1.compareTo(Privileges.convertStringToPrivelege(token.position)) > 0) throw new AccessDeniedException();
+        }
 
         if (userModel.getId() == null) {
             throw new InvalidIdException();
@@ -81,6 +92,8 @@ public class UserController {
         user = new User(userModel.getName(), userModel.getSurname(), userModel.getAddress(), userModel.getPhone(), role, userModel.getUsername(), userModel.getPassword());
         user.setId(userModel.getId());
         userService.save(user);
+
+        logService.newLog(token.id, "Updated user by id " + user.getId());
     }
 
     @Transactional
@@ -88,8 +101,10 @@ public class UserController {
     public void removeUser(@RequestParam(value = "id", defaultValue = "-1") Integer id, HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null) throw new UnauthorizedException();
-        if (!token.role.equals("librarian")) throw new AccessDeniedException();
-
+        if (!token.role.equals("admin")) {
+            if (!token.role.equals("librarian")) throw new AccessDeniedException();
+            if (Privileges.Privilege.Priv3.compareTo(Privileges.convertStringToPrivelege(token.position)) > 0) throw new AccessDeniedException();
+        }
 
         if (id == -1) {
             throw new InvalidIdException();
@@ -99,6 +114,8 @@ public class UserController {
             throw new UserNotFoundException();
         }
         userService.remove(id);
+
+        logService.newLog(token.id, "Deleted user " + user.getUsername());
     }
 
     @GetMapping("/user/users")

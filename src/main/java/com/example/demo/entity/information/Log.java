@@ -1,28 +1,32 @@
-package com.example.demo.entity;
+package com.example.demo.entity.information;
 
 import com.example.demo.entity.user.User;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
-public class Notification {
-
+public class Log {
     @Id
     @Column(name = "NOTIFICATION_ID")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
-    @JoinColumn(name = "USER_ID")
+    @JoinColumn(name = "LIBRARIAN_ID")
     private User user;
+
+    @Column(name = "LOG_DATE", columnDefinition = "DATETIME")
+    private Date logDate;
 
     @Column(name = "MESSAGE")
     private String message;
 
-    public Notification(){}
+    public Log(){}
 
-    public Notification(User user, String message) {
+    public Log(User user, Date logDate, String message) {
         this.user = user;
+        this.logDate = logDate;
         this.message = message;
     }
 
@@ -40,6 +44,14 @@ public class Notification {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Date getLogDate() {
+        return logDate;
+    }
+
+    public void setLogDate(Date logDate) {
+        this.logDate = logDate;
     }
 
     public String getMessage() {
