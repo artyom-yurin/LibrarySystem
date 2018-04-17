@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.common.Privileges;
 import com.example.demo.entity.booking.Booking;
 import com.example.demo.entity.document.Document;
 import com.example.demo.entity.user.Role;
@@ -279,6 +280,7 @@ public class BookingController {
         if (token == null)
             throw new UnauthorizedException();
         if (!token.role.equals("librarian")) throw new AccessDeniedException();
+        if (Privileges.Privilege.Priv2.compareTo(Privileges.convertStringToPrivelege(token.position)) > 0) throw new AccessDeniedException();
 
         if (documentId == -1)
             throw new InvalidIdException();
