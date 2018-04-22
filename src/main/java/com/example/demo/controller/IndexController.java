@@ -48,7 +48,7 @@ public class IndexController {
     public ModelAndView allDocuments(HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null) throw new UnauthorizedException();
-        if (!token.role.equals("admin")) throw new AccessDeniedException();
+        if (!token.role.equals("admin") && !token.role.equals("librarian")) throw new AccessDeniedException();
         return new ModelAndView("books");
     }
 
@@ -56,7 +56,7 @@ public class IndexController {
     public ModelAndView allUsers(HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null) throw new UnauthorizedException();
-        if (!token.role.equals("admin")) throw new AccessDeniedException();
+        if (!token.role.equals("admin") && !token.role.equals("librarian")) throw new AccessDeniedException();
         return new ModelAndView("users");
     }
 
@@ -64,7 +64,7 @@ public class IndexController {
     public ModelAndView allRequests(HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null) throw new UnauthorizedException();
-        if (!token.role.equals("admin")) throw new AccessDeniedException();
+        if (!token.role.equals("admin") && !token.role.equals("librarian")) throw new AccessDeniedException();
         return new ModelAndView("request");
     }
 
@@ -72,7 +72,7 @@ public class IndexController {
     public ModelAndView allConfirmation(HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null) throw new UnauthorizedException();
-        if (!token.role.equals("admin")) throw new AccessDeniedException();
+        if (!token.role.equals("admin") && !token.role.equals("librarian")) throw new AccessDeniedException();
         return new ModelAndView("confirmation");
     }
 

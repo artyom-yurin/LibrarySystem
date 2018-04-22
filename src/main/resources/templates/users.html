@@ -137,8 +137,35 @@
                                 <option value='instructor'>Instructor</option>
                                 <option value='ta'>TA</option>
                                 <option value='professor'>Professor</option>
-                                <option value='admin'>Admin</option>
                                 <option value='vp'>Visiting Professor</option>
+                                <option value='librarian'>Librarian</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <h4>Privileges</h4>
+                    <div class="row mt-3 mb-3">
+                        <div class="col-md-3 mb-3">
+                            <label for="addUserAndDocumentsModify">Add</label>
+                            <select class="custom-select d-block w-100" id="addUserAndDocumentsModify" required="required">
+                                <option value='true'>Able</option>
+                                <option value='false'>Not Able</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <label for="modifyUserAndDocumentsModify">Modify</label>
+                            <select class="custom-select d-block w-100" id="modifyUserAndDocumentsModify" required="required">
+                                <option value='true'>Able</option>
+                                <option value='false'>Not Able</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <label for="deleteUserAndDocumentsModify">Delete</label>
+                            <select class="custom-select d-block w-100" id="deleteUserAndDocumentsModify" required="required">
+                                <option value='true'>Able</option>
+                                <option value='false'>Not Able</option>
                             </select>
                         </div>
                     </div>
@@ -164,10 +191,20 @@
                 <h4 class="modal-title">Current User Requests</h4>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
-            <div class="row mt-2 \"><div class="col-4">
-                <div class="list-group" id="new-list-tab" role="tablist">
-                    <a class="list-group-item list-group-item-action active show" id="list6" data-toggle="list" href="#6" role="tab" aria-controls="list6" aria-selected="true">ZXC</a><a class="list-group-item list-group-item-action" id="list7" data-toggle="list" href="#7" role="tab" aria-controls="list7" aria-selected="false">ZXC</a><a class="list-group-item list-group-item-action" id="list8" data-toggle="list" href="#8" role="tab" aria-controls="list8" aria-selected="false">IKM</a><a class="list-group-item list-group-item-action" id="list11" data-toggle="list" href="#11" role="tab" aria-controls="list11" aria-selected="false">PPP</a><a class="list-group-item list-group-item-action" id="list13" data-toggle="list" href="#13" role="tab" aria-controls="list13" aria-selected="false">ZXC</a> </div>
-            </div>
+            <div class="row mt-2 \">
+                <div class="col-4">
+                    <div class="list-group" id="new-list-tab" role="tablist">
+                        <a class="list-group-item list-group-item-action active show" id="list6" data-toggle="list"
+                           href="#6" role="tab" aria-controls="list6" aria-selected="true">ZXC</a><a
+                            class="list-group-item list-group-item-action" id="list7" data-toggle="list" href="#7"
+                            role="tab" aria-controls="list7" aria-selected="false">ZXC</a><a
+                            class="list-group-item list-group-item-action" id="list8" data-toggle="list" href="#8"
+                            role="tab" aria-controls="list8" aria-selected="false">IKM</a><a
+                            class="list-group-item list-group-item-action" id="list11" data-toggle="list" href="#11"
+                            role="tab" aria-controls="list11" aria-selected="false">PPP</a><a
+                            class="list-group-item list-group-item-action" id="list13" data-toggle="list" href="#13"
+                            role="tab" aria-controls="list13" aria-selected="false">ZXC</a></div>
+                </div>
                 <div class="col-8">
                     <div class="tab-content" id="new-nav-tabContent">
                         <div class="tab-pane fade active show" id="6" role="tabpanel" aria-labelledby="list6">
@@ -184,9 +221,12 @@
                                 <dd>0</dd>
                                 <dt>typeBooking</dt>
                                 <dd>return request</dd>
-                            </dl><small class="d-block text-right mt-3 border-bottom border-gray pb-2">
-                            <button class="btn btn-outline-success my-2 my-sm-0" onclick="acceptRequest(6)" type="submit">Accept</button>
-                        </small>
+                            </dl>
+                            <small class="d-block text-right mt-3 border-bottom border-gray pb-2">
+                                <button class="btn btn-outline-success my-2 my-sm-0" onclick="acceptRequest(6)"
+                                        type="submit">Accept
+                                </button>
+                            </small>
                         </div>
                         <div class="tab-pane fade" id="7" role="tabpanel" aria-labelledby="list7">
                             <dl class="dl-horizontal">
@@ -202,9 +242,12 @@
                                 <dd>0</dd>
                                 <dt>typeBooking</dt>
                                 <dd>return request</dd>
-                            </dl><small class="d-block text-right mt-3 border-bottom border-gray pb-2">
-                            <button class="btn btn-outline-success my-2 my-sm-0" onclick="acceptRequest(7)" type="submit">Accept</button>
-                        </small>
+                            </dl>
+                            <small class="d-block text-right mt-3 border-bottom border-gray pb-2">
+                                <button class="btn btn-outline-success my-2 my-sm-0" onclick="acceptRequest(7)"
+                                        type="submit">Accept
+                                </button>
+                            </small>
                         </div>
                         <div class="tab-pane fade" id="8" role="tabpanel" aria-labelledby="list8">
                             <dl class="dl-horizontal">
@@ -220,9 +263,12 @@
                                 <dd>0</dd>
                                 <dt>typeBooking</dt>
                                 <dd>return request</dd>
-                            </dl><small class="d-block text-right mt-3 border-bottom border-gray pb-2">
-                            <button class="btn btn-outline-success my-2 my-sm-0" onclick="acceptRequest(8)" type="submit">Accept</button>
-                        </small>
+                            </dl>
+                            <small class="d-block text-right mt-3 border-bottom border-gray pb-2">
+                                <button class="btn btn-outline-success my-2 my-sm-0" onclick="acceptRequest(8)"
+                                        type="submit">Accept
+                                </button>
+                            </small>
                         </div>
                         <div class="tab-pane fade" id="11" role="tabpanel" aria-labelledby="list11">
                             <dl class="dl-horizontal">
@@ -238,9 +284,12 @@
                                 <dd>0</dd>
                                 <dt>typeBooking</dt>
                                 <dd>return request</dd>
-                            </dl><small class="d-block text-right mt-3 border-bottom border-gray pb-2">
-                            <button class="btn btn-outline-success my-2 my-sm-0" onclick="acceptRequest(11)" type="submit">Accept</button>
-                        </small>
+                            </dl>
+                            <small class="d-block text-right mt-3 border-bottom border-gray pb-2">
+                                <button class="btn btn-outline-success my-2 my-sm-0" onclick="acceptRequest(11)"
+                                        type="submit">Accept
+                                </button>
+                            </small>
                         </div>
                         <div class="tab-pane fade" id="13" role="tabpanel" aria-labelledby="list13">
                             <dl class="dl-horizontal">
@@ -256,9 +305,12 @@
                                 <dd>0</dd>
                                 <dt>typeBooking</dt>
                                 <dd>return request</dd>
-                            </dl><small class="d-block text-right mt-3 border-bottom border-gray pb-2">
-                            <button class="btn btn-outline-success my-2 my-sm-0" onclick="acceptRequest(13)" type="submit">Accept</button>
-                        </small>
+                            </dl>
+                            <small class="d-block text-right mt-3 border-bottom border-gray pb-2">
+                                <button class="btn btn-outline-success my-2 my-sm-0" onclick="acceptRequest(13)"
+                                        type="submit">Accept
+                                </button>
+                            </small>
                         </div>
                     </div>
                 </div>
@@ -287,7 +339,7 @@
                 </div>
             </div>
             <div class="col-8"> <!--Here begin listOfUsers-->
-                <!--Don't put anything here because it will automatically fitted with users-->
+                <!--Don't put anything here because it will be automatically fitted with users-->
             </div>
         </div>
 
@@ -362,15 +414,42 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-md-5 mb-3">
+                    <div class="col-md-3 mb-5">
                         <label for="role">Type</label>
                         <select class="custom-select d-block w-100" id="role" required="required">
                             <option value='student'>Student</option>
                             <option value='instructor'>Instructor</option>
                             <option value='ta'>TA</option>
                             <option value='professor'>Professor</option>
-                            <option value='admin'>Admin</option>
                             <option value='vp'>Visiting Professor</option>
+                            <option value='librarian'>Librarian</option>
+                        </select>
+                    </div>
+                </div>
+
+                <h4>Privileges</h4>
+                <div class="row mt-3 mb-3">
+                    <div class="col-md-3 mb-3">
+                        <label for="addUserAndDocuments">Add</label>
+                        <select class="custom-select d-block w-100" id="addUserAndDocuments" required="required">
+                            <option value='true'>Able</option>
+                            <option value='false'>Not Able</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <label for="modifyUserAndDocuments">Modify</label>
+                        <select class="custom-select d-block w-100" id="modifyUserAndDocuments" required="required">
+                            <option value='true'>Able</option>
+                            <option value='false'>Not Able</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <label for="deleteUserAndDocuments">Delete</label>
+                        <select class="custom-select d-block w-100" id="deleteUserAndDocuments" required="required">
+                            <option value='true'>Able</option>
+                            <option value='false'>Not Able</option>
                         </select>
                     </div>
                 </div>
