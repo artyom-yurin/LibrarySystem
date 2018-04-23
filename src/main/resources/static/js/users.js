@@ -109,7 +109,7 @@ function modifyCurrentUser() {
         "login": username,
         "password": password,
         "position": (privileges == null ? role : privileges),
-        "id": currentUserId,
+        "id": currentUserId
     });
 
     console.info(jsonData);
@@ -151,11 +151,13 @@ function modifyCurrentUser() {
 // }
 
 function updateUsers() {
+    let title = $("title").innerHTML;
+    console.log("title is " + title);
     $.ajax({
-        url: URL_LOCALHOST + "/user/users",
+        url: URL_LOCALHOST + 'user' + (title === 'Librarians' ? '/librarians' : '/users'),
         type: "GET",
         headers: {
-            'Authorization': window.localStorage.getItem("Authorization"),
+            'Authorization': window.localStorage.getItem('Authorization'),
         },
         dataType: "json", // by this property ajax will automatically parse json which we get from response
 
