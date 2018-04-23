@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>My Books</title>
+    <title>Notifications</title>
     <!--Required Meta tags-->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -12,7 +12,6 @@
     <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
-
 <header>
     <!-- Fixed navbar -->
     <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
@@ -23,14 +22,14 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item ">
-                    <a class="nav-link" href="#" id="linkCatalog">Catalog</a>
+                <li class="nav-item">
+                    <a class="nav-link disabled" href="#" id="linkCatalog">Catalog</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" href="#" id="linkMyBooks">My Books<span class="sr-only">(current)</span></a>
+                    <a class="nav-link disabled" href="#" id="linkMyBooks">My Books</a>
                 </li>
                 <li class="nav-item ">
-                    <a class="nav-link" href="#" id="linkNotifications">Notifications</a>
+                    <a class="nav-link active" href="#" id="linkNotifications">Notifications<span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#" id="linkLogin">Log out</a>
@@ -52,31 +51,33 @@
     </nav>
 </header>
 
-<main role="main" class="container mt-5 pt-3">
+<main role="main" class="container mt-5 pt-5">
+    <!--Booking database-->
     <div class="my-3 p-3 bg-white rounded box-shadow" id="database"><h4 class="border-bottom border-gray pb-2 mb-0">
-        Mybooks database</h4>
+        Notifications</h4>
 
         <div class="row mt-2 \">
             <div class="col-4">
                 <div class="list-group" id="list-tab" role="tablist">
-                    <a class="list-group-item list-group-item-action active show" id="list8" data-toggle="list"
-                       href="#8" role="tab" aria-controls="list8">8</a><a class="list-group-item list-group-item-action"
-                                                                          id="list9" data-toggle="list" href="#9"
-                                                                          role="tab" aria-controls="list9">9</a><a
-                        class="list-group-item list-group-item-action" id="list10" data-toggle="list" href="#10"
-                        role="tab" aria-controls="list10">10</a><a class="list-group-item list-group-item-action"
-                                                                   id="list11" data-toggle="list" href="#11" role="tab"
-                                                                   aria-controls="list11">11</a></div>
+                    <a class="list-group-item list-group-item-action active show" id="list2" data-toggle="list"
+                       href="#2" role="tab" aria-controls="list2">2</a><a class="list-group-item list-group-item-action"
+                                                                          id="list3" data-toggle="list" href="#3"
+                                                                          role="tab" aria-controls="list3">3</a></div>
             </div>
             <div class="col-8">
                 <div class="tab-content" id="nav-tabContent">
-                    <div class="tab-pane fade show active" id="8" role="tabpanel" aria-labelledby="list8">
+                    <div class="tab-pane fade show active" id="2" role="tabpanel" aria-labelledby="list2">
+
+                    </div>
+                    <div class="tab-pane fade" id="3" role="tabpanel" aria-labelledby="list3">
+
                     </div>
                 </div>
             </div>
         </div>
         <small class="d-block text-right mt-3">
-            <button class="btn btn-outline-primary my-2 my-sm-0" type="button" onclick="updateMyBooks()">Update</button>
+            <button class="btn btn-outline-primary my-2 my-sm-0" type="button" onclick="updateNotifications()">Update
+            </button>
         </small>
     </div>
 </main>
@@ -97,8 +98,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <!--Custom Scripts-->
 <script src="js/linker.js"></script>
-<script src="js/mybooks.js"></script>
-<script src="js/search.js"></script>
+<script src="js/notifications.js"></script>
 
 
 </body>

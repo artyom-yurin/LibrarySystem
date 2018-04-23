@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Control documents</title>
+    <!--Required Meta tags-->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!--Bootstrap Style Sheets-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <!--Custom Style Sheets-->
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+<header>
+    <!-- Fixed navbar -->
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <a class="navbar-brand" href="#" id="linkLogo">LibMan</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#" id="linkBooks">Documents<span
+                            class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link disabled" href="#" id="linkUsers">Users</a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link disabled" href="#" id="linkRequest">Request</a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link disabled" href="#" id="linkConfirmation">Confirmation<span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" id="linkLogin">Log out</a>
+                </li>
+            </ul>
+            <div class="d-flex align-items-center p-0 my-1 text-white-50 bg-purple rounded box-shadow ">
+                <form class="form-inline mt-1 mt-md-0" onsubmit="">
+                    <label for="searchType"></label>
+                    <select class="form-control d-block" id="searchType" required="required">
+                        <option value='Author'>Author</option>
+                        <option value='Tag'>Tag</option>
+                        <option value='Title'>Title</option>
+                    </select>
+                    <input class="form-control mr-sm-1" id="search" type="text" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success my-2 my-sm-0" id="searchButton" type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+</header>
+
+
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Modify Document</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form class="needs-validation" id="modifyBookForm" onsubmit="modifyCurrentBook()">
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+                            <label for="titleModify">Title</label>
+                            <input type="text" class="form-control" id="titleModify" placeholder="Touch of Class"
+                                   required="required" autocomplete="title">
+                            <div class="invalid-feedback">
+                                Please enter title of the book.
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="editionModify">Edition</label>
+                            <input type="number" min="0" step="1" class="form-control" id="editionModify"
+                                   placeholder="2" value=""
+                                   required="required">
+                            <div class="invalid-feedback">
+                                Please enter last name.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="editorModify">Editor</label>
+                        <input type="text" class="form-control" id="editorModify" placeholder="Billy Willing"
+                               required="required"
+                               autocomplete="editor">
+                        <div class="invalid-feedback">
+                            Please enter editor of the book.
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="authorsModify">Authors</label>
+                        <input type="text" class="form-control" id="authorsModify"
+                               placeholder="Cormen Ly, Bertrand Mayer" required="required"
+                               autocomplete="authors">
+                        <div class="invalid-feedback">
+                            Please enter authors and divide each with ','. In addition separate name and surname with
+                            ':'
+                            Ex: Billy Willing, Cormen Ly, Bertrand Mayer.
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="publisherModify">Publisher</label>
+                        <input type="text" class="form-control" id="publisherModify" placeholder="Bloomsbury Publishing"
+                               required="required">
+                        <div class="invalid-feedback">
+                            Please enter publisher of the book.
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="publishingDateModify">Publishing Date</label>
+                        <input type="date" class="form-control" id="publishingDateModify" placeholder="3/03/2015"
+                               required="required">
+                        <div class="invalid-feedback">
+                            Please enter publisher of the book.
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="tagsModify">Tags</label>
+                        <input type="text" class="form-control" id="tagsModify"
+                               placeholder="name, surname, title, smth else"
+                               required="required">
+                        <div class="invalid-feedback">
+                            Please enter tags and distinguish them with comma.
+                        </div>
+                    </div>
+
+
+                    <div class="mb-3">
+                        <label for="priceModify">Price</label>
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">₽</span>
+                            <div class="input-group">
+                                <input type="number" min="0" step="1" id="priceModify" class="form-control"
+                                       placeholder="1000"
+                                       required="required">
+                            </div>
+                            <div class="invalid-feedback">
+                                Please enter price.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-5 mb-3">
+                            <label for="isReferenceModify">isReference</label>
+                            <select class="custom-select d-block w-100" id="isReferenceModify" required="required">
+                                <option value='true'>true</option>
+                                <option value='false'>false</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-5 mb-3">
+                            <label for="isBestsellerModify">isBestseller</label>
+                            <select class="custom-select d-block w-100" id="isBestsellerModify" required="required">
+                                <option value='true'>true</option>
+                                <option value='false'>false</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-5 mb-3">
+                            <label for="typeModify">Type</label>
+                            <select class="custom-select d-block w-100" id="typeModify" required="required">
+                                <option value='avmaterials'>AVMaterial</option>
+                                <option value='book'>Book</option>
+                                <option value='journal'>Journal</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <hr class="mb-4">
+                    <button class="btn btn-primary btn-lg btn-block" type="submit" onsubmit="">Modify</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div id="queueList" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Queue for current book</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<main role="main" class="container mt-5 pt-5">
+    <!--Users Database-->
+    <div class="my-3 p-3 bg-white rounded box-shadow" id="database"><h4 class="border-bottom border-gray pb-2 mb-0">
+        Books database</h4>
+
+        <div class="row mt-2 \">
+            <div class="col-4">
+                <div class="list-group" id="list-tab" role="tablist">
+                    <a class="list-group-item list-group-item-action" id="list3" data-toggle="list" href="#3" role="tab"
+                       aria-controls="list3" aria-selected="false">PPP</a><a
+                        class="list-group-item list-group-item-action" id="list4" data-toggle="list" href="#4"
+                        role="tab" aria-controls="list4" aria-selected="false">OP</a><a
+                        class="list-group-item list-group-item-action active show" id="list5" data-toggle="list"
+                        href="#5" role="tab" aria-controls="list5" aria-selected="true">LOK</a></div>
+            </div>
+
+        </div>
+        <small class="d-block text-right mt-3">
+            <button class="btn btn-outline-primary my-2 my-sm-0" type="button" onclick="updateBooks()">Update</button>
+        </small>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8 order-md mb-4">
+            <!--Deal with Books-->
+            <h4 class="mb-3">Add Document</h4>
+            <form class="needs-validation" id="addBookForm" onsubmit="addBook()">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="title">Title</label>
+                        <input type="text" class="form-control" id="title" placeholder="Touch of Class"
+                               required="required" autocomplete="title">
+                        <div class="invalid-feedback">
+                            Please enter title of the book.
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="edition">Edition</label>
+                        <input type="number" min="0" step="1" class="form-control" id="edition" placeholder="2"
+                               required="required" autocomplete="edition">
+                        <div class="invalid-feedback">
+                            Please enter Edition.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="editor">Editor</label>
+                    <input type="text" class="form-control" id="editor" placeholder="Billy Willing" required="required"
+                           autocomplete="editor">
+                    <div class="invalid-feedback">
+                        Please enter editor of the book.
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="authors">Authors</label>
+                    <input type="text" class="form-control" id="authors" placeholder="Cormen Ly, Bertrand Mayer"
+                           required="required"
+                           autocomplete="authors">
+                    <div class="invalid-feedback">
+                        Please enter authors and divide each with ','. In addition separate name and surname with ':'
+                        Ex: Billy:Willing, Cormen:Ly, Bertrand:Mayer.
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="publisher">Publisher</label>
+                    <input type="text" class="form-control" id="publisher" placeholder="Bloomsbury Publishing"
+                           required="required" autocomplete="publisher">
+                    <div class="invalid-feedback">
+                        Please enter publisher of the book.
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="tags">Tags</label>
+                    <input type="text" class="form-control" id="tags" placeholder="name, surname, title, smth else"
+                           required="required" autocomplete="tags">
+                    <div class="invalid-feedback">
+                        Please enter tags and distinguish them with comma.
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="publishingDate">Publishing Date</label>
+                    <input type="date" class="form-control" id="publishingDate" placeholder="3/03/2015"
+                           required="required" autocomplete="publishingDate">
+                    <div class="invalid-feedback">
+                        Please enter publisher of the book.
+                    </div>
+                </div>
+
+
+                <div class="mb-3">
+                    <label for="price">Price</label>
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">₽</span>
+                        <div class="input-group">
+                            <input type="number" min="0" step="1" id="price" class="form-control" placeholder="1000"
+                                   required="required"
+                                   autocomplete="price">
+                        </div>
+                        <div class="invalid-feedback">
+                            Please enter price.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="count">Count</label>
+                    <div class="input-group-prepend">
+                        <div class="input-group">
+                            <input type="number" min="0" step="1" id="count" class="form-control" placeholder="7"
+                                   required="required" autocomplete="count">
+                        </div>
+                        <div class="invalid-feedback">
+                            Please enter count.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-5 mb-3">
+                        <label for="isReference">isReference</label>
+                        <select class="custom-select d-block w-100" id="isReference" required="required">
+                            <option value='true'>true</option>
+                            <option value='false'>false</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-5 mb-3">
+                        <label for="isBestseller">isBestseller</label>
+                        <select class="custom-select d-block w-100" id="isBestseller" required="required">
+                            <option value='true'>true</option>
+                            <option value='false'>false</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-5 mb-3">
+                        <label for="type">Type</label>
+                        <select class="custom-select d-block w-100" id="type" required="required">
+                            <option value='avmaterials'>AVMaterial</option>
+                            <option value='book'>Book</option>
+                            <option value='journal'>Journal</option>
+                        </select>
+                    </div>
+                </div>
+
+                <hr class="mb-4">
+                <button class="btn btn-primary btn-lg btn-block" type="submit">Add new Book</button>
+            </form>
+        </div>
+    </div>
+</main>
+
+
+<!--Bootstrap Scripts -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+
+<!--Debug-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<!--Custom Scripts-->
+<script src="js/linker.js"></script>
+<script src="js/books.js"></script>
+
+
+</body>
+</html>

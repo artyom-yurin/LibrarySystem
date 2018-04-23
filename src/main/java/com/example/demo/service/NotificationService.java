@@ -1,12 +1,13 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.Notification;
+import com.example.demo.entity.information.Notification;
 import com.example.demo.entity.user.User;
 import com.example.demo.exception.UserNotFoundException;
 import com.example.demo.repository.NotificationRepository;
 import com.example.demo.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -40,7 +41,7 @@ public class NotificationService {
         if (user == null) {
             throw new UserNotFoundException();
         }
-        Notification notification = new Notification(user, message);
+        Notification notification = new Notification(user, new Date(System.currentTimeMillis()),message);
         notificationRepository.save(notification);
     }
 }

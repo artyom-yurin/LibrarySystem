@@ -40,9 +40,15 @@
                 </li>
             </ul>
             <div class="d-flex align-items-center p-0 my-1 text-white-50 bg-purple rounded box-shadow ">
-                <form class="form-inline mt-1 mt-md-0">
-                    <input class="form-control mr-sm-1" type="text" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                <form class="form-inline mt-1 mt-md-0" onsubmit="">
+                    <label for="searchType"></label>
+                    <select class="form-control d-block" id="searchType" required="required">
+                        <option value='Author'>Author</option>
+                        <option value='Tag'>Tag</option>
+                        <option value='Title'>Title</option>
+                    </select>
+                    <input class="form-control mr-sm-1" id="search" type="text" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success my-2 my-sm-0" id="searchButton" type="submit">Search</button>
                 </form>
             </div>
         </div>
@@ -150,27 +156,6 @@
                         </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="countModify">Count</label>
-                        <div class="input-group-prepend">
-                            <div class="input-group">
-                                <input type="number" min="0" step="1" id="countModify" class="form-control"
-                                       placeholder="7" required="required">
-                            </div>
-                            <div class="invalid-feedback">
-                                Please enter count.
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <!--<div class="mb-3">-->
-                    <!--<label for="isReferenceModify">isReference</label>-->
-                    <!--<div class="input-group">-->
-                    <!--<input type="checkbox" class="form-control" id="isReferenceModify">-->
-                    <!--</div>-->
-                    <!--</div>-->
-
                     <div class="row">
                         <div class="col-md-5 mb-3">
                             <label for="isReferenceModify">isReference</label>
@@ -180,13 +165,6 @@
                             </select>
                         </div>
                     </div>
-
-                    <!--<div class="mb-3">-->
-                    <!--<label for="isBestsellerModify">isBestseller</label>-->
-                    <!--<div class="input-group">-->
-                    <!--<input type="checkbox" class="form-control" id="isBestsellerModify">-->
-                    <!--</div>-->
-                    <!--</div>-->
 
                     <div class="row">
                         <div class="col-md-5 mb-3">
@@ -263,143 +241,6 @@
         </small>
     </div>
 
-    <div class="row">
-        <div class="col-md-8 order-md mb-4">
-            <!--Deal with Books-->
-            <h4 class="mb-3">Add Document</h4>
-            <form class="needs-validation" id="addBookForm" onsubmit="addBook()">
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label for="title">Title</label>
-                        <input type="text" class="form-control" id="title" placeholder="Touch of Class"
-                               required="required" autocomplete="title">
-                        <div class="invalid-feedback">
-                            Please enter title of the book.
-                        </div>
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label for="edition">Edition</label>
-                        <input type="number" min="0" step="1" class="form-control" id="edition" placeholder="2"
-                               required="required" autocomplete="edition">
-                        <div class="invalid-feedback">
-                            Please enter Edition.
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label for="editor">Editor</label>
-                    <input type="text" class="form-control" id="editor" placeholder="Billy Willing" required="required"
-                           autocomplete="editor">
-                    <div class="invalid-feedback">
-                        Please enter editor of the book.
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label for="authors">Authors</label>
-                    <input type="text" class="form-control" id="authors" placeholder="Cormen Ly, Bertrand Mayer"
-                           required="required"
-                           autocomplete="authors">
-                    <div class="invalid-feedback">
-                        Please enter authors and divide each with ','. In addition separate name and surname with ':'
-                        Ex: Billy:Willing, Cormen:Ly, Bertrand:Mayer.
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label for="publisher">Publisher</label>
-                    <input type="text" class="form-control" id="publisher" placeholder="Bloomsbury Publishing"
-                           required="required" autocomplete="publisher">
-                    <div class="invalid-feedback">
-                        Please enter publisher of the book.
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label for="tags">Tags</label>
-                    <input type="text" class="form-control" id="tags" placeholder="name, surname, title, smth else"
-                           required="required" autocomplete="tags">
-                    <div class="invalid-feedback">
-                        Please enter tags and distinguish them with comma.
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label for="publishingDate">Publishing Date</label>
-                    <input type="date" class="form-control" id="publishingDate" placeholder="3/03/2015"
-                           required="required" autocomplete="publishingDate">
-                    <div class="invalid-feedback">
-                        Please enter publisher of the book.
-                    </div>
-                </div>
-
-
-                <div class="mb-3">
-                    <label for="price">Price</label>
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">₽</span>
-                        <div class="input-group">
-                            <input type="number" min="0" step="1" id="price" class="form-control" placeholder="1000"
-                                   required="required"
-                                   autocomplete="price">
-                        </div>
-                        <div class="invalid-feedback">
-                            Please enter price.
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label for="count">Count</label>
-                    <div class="input-group-prepend">
-                        <div class="input-group">
-                            <input type="number" min="0" step="1" id="count" class="form-control" placeholder="7"
-                                   required="required" autocomplete="count">
-                        </div>
-                        <div class="invalid-feedback">
-                            Please enter count.
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-5 mb-3">
-                        <label for="isReference">isReference</label>
-                        <select class="custom-select d-block w-100" id="isReference" required="required">
-                            <option value='true'>true</option>
-                            <option value='false'>false</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-5 mb-3">
-                        <label for="isBestseller">isBestseller</label>
-                        <select class="custom-select d-block w-100" id="isBestseller" required="required">
-                            <option value='true'>true</option>
-                            <option value='false'>false</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-5 mb-3">
-                        <label for="type">Type</label>
-                        <select class="custom-select d-block w-100" id="type" required="required">
-                            <option value='avmaterials'>AVMaterial</option>
-                            <option value='book'>Book</option>
-                            <option value='journal'>Journal</option>
-                        </select>
-                    </div>
-                </div>
-
-                <hr class="mb-4">
-                <button class="btn btn-primary btn-lg btn-block" type="submit">Add new Book</button>
-            </form>
-        </div>
-    </div>
 </main>
 
 

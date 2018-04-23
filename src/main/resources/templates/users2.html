@@ -60,7 +60,6 @@
 <!-- Modal -->
 <div id="myModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
-
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
@@ -318,6 +317,89 @@
         <small class="d-block text-right mt-3">
             <button class="btn btn-outline-primary my-2 my-sm-0" type="button" onclick="updateUsers()">Update</button>
         </small>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8 order-md mb-4">
+            <!--Deal with Users-->
+            <h4 class="mb-3">Add User</h4>
+            <form class="needs-validation" id="addUserForm" onsubmit="addUser()">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="firstName">First name</label>
+                        <input type="text" class="form-control" id="firstName" placeholder="Victor" value=""
+                               required="required">
+                        <div class="invalid-feedback">
+                            Please enter first name.
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="lastName">Last name</label>
+                        <input type="text" class="form-control" id="lastName" placeholder="Rivera" value=""
+                               required="required">
+                        <div class="invalid-feedback">
+                            Please enter last name.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="username">Username</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="username" placeholder="Username"
+                               required="required">
+                    </div>
+                    <div class="invalid-feedback">
+                        Please enter username.
+                    </div>
+                </div>
+
+
+                <div class="mb-3">
+                    <label for="password">Password</label>
+                    <div class="input-group">
+                        <input type="password" id="password" class="form-control" placeholder="Password"
+                               required="required" autocomplete="current-password">
+                    </div>
+                    <div class="invalid-feedback">
+                        Please enter password.
+                    </div>
+                </div>
+
+
+                <div class="mb-3">
+                    <label for="address">Address</label>
+                    <input type="text" class="form-control" id="address" placeholder="" required="required">
+                    <div class="invalid-feedback">
+                        Please enter your shipping address.
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="phone">Phone</label>
+                    <input type="text" class="form-control" id="phone" placeholder="" required="required">
+                    <div class="invalid-feedback">
+                        Please enter your shipping phone.
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-3 mb-5">
+                        <label for="role">Type</label>
+                        <select class="custom-select d-block w-100" id="role" required="required">
+                            <option value='student'>Student</option>
+                            <option value='instructor'>Instructor</option>
+                            <option value='ta'>TA</option>
+                            <option value='professor'>Professor</option>
+                            <option value='vp'>Visiting Professor</option>
+                        </select>
+                    </div>
+                </div>
+                <hr class="mb-4">
+                <button class="btn btn-primary btn-lg btn-block" type="submit">Add User</button>
+            </form>
+        </div>
     </div>
 </main>
 

@@ -16,7 +16,7 @@ public class DocumentModel {
     private Integer price;
     private Integer count;
     private Set<Tag> tags;
-    private Publisher publisher;
+    private String publisher;
     private Integer edition;
     private boolean isBestseller;
     private boolean isReference;
@@ -27,7 +27,7 @@ public class DocumentModel {
     public DocumentModel() {
     }
 
-    public DocumentModel(Integer id, String title, Set<Author> authors, Integer price, Integer count, Set<Tag> tags, Publisher publisher, Integer edition, boolean isBestseller, boolean isReference, Date publishingDate, String editor, TypeDocument type) {
+    public DocumentModel(Integer id, String title, Set<Author> authors, Integer price, Integer count, Set<Tag> tags, String publisher, Integer edition, boolean isBestseller, boolean isReference, Date publishingDate, String editor, TypeDocument type) {
         this.id = id;
         this.title = title;
         this.authors = authors;
@@ -91,11 +91,11 @@ public class DocumentModel {
         this.tags = tags;
     }
 
-    public Publisher getPublisher() {
+    public String getPublisher() {
         return publisher;
     }
 
-    public void setPublisher(Publisher publisher) {
+    public void setPublisher(String publisher) {
         this.publisher = publisher;
     }
 
