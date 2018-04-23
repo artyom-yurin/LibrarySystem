@@ -59,6 +59,10 @@ public class DocumentContr {
     }
 
     public void addDocument(DocumentModel documentModel, Integer librarianId) {
+        User librarian = userService.findById(librarianId);
+        if (!librarian.getRole().getName().equals("librarian")) throw new AccessDeniedException();
+        if (Privileges.Privilege.Priv2.compareTo(Privileges.convertStringToPrivelege(librarian.getRole().getPosition())) > 0) throw new AccessDeniedException();
+
         TypeDocument type = typeDocumentService.findByTypeName(documentModel.getType().getTypeName());
         if (type == null) throw new TypeNotFoundException();
         Set<Author> authors = findAuthors(documentModel.getAuthors());
@@ -82,6 +86,8 @@ public class DocumentContr {
 
     public void updateDocument(DocumentModel documentModel, Integer librarianId) {
         User librarian = userService.findById(librarianId);
+        if (!librarian.getRole().getName().equals("librarian")) throw new AccessDeniedException();
+        if (Privileges.Privilege.Priv1.compareTo(Privileges.convertStringToPrivelege(librarian.getRole().getPosition())) > 0) throw new AccessDeniedException();
 
         TypeDocument type = typeDocumentService.findByTypeName(documentModel.getType().getTypeName());
         if (type == null) throw new TypeNotFoundException();
@@ -118,6 +124,10 @@ public class DocumentContr {
 
 
     public void removeDocumentId(Integer id, Integer librarianId) {
+        User librarian = userService.findById(librarianId);
+        if (!librarian.getRole().getName().equals("librarian")) throw new AccessDeniedException();
+        if (Privileges.Privilege.Priv3.compareTo(Privileges.convertStringToPrivelege(librarian.getRole().getPosition())) > 0) throw new AccessDeniedException();
+
         if (id == -1)
             throw new InvalidIdException();
 

@@ -1,5 +1,6 @@
 package com.example.demo.controllers;
 
+import com.example.demo.common.Privileges;
 import com.example.demo.entity.user.Role;
 import com.example.demo.entity.user.User;
 import com.example.demo.exception.*;
@@ -35,6 +36,13 @@ public class UserContr {
     }
 
     public void addUser(UserModel userModel, Integer librarianId){
+        User librarian = userService.findById(librarianId);
+        if (!librarian.getRole().getName().equals("admin"))
+        {
+            if (!librarian.getRole().getName().equals("librarian")) throw new AccessDeniedException();
+            if (Privileges.Privilege.Priv2.compareTo(Privileges.convertStringToPrivelege(librarian.getRole().getPosition())) > 0) throw new AccessDeniedException();
+        }
+
         User user = userService.findByUsername(userModel.getUsername());
         if (user != null) {
             throw new AlreadyUserExistException();
@@ -46,7 +54,14 @@ public class UserContr {
         logService.newLog(librarianId, "Added new user " + user.getUsername());
     }
 
-    public void updateUser(UserModel userModel, Integer libraryId) {
+    public void updateUser(UserModel userModel, Integer librarianId) {
+        User librarian = userService.findById(librarianId);
+        if (!librarian.getRole().getName().equals("admin"))
+        {
+            if (!librarian.getRole().getName().equals("librarian")) throw new AccessDeniedException();
+            if (Privileges.Privilege.Priv1.compareTo(Privileges.convertStringToPrivelege(librarian.getRole().getPosition())) > 0) throw new AccessDeniedException();
+        }
+
         if (userModel.getId() == null) {
             throw new InvalidIdException();
         }
@@ -60,11 +75,18 @@ public class UserContr {
         user.setId(userModel.getId());
         userService.save(user);
 
-        logService.newLog(libraryId, "Updated user by id " + user.getId());
+        logService.newLog(librarianId, "Updated user by id " + user.getId());
     }
 
     @Transactional
-    public void removeUser(Integer id, Integer libraryId) {
+    public void removeUser(Integer id, Integer librarianId) {
+        User librarian = userService.findById(librarianId);
+        if (!librarian.getRole().getName().equals("admin"))
+        {
+            if (!librarian.getRole().getName().equals("librarian")) throw new AccessDeniedException();
+            if (Privileges.Privilege.Priv3.compareTo(Privileges.convertStringToPrivelege(librarian.getRole().getPosition())) > 0) throw new AccessDeniedException();
+        }
+
         if (id == -1) {
             throw new InvalidIdException();
         }
@@ -74,7 +96,7 @@ public class UserContr {
         }
         userService.remove(id);
 
-        logService.newLog(libraryId, "Deleted user " + user.getUsername());
+        logService.newLog(librarianId, "Deleted user " + user.getUsername());
     }
 
     public Iterable<User> getUsers() {

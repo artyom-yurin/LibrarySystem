@@ -1,5 +1,6 @@
 package com.example.demo.controllers;
 
+import com.example.demo.common.Privileges;
 import com.example.demo.entity.booking.Booking;
 import com.example.demo.entity.document.Document;
 import com.example.demo.entity.user.Role;
@@ -214,6 +215,10 @@ public class BookingContr {
     }
 
     public void makeOutstandingRequest(Integer documentId, Integer librarianId, long currentTime) {
+        User librarian = userService.findById(librarianId);
+        if (!librarian.getRole().getName().equals("librarian")) throw new AccessDeniedException();
+        if (Privileges.Privilege.Priv3.compareTo(Privileges.convertStringToPrivelege(librarian.getRole().getPosition())) > 0) throw new AccessDeniedException();
+
         if (documentId == -1)
             throw new InvalidIdException();
 
