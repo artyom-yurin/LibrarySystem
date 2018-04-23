@@ -1,29 +1,6 @@
 $(updateUsers());
 init();
-// $("#addUserForm").submit(function(e) {
-//     e.preventDefault();
-// });
-// $("#modifyUserForm").submit(function(e) {
-//     e.preventDefault();
-// });
-var currentUserId = -1;
 
-var userAttributesWeHave = [];
-
-var newRequestNumber = 0;
-
-function pushNewUserAttribute(attr) {
-    for (let i in userAttributesWeHave) {
-        if (attr === userAttributesWeHave[i])
-            return false;
-    }
-    userAttributesWeHave.push(attr);
-}
-
-function setCurrentUser(id) {
-    currentUserId = id;
-    fillInputsInUserModify();
-}
 
 function showUserRequests(id) {
     $.ajax({
@@ -48,28 +25,6 @@ function showUserRequests(id) {
 
 }
 
-function updateUsers() {
-    $.ajax({
-        url: URL_LOCALHOST + "/user/users",
-        type: "GET",
-        headers: {
-            'Authorization': window.localStorage.getItem("Authorization"),
-        },
-        dataType: "json", // by this property ajax will automatically parse json which we get from response
-
-        success: function (users, status, xhr) {
-            displayUsers(users);
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-            alert("failed in getting users");
-
-            console.error(jqXHR);
-            console.error(textStatus);
-            console.error(errorThrown);
-        }
-    });
-}
-
 // When we modify(update) we must put id when add we do not obligated
 function addUser() {
     let firstName = $("#firstName").val();
@@ -80,9 +35,7 @@ function addUser() {
     let address = $("#address").val();
     let role = $("#role").val();
 
-    let isAbleToAddUserAndDocuments = $("#addUserAndDocuments").val();
-    let isAbleToModifyUserAndDocuments = $("#modifyUserAndDocuments").val();
-    let isAbleToDeleteUserAndDocuments = $("#deleteUserAndDocuments").val();
+    let privileges = $("#privileges").val();
 
     let jsonData = JSON.stringify({
         "name": firstName,
@@ -92,12 +45,7 @@ function addUser() {
         "username": username,
         "login": username,
         "password": password,
-        "position": role,
-
-        'priv1': isAbleToAddUserAndDocuments,
-        'priv2': isAbleToModifyUserAndDocuments,
-        'priv3': isAbleToDeleteUserAndDocuments,
-
+        "position": (privileges == null ? role : privileges)
     });
 
 
@@ -148,10 +96,9 @@ function modifyCurrentUser() {
     let password = $("#passwordModify").val();
     let phone = $("#phoneModify").val();
     let address = $("#addressModify").val();
+    let role = $("#roleModify").val();
 
-    let isAbleToAddUserAndDocuments = $("#addUserAndDocumentsModify").val();
-    let isAbleToModifyUserAndDocuments = $("#modifyUserAndDocumentsModify").val();
-    let isAbleToDeleteUserAndDocuments = $("#deleteUserAndDocumentsModify").val();
+    let privileges = $("#privilegesModify").val();
 
     let jsonData = JSON.stringify({
         "name": firstName,
@@ -161,13 +108,8 @@ function modifyCurrentUser() {
         "username": username,
         "login": username,
         "password": password,
-        "position": role,
+        "position": (privileges == null ? role : privileges),
         "id": currentUserId,
-
-        'priv1': isAbleToAddUserAndDocuments,
-        'priv2': isAbleToModifyUserAndDocuments,
-        'priv3': isAbleToDeleteUserAndDocuments
-
     });
 
     console.info(jsonData);
@@ -192,34 +134,7 @@ function modifyCurrentUser() {
     });
 }
 
-function fillInputsInUserModify() {
-    for (let index in userAttributesWeHave) {
-        if (userAttributesWeHave[index] === "id")
-            continue;
-
-        console.log(userAttributesWeHave[index]);
-
-        let toReplace = "#" + map.get(userAttributesWeHave[index]) + "Modify";
-        let replaceWith = $("#" + userAttributesWeHave[index] + currentUserId + 'd')[0].innerHTML;
-
-        $(toReplace).val(replaceWith);
-    }
-}
-
-var map;
-
-function init() {
-    map = new Map();
-
-    map.set('name', 'firstName');
-    map.set('surname', 'lastName');
-    map.set('phoneNumber', 'phone');
-    map.set('address', 'address');
-    map.set('role', 'role');
-    map.set('username', 'username');
-    map.set('password', 'password');
-}
-
+// var newRequestNumber = 0;
 // function showNumberRequests(id) {
 //     $.ajax({
 //         url: URL_LOCALHOST + "/booking/find?id=" + id,
@@ -234,6 +149,28 @@ function init() {
 //     });
 //
 // }
+
+function updateUsers() {
+    $.ajax({
+        url: URL_LOCALHOST + "/user/users",
+        type: "GET",
+        headers: {
+            'Authorization': window.localStorage.getItem("Authorization"),
+        },
+        dataType: "json", // by this property ajax will automatically parse json which we get from response
+
+        success: function (users, status, xhr) {
+            displayUsers(users);
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            alert("failed in getting users");
+
+            console.error(jqXHR);
+            console.error(textStatus);
+            console.error(errorThrown);
+        }
+    });
+}
 
 function displayUsers(users){
     console.info("Responding json: ");
@@ -483,4 +420,45 @@ function displayRequests(requests_json){
 
     //Final load in html. It replace everything inside <div id = "database'> which is container for our database.
     $("#userRequests").html(outer);
+}
+
+var map;
+function init() {
+    map = new Map();
+
+    map.set('name', 'firstName');
+    map.set('surname', 'lastName');
+    map.set('phoneNumber', 'phone');
+    map.set('address', 'address');
+    map.set('role', 'role');
+    map.set('username', 'username');
+    map.set('password', 'password');
+}
+function fillInputsInUserModify() {
+    for (let index in userAttributesWeHave) {
+        if (userAttributesWeHave[index] === "id")
+            continue;
+
+        console.log(userAttributesWeHave[index]);
+
+        let toReplace = "#" + map.get(userAttributesWeHave[index]) + "Modify";
+        let replaceWith = $("#" + userAttributesWeHave[index] + currentUserId + 'd')[0].innerHTML;
+
+        $(toReplace).val(replaceWith);
+    }
+}
+
+var userAttributesWeHave = [];
+function pushNewUserAttribute(attr) {
+    for (let i in userAttributesWeHave) {
+        if (attr === userAttributesWeHave[i])
+            return false;
+    }
+    userAttributesWeHave.push(attr);
+}
+
+var currentUserId = -1;
+function setCurrentUser(id) {
+    currentUserId = id;
+    fillInputsInUserModify();
 }

@@ -1,11 +1,13 @@
 package com.example.demo.controller;
 
+import com.example.demo.common.Privileges;
 import com.example.demo.exception.AccessDeniedException;
 import com.example.demo.exception.UnauthorizedException;
+import com.example.security.ParserToken;
+import com.example.security.TokenAuthenticationService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
-import com.example.security.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -69,7 +71,11 @@ public class IndexController {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null) throw new UnauthorizedException();
         if (!token.role.equals("librarian")) throw new AccessDeniedException();
-        return new ModelAndView("books");
+        if (Privileges.Privilege.Priv1.compareTo(Privileges.convertStringToPrivelege(token.position)) > 0)
+            return new ModelAndView("books1");
+        else if (Privileges.Privilege.Priv2.compareTo(Privileges.convertStringToPrivelege(token.position)) > 0)
+            return new ModelAndView("books2");
+        else return new ModelAndView("books3");
     }
 
     @GetMapping("/librarian/users")
@@ -77,7 +83,11 @@ public class IndexController {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null) throw new UnauthorizedException();
         if (!token.role.equals("librarian")) throw new AccessDeniedException();
-        return new ModelAndView("users");
+        if (Privileges.Privilege.Priv1.compareTo(Privileges.convertStringToPrivelege(token.position)) > 0)
+            return new ModelAndView("users1");
+        else if (Privileges.Privilege.Priv2.compareTo(Privileges.convertStringToPrivelege(token.position)) > 0)
+            return new ModelAndView("users2");
+        else return new ModelAndView("users3");
     }
 
     @GetMapping("/librarian/requests")
