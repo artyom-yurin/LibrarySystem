@@ -135,7 +135,7 @@ public class UserController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/admin/librarians")
+    @GetMapping("/user/librarians")
     public Iterable<User> getLibrarians(HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null) throw new UnauthorizedException();
