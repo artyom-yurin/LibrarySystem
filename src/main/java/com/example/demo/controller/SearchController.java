@@ -5,7 +5,6 @@ import com.example.demo.entity.document.Document;
 import com.example.demo.exception.UnauthorizedException;
 import com.example.demo.model.SearchModel;
 import com.example.demo.service.DocumentService;
-import com.example.demo.service.UserService;
 import com.example.security.ParserToken;
 import com.example.security.TokenAuthenticationService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +22,12 @@ public class SearchController {
         this.documentService = documentService;
     }
 
+    /**
+     * Method for searching the document
+     * @param searchModel Model for the search (type of search and search request
+     * @param request HTTP Servlet Request with a token of the session
+     * @return List of all documents found based on search request
+     */
     @GetMapping("/search")
     public Iterable<Document> search(@RequestBody SearchModel searchModel, HttpServletRequest request){
         ParserToken token = TokenAuthenticationService.getAuthentication(request);

@@ -20,6 +20,11 @@ public class NotificationController {
         this.notificationService = notificationService;
     }
 
+    /**
+     * Method for displaying notifications for a current user in the session
+     * @param request HTTP Servlet Request with a token of the session - user is specified here
+     * @return List of notifications
+     */
     @GetMapping("/notification/findself")
     public Iterable<Notification> findMyNotifications(HttpServletRequest request){
         ParserToken token = TokenAuthenticationService.getAuthentication(request);

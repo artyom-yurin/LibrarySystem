@@ -38,6 +38,11 @@ public class DocumentController {
         this.logService = logService;
     }
 
+    /**
+     * Internal method for finding authors from the given set
+     * @param setAuthors Set of authors
+     * @return HashSet of all authors from given set currently in the system
+     */
     private HashSet<Author> findAuthors(Set<Author> setAuthors) {
         HashSet<Author> authors = new HashSet<>();
         if (setAuthors != null) {
@@ -54,6 +59,11 @@ public class DocumentController {
         return authors;
     }
 
+    /**
+     * Method for adding a new document
+     * @param documentModel Model of the document (internal representation)
+     * @param request HTTP Servlet Request with a token of the session
+     */
     @PostMapping("/document/add")
     public void addDocument(@RequestBody DocumentModel documentModel, HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
@@ -76,6 +86,11 @@ public class DocumentController {
         logService.newLog(token.id, "Added new document " + document.getTitle());
     }
 
+    /**
+     * Method for updating the document
+     * @param documentModel Model of the document (internal representation)
+     * @param request HTTP Servlet Request with a token of the session
+     */
     @PutMapping("/document/update")
     public void updateDocument(@RequestBody DocumentModel documentModel, HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
@@ -107,11 +122,16 @@ public class DocumentController {
         Document document = new Document(documentModel.getTitle(), authors, documentModel.getPrice(), count, documentModel.getTags(), publisher, documentModel.getEdition(), documentModel.isBestseller(), documentModel.isReference(), documentModel.getPublishingDate(), documentModel.getEditor(), documentModel.getType());
         document.setId(documentModel.getId());
         this.documentService.save(document);
-        if (needAllocation) bookingController.queueAllocation(document.getId());
+        bookingController.queueAllocation(document.getId());
 
         logService.newLog(token.id, "Updated document id " + documentModel.getId());
     }
 
+    /**
+     * Method for removing the document given its ID
+     * @param id ID of the document to remove
+     * @param request HTTP Servlet Request with a token of the session
+     */
     @Transactional
     @DeleteMapping("/document/remove")
     public void removeDocumentId(@RequestParam(value = "id", defaultValue = "-1") Integer id, HttpServletRequest request) {
@@ -126,7 +146,7 @@ public class DocumentController {
         Document document = documentService.findById(id);
 
         if (document == null)
-            throw new UserNotFoundException();
+            throw new DocumentNotFoundException();
 
         this.documentService.remove(id);
 
@@ -146,6 +166,11 @@ public class DocumentController {
         return findDocument;
     }
 
+    /**
+     * Method for displaying all registered documents in the system
+     * @param request HTTP Servlet Request with a token of the session
+     * @return List of all documents currently in the system
+     */
     @GetMapping("/document/documents")
     public Iterable<Document> getDocuments(HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);

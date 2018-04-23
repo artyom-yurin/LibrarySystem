@@ -9,7 +9,6 @@ import com.example.demo.exception.*;
 import com.example.demo.service.*;
 import com.example.security.ParserToken;
 import com.example.security.TokenAuthenticationService;
-import javafx.geometry.Pos;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -48,7 +47,16 @@ public class BookingController {
 
     private static final long WEEK_AFTER_END = 604800000L;
 
-
+    /***
+     * Constructor for Booking Controller. Works on startup of the server
+     *
+     * @param bookingService
+     * @param documentService
+     * @param userService
+     * @param typeBookingService
+     * @param notificationService
+     * @param logService
+     */
     BookingController(BookingService bookingService, DocumentService documentService, UserService userService, TypeBookingService typeBookingService, NotificationService notificationService, LogService logService) {
         this.bookingService = bookingService;
         this.documentService = documentService;
@@ -58,6 +66,12 @@ public class BookingController {
         this.logService = logService;
     }
 
+    /**
+     * Method for finding bookings by the ID of the desired user.
+     * @param id    ID of the user
+     * @param request   HTTP Servlet Request with a token of the session
+     * @return List of bookings made by a specific user
+     */
     @GetMapping("/booking/find")
     public Iterable<Booking> findBookingByUserId(@RequestParam(name = "id", defaultValue = "-1") Integer id, HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
@@ -72,6 +86,11 @@ public class BookingController {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Method for returning bookings of the user on request.
+     * @param request   HTTP Servlet Request with a token of the session - ID of the user is taken from here
+     * @return List of bookings made by a requesting user
+     */
     @GetMapping("/booking/findself")
     public Iterable<Booking> findMyBooking(HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
@@ -84,6 +103,11 @@ public class BookingController {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Method for finding bookings which have been requested for return
+     * @param request   HTTP Servlet Request with a token of the session
+     * @return List of bookings where users want to return books
+     */
     @GetMapping("/booking/findback")
     public Iterable<Booking> findReturnBooks(HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
@@ -97,6 +121,11 @@ public class BookingController {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Method for displaying all bookings currently in the system
+     * @param request   HTTP Servlet Request with a token of the session
+     * @return List of all bookings in the system
+     */
     @GetMapping("/booking/findall")
     public Iterable<Booking> findAllBookings(HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
@@ -105,6 +134,11 @@ public class BookingController {
         return bookingService.findAll();
     }
 
+    /**
+     * Method for displaying all bookings marked as 'available' (user has to come and take the book)
+     * @param request   HTTP Servlet Request with a token of the session
+     * @return List of all bookings marked as 'available'
+     */
     @GetMapping("/booking/findavailable")
     public Iterable<Booking> findAvailableBookings(HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
@@ -116,6 +150,11 @@ public class BookingController {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Method for requesting a document given its ID
+     * @param documentId    ID of the desired document
+     * @param request   HTTP Servlet Request with a token of the session - current user's ID is taken from here
+     */
     @PostMapping("/booking/request")
     public void requestDocumentById(@RequestParam(value = "id", defaultValue = "-1") Integer documentId, HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
@@ -142,7 +181,7 @@ public class BookingController {
                 {
                     throw new AccessDeniedException();
                 }
-            };
+            }
             Date returnDate = new Date();
             if (document.getCount() > 0) {
                 long time = System.currentTimeMillis();
@@ -159,6 +198,11 @@ public class BookingController {
         }
     }
 
+    /**
+     * Method for checking out a book (taking it from the library)
+     * @param bookingId ID of the booking of the user which takes a book
+     * @param request   HTTP Servlet Request with a token of the session
+     */
     @PutMapping("/booking/take")
     public void takeDocumentByBookingId(@RequestParam(value = "id", defaultValue = "-1") Integer bookingId, HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
@@ -203,6 +247,11 @@ public class BookingController {
         logService.newLog(token.id, "Confirm that " + user.getUsername() + " taken " + document.getTitle());
     }
 
+    /**
+     * Return a document by the ID of its booking
+     * @param id    ID of the booking
+     * @param request HTTP Servlet Request with a token of the session - user's ID is taken from here
+     */
     @PutMapping("/booking/return")
     public void returnDocumentById(@RequestParam(value = "id", defaultValue = "-1") Integer id, HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
@@ -220,6 +269,11 @@ public class BookingController {
         logService.newLog(token.id, "Want return " + booking.getDocument().getTitle());
     }
 
+    /**
+     * Method for closing the booking (book was taken from the library and then returned)
+     * @param id    ID of the booking
+     * @param request HTTP Servlet Request with a token of the session
+     */
     @PutMapping("/booking/close")
     public void closeBooking(@RequestParam(value = "id", defaultValue = "-1") Integer id, HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
@@ -262,6 +316,11 @@ public class BookingController {
         logService.newLog(token.id, "Confirm that " + booking.getUser().getUsername() + " return " + document.getTitle());
     }
 
+    /**
+     * Method from deleting the booking from the system by its ID
+     * @param id    ID of the booking
+     * @param request   HTTP Servlet Request with a token of the session
+     */
     @Transactional
     @DeleteMapping("/booking/remove")
     public void removeBookingById(@RequestParam(value = "id", defaultValue = "-1") Integer id, HttpServletRequest request) {
@@ -274,6 +333,11 @@ public class BookingController {
         this.bookingService.removeBookingById(id);
     }
 
+    /**
+     * Method for making an outstanding request on a document
+     * @param documentId    ID of the desired document
+     * @param request   HTTP Servlet Request with a token of the session
+     */
     @PutMapping("booking/outstanding")
     public void makeOutstandingRequest(@RequestParam(value = "id", defaultValue = "-1") Integer documentId, HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
@@ -314,6 +378,11 @@ public class BookingController {
         logService.newLog(token.id, "Outstanding request to " + document.getTitle());
     }
 
+    /**
+     * Method for renewing the document by ID of the corresponding booking
+     * @param id    ID of the booking
+     * @param request   HTTP Servlet Request with a token of the session
+     */
     @PutMapping("/booking/renew")
     public void renewBook(@RequestParam(value = "id", defaultValue = "-1") Integer id, HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
@@ -346,6 +415,12 @@ public class BookingController {
         bookingService.save(booking);
     }
 
+    /**
+     * Method for displaying the priority queue for the document
+     * @param id    ID of the document
+     * @param request   HTTP Servlet Request with a token of the session
+     * @return List of bookings in the correct order
+     */
     @GetMapping("/booking/queue")
     public Iterable<Booking> getQueueForBook(@RequestParam(value = "id", defaultValue = "-1") Integer id, HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
@@ -357,6 +432,10 @@ public class BookingController {
         return getQueueForBookById(id);
     }
 
+    /**
+     * Method for returning the list of all active bookings (not closed or new bookings)
+     * @return List of all active bookings
+     */
     public List<Booking> findActiveBookings() {
         return bookingService.findAll()
                 .stream()
@@ -367,6 +446,10 @@ public class BookingController {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Method for applying corresponding measures (send out a notification about smth) to a user
+     * @param booking ID of the booking
+     */
     public void applyMeasures(Booking booking) {
         if ("available".equals(booking.getTypeBooking().getTypeName())) {
             booking.setTypeBooking(typeBookingService.findByTypeName("close"));
@@ -401,6 +484,10 @@ public class BookingController {
         }
     }
 
+    /**
+     * Internal method for calculating fine
+     * @param booking Booking with the fine
+     */
     private void getFine(Booking booking) {
         Date current = new Date();
         current.setTime(System.currentTimeMillis());
@@ -415,6 +502,10 @@ public class BookingController {
         bookingService.save(booking);
     }
 
+    /**
+     * Internal method for creating the queue for the book
+     * @param bookID ID of the book
+     */
     public void queueAllocation(Integer bookID) {
         PriorityQueue<Booking> pq = getQueueForBookById(bookID);
 
@@ -435,6 +526,9 @@ public class BookingController {
         }
     }
 
+    /**
+     * Internal method for updating the system
+     */
     @Scheduled(initialDelay = 0L, fixedDelay = 86400000L)
     public void systemUpdate() {
         Long systemTime = System.currentTimeMillis();
@@ -447,16 +541,11 @@ public class BookingController {
         }
     }
 
-    public enum Priority {
-        PROFESSOR, VP, TA, INSTRUCTOR, STUDENT
-    }
-
-    private class MyComparator implements Comparator<Booking> {
-        public int compare(Booking x, Booking y) {
-            return convertToEnum(y.getUser().getRole()).compareTo(convertToEnum(x.getUser().getRole()));
-        }
-    }
-
+    /**
+     * Internal method for returning priority of the user
+     * @param role user's role (Student, Professor, Visiting Professor, etc)
+     * @return Priority of the user
+     */
     private Priority convertToEnum(Role role) {
         switch (role.getPosition().toLowerCase()) {
             case "student":
@@ -473,6 +562,11 @@ public class BookingController {
         throw new RoleNotFoundException();
     }
 
+    /**
+     * Internal method for displaying users who currently have a specified book
+     * @param bookId ID of the book
+     * @return List of holders of the book
+     */
     private List<Booking> getHoldersForBookById(Integer bookId){
         return bookingService.findAll()
                 .stream()
@@ -483,6 +577,11 @@ public class BookingController {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Internal method for constructing a queue for a specified book
+     * @param bookId ID of the book
+     * @return Queue of users for that book
+     */
     private PriorityQueue<Booking> getQueueForBookById(Integer bookId) {
         PriorityQueue<Booking> queue = new PriorityQueue<>(new MyComparator());
 
@@ -493,5 +592,21 @@ public class BookingController {
                 .collect(Collectors.toList()));
 
         return queue;
+    }
+
+    /**
+     * Priorities of the user types
+     */
+    public enum Priority {
+        PROFESSOR, VP, TA, INSTRUCTOR, STUDENT
+    }
+
+    /**
+     * Internal comparator for converting users to simple enumerator
+     */
+    private class MyComparator implements Comparator<Booking> {
+        public int compare(Booking x, Booking y) {
+            return convertToEnum(y.getUser().getRole()).compareTo(convertToEnum(x.getUser().getRole()));
+        }
     }
 }
