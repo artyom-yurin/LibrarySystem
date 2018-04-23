@@ -6,16 +6,11 @@ import com.example.demo.entity.user.User;
 import com.example.demo.exception.*;
 import com.example.demo.model.LoginModel;
 import com.example.demo.model.UserModel;
-import com.example.demo.repository.LogRepository;
-import com.example.demo.repository.RoleRepository;
-import com.example.demo.repository.UserRepository;
 import com.example.demo.service.LogService;
 import com.example.demo.service.RoleService;
 import com.example.demo.service.UserService;
 import com.example.security.ParserToken;
 import com.example.security.TokenAuthenticationService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -37,6 +32,12 @@ public class UserController {
         this.logService = logService;
     }
 
+    /**
+     * Method for loggin in
+     * @param loginModel Model of the login (internal representation)
+     * @param response HTTP Servlet Response
+     * @return Correct view of the website
+     */
     @PostMapping("/user/login")
     public ModelAndView login(@RequestBody LoginModel loginModel, HttpServletResponse response) {
         User loginUser = userService.findByUsername(loginModel.getUsername());
@@ -45,8 +46,6 @@ public class UserController {
             TokenAuthenticationService.addAuthentication(response, loginUser);
             if (loginUser.getRole().getName().equals("librarian")) {
                 return new ModelAndView("books");
-            } else if (loginUser.getRole().getName().equals("admin")) {
-                return new ModelAndView("librarians");
             } else {
                 return new ModelAndView("catalog");
             }
@@ -54,14 +53,18 @@ public class UserController {
         throw new PasswordInvalidException();
     }
 
+    /**
+     * Method for adding a new user to the system
+     * @param userModel Model of the user (internal representation)
+     * @param request HTTP Servlet Request with a token of the session
+     */
     @PostMapping("/user/add")
     public void addUser(@RequestBody UserModel userModel, HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null) throw new UnauthorizedException();
         if (!token.role.equals("admin")) {
             if (!token.role.equals("librarian")) throw new AccessDeniedException();
-            if (Privileges.Privilege.Priv2.compareTo(Privileges.convertStringToPrivelege(token.position)) > 0)
-                throw new AccessDeniedException();
+            if (Privileges.Privilege.Priv2.compareTo(Privileges.convertStringToPrivelege(token.position)) > 0) throw new AccessDeniedException();
         }
         User user = userService.findByUsername(userModel.getUsername());
         if (user != null) {
@@ -74,14 +77,18 @@ public class UserController {
         logService.newLog(token.id, "Added new user " + user.getUsername());
     }
 
+    /**
+     * Method for updating the user information
+     * @param userModel Model of the user (internal representation)
+     * @param request   HTTP Servlet Request with a token of the session
+     */
     @PutMapping("/user/update")
     public void updateUser(@RequestBody UserModel userModel, HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null) throw new UnauthorizedException();
         if (!token.role.equals("admin")) {
             if (!token.role.equals("librarian")) throw new AccessDeniedException();
-            if (Privileges.Privilege.Priv1.compareTo(Privileges.convertStringToPrivelege(token.position)) > 0)
-                throw new AccessDeniedException();
+            if (Privileges.Privilege.Priv1.compareTo(Privileges.convertStringToPrivelege(token.position)) > 0) throw new AccessDeniedException();
         }
 
         if (userModel.getId() == null) {
@@ -100,6 +107,11 @@ public class UserController {
         logService.newLog(token.id, "Updated user by id " + user.getId());
     }
 
+    /**
+     * Method for deleting user from the system
+     * @param id      ID of the user to delete
+     * @param request HTTP Servlet Request with a token of the session
+     */
     @Transactional
     @DeleteMapping("/user/remove")
     public void removeUser(@RequestParam(value = "id", defaultValue = "-1") Integer id, HttpServletRequest request) {
@@ -107,8 +119,7 @@ public class UserController {
         if (token == null) throw new UnauthorizedException();
         if (!token.role.equals("admin")) {
             if (!token.role.equals("librarian")) throw new AccessDeniedException();
-            if (Privileges.Privilege.Priv3.compareTo(Privileges.convertStringToPrivelege(token.position)) > 0)
-                throw new AccessDeniedException();
+            if (Privileges.Privilege.Priv3.compareTo(Privileges.convertStringToPrivelege(token.position)) > 0) throw new AccessDeniedException();
         }
 
         if (id == -1) {
@@ -123,6 +134,11 @@ public class UserController {
         logService.newLog(token.id, "Deleted user " + user.getUsername());
     }
 
+    /**
+     * Method for returning all users currently in the system
+     * @param request HTTP Servlet Request with a token of the session
+     * @return List of all users
+     */
     @GetMapping("/user/users")
     public Iterable<User> getUsers(HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
@@ -135,6 +151,11 @@ public class UserController {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Method for displaying all librarians in the system
+     * @param request HTTP Servlet Request with a token of the session
+     * @return List of all librarians
+     */
     @GetMapping("/user/librarians")
     public Iterable<User> getLibrarians(HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
