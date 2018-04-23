@@ -63,11 +63,11 @@ public class DocumentContr {
         Publisher publisher = null;
         if (documentModel.getPublisher() != null)
         {
-            if (documentModel.getPublisher().getId() != null) {
+            /*if (documentModel.getPublisher().getId() != null) {
                 publisher = publisherService.findById(documentModel.getPublisher().getId());
             } else {
                 publisher = publisherService.findByPublisherName(documentModel.getPublisher().getPublisherName());
-            }
+            }*/
         }
         Document document = new Document(documentModel.getTitle(), authors, documentModel.getPrice(), documentModel.getCount(), documentModel.getTags(), publisher, documentModel.getEdition(), documentModel.isBestseller(), documentModel.isReference(), documentModel.getPublishingDate(), documentModel.getEditor(), type);
         this.documentService.save(document);
@@ -78,12 +78,12 @@ public class DocumentContr {
         TypeDocument type = typeDocumentService.findByTypeName(documentModel.getType().getTypeName());
         if (type == null) throw new TypeNotFoundException();
         Set<Author> authors = findAuthors(documentModel.getAuthors());
-        Publisher publisher;
-        if (documentModel.getPublisher().getId() != null) {
+        Publisher publisher = null;
+       /* if (documentModel.getPublisher().getId() != null) {
             publisher = publisherService.findById(documentModel.getPublisher().getId());
         } else {
             publisher = publisherService.findByPublisherName(documentModel.getPublisher().getPublisherName());
-        }
+        }*/
         Document document = new Document(documentModel.getTitle(), authors, documentModel.getPrice(), documentModel.getCount(), documentModel.getTags(), publisher, documentModel.getEdition(), documentModel.isBestseller(), documentModel.isReference(), documentModel.getPublishingDate(), documentModel.getEditor(), documentModel.getType());
         document.setId(documentModel.getId());
         this.documentService.save(document);

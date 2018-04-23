@@ -19,4 +19,6 @@ public class PublisherService {
     public Publisher findByPublisherName(String publisherName) {
         return publisherRepository.findByPublisherName(publisherName);
     }
+
+    public void save(String publisherName) { publisherRepository.save(new Publisher(publisherName.toLowerCase()));}
 }

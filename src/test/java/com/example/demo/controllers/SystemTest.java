@@ -101,7 +101,7 @@ public class SystemTest {
         Publisher publisher0 = new Publisher(("MIT Press").toLowerCase());
         publisherRepository.save(publisher0);
         publisher0 = publisherRepository.findByPublisherName(("MIT Press").toLowerCase());
-        documentController.addDocument(new DocumentModel(1, "Introduction to Algorithms", authors0, 5000, 3, new HashSet<Tag>(), publisher0, 3, false, false, new Date(1230768000000L), "", typeDocumentService.findByTypeName("book")));
+        //documentController.addDocument(new DocumentModel(1, "Introduction to Algorithms", authors0, 5000, 3, new HashSet<Tag>(), publisher0, 3, false, false, new Date(1230768000000L), "", typeDocumentService.findByTypeName("book")));
 
         Set<Author> authors1 = new HashSet<>();
         tempAuthor = new Author("Erich", "Gamma");
@@ -123,7 +123,7 @@ public class SystemTest {
         Publisher publisher1 = new Publisher("Addison-Wesley Professional".toLowerCase());
         publisherRepository.save(publisher1);
         publisher1 = publisherRepository.findByPublisherName("Addison-Wesley Professional".toLowerCase());
-        documentController.addDocument(new DocumentModel(1, "Design Patterns: Elements of Reusable Object-Oriented Software", authors1, 1700, 3, new HashSet<Tag>(), publisher1, 1, true, false, new Date(1041379200000L), "", typeDocumentService.findByTypeName("book")));
+        //documentController.addDocument(new DocumentModel(1, "Design Patterns: Elements of Reusable Object-Oriented Software", authors1, 1700, 3, new HashSet<Tag>(), publisher1, 1, true, false, new Date(1041379200000L), "", typeDocumentService.findByTypeName("book")));
 
         Set<Author> authors3 = new HashSet<>();
         tempAuthor = new Author("Tony", "Hoare");
