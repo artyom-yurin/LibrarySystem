@@ -107,7 +107,19 @@ public class DocumentController {
         } else {
             publisher = publisherService.findByPublisherName(documentModel.getPublisher().getPublisherName());
         }
-        Document document = new Document(documentModel.getTitle(), authors, documentModel.getPrice(), documentService.findById(documentModel.getId()).getCount(), documentModel.getTags(), publisher, documentModel.getEdition(), documentModel.isBestseller(), documentModel.isReference(), documentModel.getPublishingDate(), documentModel.getEditor(), documentModel.getType());
+
+        int count = documentService.findById(documentModel.getId()).getCount();
+        boolean needAllocation = false;
+        if (Privileges.Privilege.Priv3.compareTo(Privileges.convertStringToPrivelege(token.position)) <= 0)
+        {
+            count = documentModel.getCount();
+            if (count < 0)
+            {
+                throw new InvalidCountException();
+            }
+            needAllocation = true;
+        }
+        Document document = new Document(documentModel.getTitle(), authors, documentModel.getPrice(), count, documentModel.getTags(), publisher, documentModel.getEdition(), documentModel.isBestseller(), documentModel.isReference(), documentModel.getPublishingDate(), documentModel.getEditor(), documentModel.getType());
         document.setId(documentModel.getId());
         this.documentService.save(document);
         bookingController.queueAllocation(document.getId());
@@ -141,45 +153,6 @@ public class DocumentController {
         logService.newLog(token.id, "Removed document" + document.getTitle());
     }
 
-    /**
-     * Method for updating the amount of copies of the book
-     * @param documentId ID of the document
-     * @param copyCount Desired amount of copies
-     * @param request   HTTP Servlet Request with a token of the session
-     */
-    @PutMapping("/document/copy")
-    public void updateCopies(@RequestParam(name = "id", defaultValue = "-1") Integer documentId,
-                             @RequestParam(name = "copies", defaultValue = "-1") Integer copyCount,
-                             HttpServletRequest request)
-    {
-        ParserToken token = TokenAuthenticationService.getAuthentication(request);
-        if (token == null) throw new UnauthorizedException();
-        if (!token.role.equals("librarian")) throw new AccessDeniedException();
-        if (Privileges.Privilege.Priv3.compareTo(Privileges.convertStringToPrivelege(token.position)) > 0) throw new AccessDeniedException();
-
-        if (copyCount < 0)
-        {
-            throw new InvalidCountException();
-        }
-
-        if (documentId == -1)
-            throw new InvalidIdException();
-
-        Document document = documentService.findById(documentId);
-
-        if (document == null)
-            throw new UserNotFoundException();
-
-        document.setCount(copyCount);
-        documentService.save(document);
-    }
-
-    /**
-     * Method for finding a document by its ID
-     * @param id ID of the document
-     * @param request HTTP Servlet Request with a token of the session
-     * @return Desired document
-     */
     @GetMapping("/document/find")
     public Document getDocument(@RequestParam(value = "id", defaultValue = "-1") Integer id, HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
