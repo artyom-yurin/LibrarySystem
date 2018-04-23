@@ -8,11 +8,15 @@ $(window).on("load", function () {
         $('#' + 'linkBooks').attr("href", "#");
         $('#' + 'linkConfirmation').attr("href", "#");
         $('#' + 'linkNotifications').attr("href", "#");
+        $('#' + 'linkLoging').attr("href", "#");
     }
 );
 
 $('#' + 'linkUsers').on("click", function () {
     sendToken(linkToUsers);
+});
+$('#' + 'linkLoging').on("click", function () {
+    sendToken(linkToLoging);
 });
 $('#' + 'linkRequest').on("click", function () {
     sendToken(linkToRequest);
