@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Notifications</title>
+    <title>History of Activity</title>
     <!--Required Meta tags-->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -23,13 +23,19 @@
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link disabled" href="#" id="linkCatalog">Catalog</a>
+                    <a class="nav-link active" href="#" id="linkBooks">Documents</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link disabled" href="#" id="linkMyBooks">My Books</a>
+                    <a class="nav-link disabled" href="#" id="linkUsers">Users</a>
                 </li>
                 <li class="nav-item ">
-                    <a class="nav-link active" href="#" id="linkNotifications">Notifications<span class="sr-only">(current)</span></a>
+                    <a class="nav-link disabled" href="#" id="linkRequest">Request</a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link disabled" href="#" id="linkConfirmation">Confirmation</a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link disabled" href="#" id="linkLoging">History of Activity<span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#" id="linkLogin">Log out</a>
@@ -54,7 +60,7 @@
 <main role="main" class="container mt-5 pt-5">
     <!--Booking database-->
     <div class="my-3 p-3 bg-white rounded box-shadow" id="database"><h4 class="border-bottom border-gray pb-2 mb-0">
-        Notifications</h4>
+        History of Activity</h4>
 
         <div class="row mt-2 \">
             <div class="col-4">
@@ -76,7 +82,7 @@
             </div>
         </div>
         <small class="d-block text-right mt-3">
-            <button class="btn btn-outline-primary my-2 my-sm-0" type="button" onclick="updateNotifications()">Update
+            <button class="btn btn-outline-primary my-2 my-sm-0" type="button" onclick="updateLog()">Update
             </button>
         </small>
     </div>
@@ -98,7 +104,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <!--Custom Scripts-->
 <script src="js/linker.js"></script>
-<script src="js/notifications.js"></script>
+<script src="js/loging.js"></script>
 
 
 </body>

@@ -37,16 +37,14 @@
                 </li>
             </ul>
             <div class="d-flex align-items-center p-0 my-1 text-white-50 bg-purple rounded box-shadow ">
-                <form class="form-inline mt-1 mt-md-0">
-                    <label for="searchType"></label>
                     <select class="form-control d-block" id="searchType" required="required">
                         <option value='Author'>Author</option>
                         <option value='Tag'>Tag</option>
                         <option value='Title'>Title</option>
                     </select>
                     <input class="form-control mr-sm-1" id="search" type="text" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success my-2 my-sm-0" id="searchButton" type="submit">Search</button>
-                </form>
+                    <button class="btn btn-outline-success my-2 my-sm-0" id="searchButton" onclick="search()" >Search</button>
+
             </div>
         </div>
     </nav>

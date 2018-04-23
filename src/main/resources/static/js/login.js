@@ -8,6 +8,7 @@ var linkToCatalog = URL_LOCALHOST + 'catalog.html';
 var linkToMyBooks = URL_LOCALHOST + 'myBooks.html';
 var linkToConfirmation = URL_LOCALHOST + 'librarian/confirmation.html';
 var linkToNotification = URL_LOCALHOST + 'notifications.html';
+var linkToLoging = URL_LOCALHOST + 'loging.html';
 
 //We call it from login's body
 function checkIfUserIsAlreadyLogged() {
