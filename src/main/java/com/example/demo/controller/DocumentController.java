@@ -122,7 +122,7 @@ public class DocumentController {
         Document document = new Document(documentModel.getTitle(), authors, documentModel.getPrice(), count, documentModel.getTags(), publisher, documentModel.getEdition(), documentModel.isBestseller(), documentModel.isReference(), documentModel.getPublishingDate(), documentModel.getEditor(), documentModel.getType());
         document.setId(documentModel.getId());
         this.documentService.save(document);
-        bookingController.queueAllocation(document.getId());
+        if (needAllocation) bookingController.queueAllocation(document.getId());
 
         logService.newLog(token.id, "Updated document id " + documentModel.getId());
     }
