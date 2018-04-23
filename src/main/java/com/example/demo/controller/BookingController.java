@@ -76,7 +76,7 @@ public class BookingController {
     public Iterable<Booking> findMyBooking(HttpServletRequest request) {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null) throw new UnauthorizedException();
-        if (!(token.role.equals("patron") || token.role.equals("faculty"))) throw new AccessDeniedException();
+        if (!(token.role.equals("patron") || token.role.equals("faculty") || token.role.equals("vp"))) throw new AccessDeniedException();
         return bookingService.findAll()
                 .stream()
                 .filter(booking -> booking.getUser().getId().equals(token.id))
@@ -121,7 +121,7 @@ public class BookingController {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null)
             throw new UnauthorizedException();
-        if (!(token.role.equals("patron") || token.role.equals("faculty"))) throw new AccessDeniedException();
+        if (!(token.role.equals("patron") || token.role.equals("faculty") || token.role.equals("vp"))) throw new AccessDeniedException();
         if (documentId == -1)
             throw new InvalidIdException();
         Document document = documentService.findById(documentId);
@@ -208,7 +208,7 @@ public class BookingController {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null)
             throw new UnauthorizedException();
-        if (!(token.role.equals("patron") || token.role.equals("faculty"))) throw new AccessDeniedException();
+        if (!(token.role.equals("patron") || token.role.equals("faculty") || token.role.equals("vp"))) throw new AccessDeniedException();
         if (id == -1)
             throw new InvalidIdException();
         Booking booking = bookingService.getBookingById(id);
@@ -319,7 +319,7 @@ public class BookingController {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null)
             throw new UnauthorizedException();
-        if (!(token.role.equals("patron") || token.role.equals("faculty"))) throw new AccessDeniedException();
+        if (!(token.role.equals("patron") || token.role.equals("faculty") || token.role.equals("vp"))) throw new AccessDeniedException();
 
         if (id == -1)
             throw new InvalidIdException();

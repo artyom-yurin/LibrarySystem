@@ -45,6 +45,8 @@ public class UserController {
             TokenAuthenticationService.addAuthentication(response, loginUser);
             if (loginUser.getRole().getName().equals("librarian")) {
                 return new ModelAndView("books");
+            } else if (loginUser.getRole().getName().equals("admin")) {
+                return new ModelAndView("librarians");
             } else {
                 return new ModelAndView("catalog");
             }
@@ -58,7 +60,8 @@ public class UserController {
         if (token == null) throw new UnauthorizedException();
         if (!token.role.equals("admin")) {
             if (!token.role.equals("librarian")) throw new AccessDeniedException();
-            if (Privileges.Privilege.Priv2.compareTo(Privileges.convertStringToPrivelege(token.position)) > 0) throw new AccessDeniedException();
+            if (Privileges.Privilege.Priv2.compareTo(Privileges.convertStringToPrivelege(token.position)) > 0)
+                throw new AccessDeniedException();
         }
         User user = userService.findByUsername(userModel.getUsername());
         if (user != null) {
@@ -77,7 +80,8 @@ public class UserController {
         if (token == null) throw new UnauthorizedException();
         if (!token.role.equals("admin")) {
             if (!token.role.equals("librarian")) throw new AccessDeniedException();
-            if (Privileges.Privilege.Priv1.compareTo(Privileges.convertStringToPrivelege(token.position)) > 0) throw new AccessDeniedException();
+            if (Privileges.Privilege.Priv1.compareTo(Privileges.convertStringToPrivelege(token.position)) > 0)
+                throw new AccessDeniedException();
         }
 
         if (userModel.getId() == null) {
@@ -103,7 +107,8 @@ public class UserController {
         if (token == null) throw new UnauthorizedException();
         if (!token.role.equals("admin")) {
             if (!token.role.equals("librarian")) throw new AccessDeniedException();
-            if (Privileges.Privilege.Priv3.compareTo(Privileges.convertStringToPrivelege(token.position)) > 0) throw new AccessDeniedException();
+            if (Privileges.Privilege.Priv3.compareTo(Privileges.convertStringToPrivelege(token.position)) > 0)
+                throw new AccessDeniedException();
         }
 
         if (id == -1) {

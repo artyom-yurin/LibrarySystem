@@ -18,11 +18,9 @@ import java.util.ArrayList;
 @RestController
 public class SearchController {
     private DocumentService documentService;
-    private UserService userService;
 
-    public SearchController(DocumentService documentService, UserService userService) {
+    public SearchController(DocumentService documentService) {
         this.documentService = documentService;
-        this.userService = userService;
     }
 
     @GetMapping("/search")

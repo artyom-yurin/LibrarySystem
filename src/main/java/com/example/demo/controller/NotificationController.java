@@ -24,7 +24,7 @@ public class NotificationController {
     public Iterable<Notification> findMyNotifications(HttpServletRequest request){
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null) throw new UnauthorizedException();
-        if (!(token.role.equals("patron") || token.role.equals("faculty"))) throw new AccessDeniedException();
+        if (!(token.role.equals("patron") || token.role.equals("faculty") || token.role.equals("vp"))) throw new AccessDeniedException();
         return notificationService.findAll()
                 .stream()
                 .filter(booking -> booking.getUser().getId().equals(token.id))
