@@ -135,25 +135,12 @@ function search() {
 
                 //close div for book
                 currentBook +=
-                //     "</dl>" +
-                //     "<small class='d-block text-right mt-3 border-bottom border-gray pb-2'>\n" +
-                //
-                //     "<button class='btn btn-outline-primary my-2 my-sm-0' data-toggle='modal' data-target='#queueList' onclick='showQueue(" +
-                //     books_json[book]["id"] +
-                //     ")'>Show Queue" +
-                //     "</button>\n" +
-                //
-                //     "<button class='btn btn-outline-primary my-2 my-sm-0' data-toggle='modal' data-target='#myModal' onclick='setCurrentBook(" +
-                //     books_json[book]["id"] +
-                //     ")'>Modify" +
-                //     "</button>\n" +
-                //
-                //     "<button class='btn btn-outline-danger my-2 my-sm-0' onclick='deleteBook(" +
-                //     books_json[book]["id"] +
-                //     ")' type='submit'>Delete" +
-                //     "</button>\n" +
-                //
-                //     "</small>\n" +
+                    "</dl>" +
+                    "<small class='d-block text-right mt-3 border-bottom border-gray pb-2'>\n" +
+                    "<button class='btn btn-outline-success my-2 my-sm-0' onclick='chekoutDocument(" + books_json[book]["id"] + ")' " +
+                    "type='submit'>Checkout" +
+                    "</button>\n" +
+                    "</small>\n" +
                     "</div>\n";
 
                 updatedBooks += currentBook;
@@ -193,4 +180,21 @@ function search() {
 }
 function makeCapital(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
+}
+function chekoutDocument(id){
+    $.ajax({
+        url: URL_LOCALHOST + "/booking/request?id=" + id,
+        type: "POST",
+        headers: {
+            'Authorization': window.localStorage.getItem("Authorization"),
+        },
+        success: function (books_json, status, xhr) {
+            location.reload();
+        },
+        error: function (books_json, status, xhr) {
+            alert("Book can't be taken");
+            console.error(status);
+            console.error(xhr);
+        }
+    });
 }
