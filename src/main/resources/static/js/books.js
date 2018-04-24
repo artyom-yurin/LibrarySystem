@@ -94,7 +94,7 @@ function updateBooks() {
 
                 //add all attributes
                 for (let bookAttributes in books_json[book]) {
-                    pushNewBookAttribute(bookAttributes)
+                    pushNewBookAttribute(bookAttributes);
 
                     if (bookAttributes === "publishingDate") {
                         currentBook += "<dt>Publishing Date</dt>\n";

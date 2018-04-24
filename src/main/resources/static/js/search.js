@@ -3,16 +3,17 @@ function search() {
     let searchType = $("#searchType").val();
     let searchQuery = $("#search").val();
 
-
+    searchType = searchType.toLowerCase();
 
     let jsonData = JSON.stringify({
         "searchType": searchType,
         "searchQuery": searchQuery
     });
 
+    console.log(jsonData);
     $.ajax({
         url: URL_LOCALHOST + "/search",
-        type: "GET",
+        type: "POST",
         headers: {
             'Authorization': window.localStorage.getItem("Authorization"),
             'Content-Type': "application/json"
@@ -24,7 +25,7 @@ function search() {
             console.info(books_json);
 
             let outer =
-                "<h4 class=\"border-bottom border-gray pb-2 mb-0\">Library</h4>\n" +
+                "<h4 class=\"border-bottom border-gray pb-2 mb-0\">Searching Results</h4>\n" +
                 "\n" +
                 "<div class=\"row mt-2 \\\">";
 
@@ -76,7 +77,6 @@ function search() {
 
                 //add all attributes
                 for (let bookAttributes in books_json[book]) {
-                    pushNewBookAttribute(bookAttributes)
 
                     if (bookAttributes === "publishingDate") {
                         currentBook += "<dt>Publishing Date</dt>\n";
@@ -134,7 +134,7 @@ function search() {
 
 
                 //close div for book
-                // currentBook +=
+                currentBook +=
                 //     "</dl>" +
                 //     "<small class='d-block text-right mt-3 border-bottom border-gray pb-2'>\n" +
                 //
@@ -154,7 +154,7 @@ function search() {
                 //     "</button>\n" +
                 //
                 //     "</small>\n" +
-                //     "</div>\n";
+                    "</div>\n";
 
                 updatedBooks += currentBook;
             }
@@ -177,7 +177,7 @@ function search() {
             outer += listOfBooks;
             outer += updatedBooks;
             outer += "</div>\n";
-            outer += updateButton;
+            //outer += updateButton;
 
             //Final load in html. It replace everything inside <div id = "database'> which is container for our database.
             $("#database").html(outer);
@@ -190,4 +190,7 @@ function search() {
             console.error(errorThrown);
         }
     });
+}
+function makeCapital(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
 }
