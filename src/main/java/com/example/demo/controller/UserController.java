@@ -45,12 +45,13 @@ public class UserController {
         if (loginUser == null) throw new UserNotFoundException();
         if (loginUser.getPassword().equals(loginModel.getPassword())) {
             TokenAuthenticationService.addAuthentication(response, loginUser);
-            if (loginUser.getRole().getName().equals("librarian")) {
-                return new ModelAndView("books");
-            } else if (loginUser.getRole().getName().equals("admin")) {
-                return new ModelAndView("librarians");
-            } else {
-                return new ModelAndView("catalog");
+            switch (loginUser.getRole().getName()) {
+                case "librarian":
+                    return new ModelAndView("books");
+                case "admin":
+                    return new ModelAndView("librarians");
+                default:
+                    return new ModelAndView("catalog");
             }
 
         }

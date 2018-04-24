@@ -12,7 +12,9 @@ public class TagService {
         this.tagRepository = tagRepository;
     }
 
-    Tag findById(Integer id) {
-        return tagRepository.findById(id);
-    }
+    public Tag findTag(String tagName) {return tagRepository.findByTagName(tagName);}
+
+    public void save(Tag tag){
+        tag.setTagName(tag.getTagName().toLowerCase().replace(" ", ""));
+        tagRepository.save(tag);}
 }
