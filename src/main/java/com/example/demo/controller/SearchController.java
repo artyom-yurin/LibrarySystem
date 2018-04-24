@@ -7,7 +7,7 @@ import com.example.demo.model.SearchModel;
 import com.example.demo.service.DocumentService;
 import com.example.security.ParserToken;
 import com.example.security.TokenAuthenticationService;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,7 +28,7 @@ public class SearchController {
      * @param request HTTP Servlet Request with a token of the session
      * @return List of all documents found based on search request
      */
-    @GetMapping("/search")
+    @PostMapping("/search")
     public Iterable<Document> search(@RequestBody SearchModel searchModel, HttpServletRequest request){
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null) throw new UnauthorizedException();
