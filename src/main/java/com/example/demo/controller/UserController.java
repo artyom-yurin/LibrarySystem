@@ -34,8 +34,9 @@ public class UserController {
 
     /**
      * Method for loggin in
+     *
      * @param loginModel Model of the login (internal representation)
-     * @param response HTTP Servlet Response
+     * @param response   HTTP Servlet Response
      * @return Correct view of the website
      */
     @PostMapping("/user/login")
@@ -46,17 +47,21 @@ public class UserController {
             TokenAuthenticationService.addAuthentication(response, loginUser);
             if (loginUser.getRole().getName().equals("librarian")) {
                 return new ModelAndView("books");
+            } else if (loginUser.getRole().getName().equals("admin")) {
+                return new ModelAndView("librarians");
             } else {
                 return new ModelAndView("catalog");
             }
+
         }
         throw new PasswordInvalidException();
     }
 
     /**
      * Method for adding a new user to the system
+     *
      * @param userModel Model of the user (internal representation)
-     * @param request HTTP Servlet Request with a token of the session
+     * @param request   HTTP Servlet Request with a token of the session
      */
     @PostMapping("/user/add")
     public void addUser(@RequestBody UserModel userModel, HttpServletRequest request) {
@@ -64,7 +69,8 @@ public class UserController {
         if (token == null) throw new UnauthorizedException();
         if (!token.role.equals("admin")) {
             if (!token.role.equals("librarian")) throw new AccessDeniedException();
-            if (Privileges.Privilege.Priv2.compareTo(Privileges.convertStringToPrivelege(token.position)) > 0) throw new AccessDeniedException();
+            if (Privileges.Privilege.Priv2.compareTo(Privileges.convertStringToPrivelege(token.position)) > 0)
+                throw new AccessDeniedException();
         }
         User user = userService.findByUsername(userModel.getUsername());
         if (user != null) {
@@ -79,6 +85,7 @@ public class UserController {
 
     /**
      * Method for updating the user information
+     *
      * @param userModel Model of the user (internal representation)
      * @param request   HTTP Servlet Request with a token of the session
      */
@@ -88,7 +95,8 @@ public class UserController {
         if (token == null) throw new UnauthorizedException();
         if (!token.role.equals("admin")) {
             if (!token.role.equals("librarian")) throw new AccessDeniedException();
-            if (Privileges.Privilege.Priv1.compareTo(Privileges.convertStringToPrivelege(token.position)) > 0) throw new AccessDeniedException();
+            if (Privileges.Privilege.Priv1.compareTo(Privileges.convertStringToPrivelege(token.position)) > 0)
+                throw new AccessDeniedException();
         }
 
         if (userModel.getId() == null) {
@@ -109,6 +117,7 @@ public class UserController {
 
     /**
      * Method for deleting user from the system
+     *
      * @param id      ID of the user to delete
      * @param request HTTP Servlet Request with a token of the session
      */
@@ -119,7 +128,8 @@ public class UserController {
         if (token == null) throw new UnauthorizedException();
         if (!token.role.equals("admin")) {
             if (!token.role.equals("librarian")) throw new AccessDeniedException();
-            if (Privileges.Privilege.Priv3.compareTo(Privileges.convertStringToPrivelege(token.position)) > 0) throw new AccessDeniedException();
+            if (Privileges.Privilege.Priv3.compareTo(Privileges.convertStringToPrivelege(token.position)) > 0)
+                throw new AccessDeniedException();
         }
 
         if (id == -1) {
@@ -136,6 +146,7 @@ public class UserController {
 
     /**
      * Method for returning all users currently in the system
+     *
      * @param request HTTP Servlet Request with a token of the session
      * @return List of all users
      */
@@ -153,6 +164,7 @@ public class UserController {
 
     /**
      * Method for displaying all librarians in the system
+     *
      * @param request HTTP Servlet Request with a token of the session
      * @return List of all librarians
      */
