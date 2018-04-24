@@ -413,6 +413,8 @@ public class BookingController {
             booking.setReturnDate(new Date(booking.getReturnDate().getTime() + RENEW_TIME));
         }
         bookingService.save(booking);
+
+        logService.newLog(token.id, "User " + booking.getUser().getUsername() + " renewed " + booking.getDocument().getTitle());
     }
 
     /**

@@ -74,12 +74,18 @@ public class DocumentController {
         TypeDocument type = typeDocumentService.findByTypeName(documentModel.getType().getTypeName());
         if (type == null) throw new TypeNotFoundException();
         Set<Author> authors = findAuthors(documentModel.getAuthors());
-        Publisher publisher;
-        if (documentModel.getPublisher().getId() != null) {
-            publisher = publisherService.findById(documentModel.getPublisher().getId());
-        } else {
-            publisher = publisherService.findByPublisherName(documentModel.getPublisher().getPublisherName());
+        Publisher publisher = null;
+
+        if(!"avmaterial".equals(type.getTypeName()))
+        {
+            publisher = publisherService.findByPublisherName(documentModel.getPublisher());
+            if (publisher == null)
+            {
+                publisherService.save(documentModel.getPublisher());
+                publisher = publisherService.findByPublisherName(documentModel.getPublisher());
+            }
         }
+
         Document document = new Document(documentModel.getTitle(), authors, documentModel.getPrice(), documentModel.getCount(), documentModel.getTags(), publisher, documentModel.getEdition(), documentModel.isBestseller(), documentModel.isReference(), documentModel.getPublishingDate(), documentModel.getEditor(), type);
         this.documentService.save(document);
 
@@ -101,11 +107,15 @@ public class DocumentController {
         TypeDocument type = typeDocumentService.findByTypeName(documentModel.getType().getTypeName());
         if (type == null) throw new TypeNotFoundException();
         Set<Author> authors = findAuthors(documentModel.getAuthors());
-        Publisher publisher;
-        if (documentModel.getPublisher().getId() != null) {
-            publisher = publisherService.findById(documentModel.getPublisher().getId());
-        } else {
-            publisher = publisherService.findByPublisherName(documentModel.getPublisher().getPublisherName());
+
+        Publisher publisher = null;
+        if(!"avmaterial".equals(type.getTypeName()))
+        {
+            publisher = publisherService.findByPublisherName(documentModel.getPublisher());
+            if (publisher == null)
+            {
+                publisherService.save(documentModel.getPublisher());
+            }
         }
 
         int count = documentService.findById(documentModel.getId()).getCount();

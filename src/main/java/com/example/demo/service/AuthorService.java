@@ -23,4 +23,6 @@ public class AuthorService {
     public Author findByLastName(String lastName) {
         return this.authorRepository.findByLastName(lastName);
     }
+
+    public Iterable<Author> findAll() {return findAll();}
 }

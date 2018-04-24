@@ -1,13 +1,15 @@
 // Constants
 var URL_LOCALHOST = "http://localhost:8080/";
 
-var linkToUsers = URL_LOCALHOST + 'librarian/users.html';
-var linkToBooks = URL_LOCALHOST + 'librarian/documents.html';
-var linkToRequest = URL_LOCALHOST + 'librarian/requests.html';
-var linkToCatalog = URL_LOCALHOST + 'catalog.html';
-var linkToMyBooks = URL_LOCALHOST + 'myBooks.html';
-var linkToConfirmation = URL_LOCALHOST + 'librarian/confirmation.html';
-var linkToNotification = URL_LOCALHOST + 'notifications.html';
+var linkToUsers = URL_LOCALHOST + 'librarian/users';
+var linkToBooks = URL_LOCALHOST + 'librarian/documents';
+var linkToRequest = URL_LOCALHOST + 'librarian/requests';
+var linkToCatalog = URL_LOCALHOST + 'catalog';
+var linkToMyBooks = URL_LOCALHOST + 'myBooks';
+var linkToConfirmation = URL_LOCALHOST + 'librarian/confirmation';
+var linkToNotification = URL_LOCALHOST + 'notifications';
+var linkToLoging = URL_LOCALHOST + 'admin/log';
+var linkToLibrarians = URL_LOCALHOST + 'admin/librarians';
 
 //We call it from login's body
 function checkIfUserIsAlreadyLogged() {

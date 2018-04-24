@@ -8,11 +8,19 @@ $(window).on("load", function () {
         $('#' + 'linkBooks').attr("href", "#");
         $('#' + 'linkConfirmation').attr("href", "#");
         $('#' + 'linkNotifications').attr("href", "#");
+        $('#' + 'linkLoging').attr("href", "#");
+        $('#' + 'linkLibrarians').attr("href", "#");
     }
 );
 
 $('#' + 'linkUsers').on("click", function () {
     sendToken(linkToUsers);
+});
+$('#' + 'linkLibrarians').on("click", function () {
+    sendToken(linkToLibrarians);
+});
+$('#' + 'linkLoging').on("click", function () {
+    sendToken(linkToLoging);
 });
 $('#' + 'linkRequest').on("click", function () {
     sendToken(linkToRequest);
@@ -30,7 +38,6 @@ $('#' + 'linkCatalog').on("click", function () {
     sendToken(linkToCatalog);
 });
 $('#' + 'linkMyBooks').on("click", function () {
-
     sendToken(linkToMyBooks);
 });
 

@@ -1,17 +1,15 @@
-package com.example.demo.controller;
+package com.example.demo.controllers;
 
+import com.example.demo.common.Privileges;
 import com.example.demo.entity.booking.Booking;
 import com.example.demo.entity.document.Document;
+import com.example.demo.entity.user.Role;
 import com.example.demo.entity.user.User;
 import com.example.demo.exception.*;
 import com.example.demo.service.*;
-import com.example.security.ParserToken;
-import com.example.security.TokenAuthenticationService;
-import javafx.geometry.Pos;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -25,6 +23,7 @@ public class BookingContr {
     private DocumentService documentService;
     private UserService userService;
     private NotificationService notificationService;
+    private LogService logService;
 
     private static final long BESTSELLER_FOR_PATRON_TIME = 1209600000L;
 
@@ -38,15 +37,29 @@ public class BookingContr {
 
     private static final long AVAILABLE_TIME = 86400000L;
 
+    private static final long DAY_TIME = 86400000L;
+
     private static final long VP_TIME = 604800000L;
 
+    private static final long WEEK_AFTER_END = 604800000L;
 
-    BookingContr(BookingService bookingService, DocumentService documentService, UserService userService, TypeBookingService typeBookingService, NotificationService notificationService) {
+    /***
+     * Constructor for Booking Controller. Works on startup of the server
+     *
+     * @param bookingService
+     * @param documentService
+     * @param userService
+     * @param typeBookingService
+     * @param notificationService
+     * @param logService
+     */
+    BookingContr(BookingService bookingService, DocumentService documentService, UserService userService, TypeBookingService typeBookingService, NotificationService notificationService, LogService logService) {
         this.bookingService = bookingService;
         this.documentService = documentService;
         this.userService = userService;
         this.typeBookingService = typeBookingService;
         this.notificationService = notificationService;
+        this.logService = logService;
     }
 
     public List<Booking> findBookingByUserId(Integer id) {
@@ -106,6 +119,7 @@ public class BookingContr {
             } else {
                 bookingService.save(new Booking(user, document, returnDate, 0, typeBookingService.findByTypeName("open")));
             }
+            logService.newLog(userId, "Check out " + document.getTitle());
         } else {
             throw new AccessDeniedException();
         }
@@ -146,6 +160,7 @@ public class BookingContr {
         booking.setTypeBooking(typeBookingService.findByTypeName("taken"));
         booking.setReturnDate(returnDate);
         bookingService.save(booking);
+        logService.newLog(user.getId(), "Confirm that " + user.getUsername() + " taken " + document.getTitle());
     }
 
     public void returnDocumentById(Integer id) {
@@ -156,9 +171,10 @@ public class BookingContr {
             throw new BookingNotFoundException();
         booking.setTypeBooking(typeBookingService.findByTypeName("return request"));
         bookingService.save(booking);
+        logService.newLog(booking.getUser().getId(), "Want return " + booking.getDocument().getTitle());
     }
 
-    public void closeBooking(Integer id, long currentTime) {
+    public void closeBooking(Integer id, long currentTime, Integer librarianId) {
         if (id == -1)
             throw new InvalidIdException();
 
@@ -168,7 +184,6 @@ public class BookingContr {
         }
         booking.setTypeBooking(typeBookingService.findByTypeName("close"));
         bookingService.save(booking);
-
 
         Document document = booking.getDocument();
         PriorityQueue<Booking> priorityQueue = getQueueForBookById(document.getId());
@@ -189,6 +204,8 @@ public class BookingContr {
             document.setCount(document.getCount() + 1);
             documentService.save(document);
         }
+
+        logService.newLog(librarianId, "Confirm that " + booking.getUser().getUsername() + " return " + document.getTitle());
     }
 
     public void removeBookingById(Integer id) {
@@ -197,24 +214,20 @@ public class BookingContr {
         this.bookingService.removeBookingById(id);
     }
 
-    public void makeOutstandingRequest(Integer bookingId) {
+    public void makeOutstandingRequest(Integer documentId, Integer librarianId, long currentTime) {
+        User librarian = userService.findById(librarianId);
+        if (!librarian.getRole().getName().equals("librarian")) throw new AccessDeniedException();
+        if (Privileges.Privilege.Priv3.compareTo(Privileges.convertStringToPrivelege(librarian.getRole().getPosition())) > 0) throw new AccessDeniedException();
 
-        if (bookingId == -1)
+        if (documentId == -1)
             throw new InvalidIdException();
 
-        Booking booking = bookingService.getBookingById(bookingId);
-        if (booking == null) {
+        Document document = documentService.findById(documentId);
+        if (document == null) {
             throw new BookingNotFoundException();
         }
 
-        PriorityQueue<Booking> priorityQueue = getQueueForBookById(booking.getDocument().getId());
-
-        if (priorityQueue.size() == 0) throw new QueueEmptyException();
-
-        Booking firstBooking = priorityQueue.peek();
-
-        if ("outstanding".equals(firstBooking.getTypeBooking().getTypeName()))
-            throw new AlreadyHaveOutstandingRequestException();
+        PriorityQueue<Booking> priorityQueue = getQueueForBookById(documentId);
 
         for (Booking bookItem : priorityQueue) {
             bookItem.setTypeBooking(typeBookingService.findByTypeName("close"));
@@ -223,8 +236,19 @@ public class BookingContr {
             String message = "Your queue position is cancelled";
             notificationService.newNotification(bookItem.getUser().getId(), message);
         }
-        booking.setTypeBooking(typeBookingService.findByTypeName("outstanding"));
-        bookingService.save(booking);
+
+        for (Booking bookItem : getHoldersForBookById(documentId))
+        {
+            bookItem.setTypeBooking(typeBookingService.findByTypeName("outstanding"));
+            bookItem.setReturnDate(new Date(currentTime + DAY_TIME));
+            bookingService.save(bookItem);
+
+            String message = "You have to return " + document.getTitle() + " for one day";
+            notificationService.newNotification(bookItem.getUser().getId(), message);
+        }
+
+
+        logService.newLog(librarianId, "Outstanding request to " + document.getTitle());
     }
 
     public void renewBook(Integer id) {
@@ -240,10 +264,7 @@ public class BookingContr {
         if (!"vp".equals(booking.getUser().getRole().getName()) && "renew".equals(booking.getTypeBooking().getTypeName())) {
             throw new AlreadyRenewException();
         }
-
-        PriorityQueue<Booking> queue = getQueueForBookById(booking.getDocument().getId());
-
-        if (queue.size() > 0 && "outstanding".equals(queue.peek().getTypeBooking().getTypeName())) {
+        if ("outstanding".equals(booking.getTypeBooking().getTypeName())) {
             throw new UnableRenewException();
         }
 
@@ -254,6 +275,8 @@ public class BookingContr {
             booking.setReturnDate(new Date(booking.getReturnDate().getTime() + RENEW_TIME));
         }
         bookingService.save(booking);
+
+        logService.newLog(booking.getUser().getId(), "User " + booking.getUser().getUsername() + " renewed " + booking.getDocument().getTitle());
     }
 
     public PriorityQueue<Booking> getQueueForBook(Integer id) {
@@ -340,42 +363,86 @@ public class BookingContr {
         }
     }
 
-    public enum Priority {
-        PROFESSOR, VP, TA, INSTRUCTOR, STUDENT, OUTSTANDING
-    }
-
-    private class MyComparator implements Comparator<Booking> {
-        public int compare(Booking x, Booking y) {
-            return convertToEnum(y).compareTo(convertToEnum(x));
+    /**
+     * Internal method for updating the system
+     */
+    public void systemUpdate(long currentTime) {
+        Long systemTime = System.currentTimeMillis();
+        for (Booking booking : findActiveBookings()) {
+            if (booking.getReturnDate().getTime() < systemTime) {
+                applyMeasures(booking, currentTime);
+            } else if (booking.getReturnDate().getTime() - systemTime < WEEK_AFTER_END) {
+                //TODO: NOTIFICATION ABOUT WEEK AFTER END
+            }
         }
     }
 
-    private Priority convertToEnum(Booking booking) {
-        if ("outstanding".equals(booking.getTypeBooking().getTypeName())) return Priority.OUTSTANDING;
-        switch (booking.getUser().getRole().getPosition().toLowerCase()) {
+    /**
+     * Internal method for returning priority of the user
+     * @param role user's role (Student, Professor, Visiting Professor, etc)
+     * @return Priority of the user
+     */
+    private Priority convertToEnum(Role role) {
+        switch (role.getPosition().toLowerCase()) {
             case "student":
-                return Priority.STUDENT;
+                return BookingContr.Priority.STUDENT;
             case "instructor":
-                return Priority.INSTRUCTOR;
+                return BookingContr.Priority.INSTRUCTOR;
             case "ta":
-                return Priority.TA;
+                return BookingContr.Priority.TA;
             case "professor":
-                return Priority.PROFESSOR;
+                return BookingContr.Priority.PROFESSOR;
             case "vp":
-                return Priority.VP;
+                return BookingContr.Priority.VP;
         }
         throw new RoleNotFoundException();
     }
 
+    /**
+     * Internal method for displaying users who currently have a specified book
+     * @param bookId ID of the book
+     * @return List of holders of the book
+     */
+    private List<Booking> getHoldersForBookById(Integer bookId){
+        return bookingService.findAll()
+                .stream()
+                .filter(booking -> booking.getDocument().getId().equals(bookId))
+                .filter(booking -> ("taken".equals(booking.getTypeBooking().getTypeName())
+                        || "renew".equals(booking.getTypeBooking().getTypeName())
+                        || "return request".equals(booking.getTypeBooking().getTypeName())))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Internal comparator for converting users to simple enumerator
+     */
+    private class MyComparator implements Comparator<Booking> {
+        public int compare(Booking x, Booking y) {
+            return convertToEnum(y.getUser().getRole()).compareTo(convertToEnum(x.getUser().getRole()));
+        }
+    }
+
+    /**
+     * Internal method for constructing a queue for a specified book
+     * @param bookId ID of the book
+     * @return Queue of users for that book
+     */
     private PriorityQueue<Booking> getQueueForBookById(Integer bookId) {
-        PriorityQueue<Booking> queue = new PriorityQueue<>(new MyComparator());
+        PriorityQueue<Booking> queue = new PriorityQueue<>(new BookingContr.MyComparator());
 
         queue.addAll(bookingService.findAll()
                 .stream()
                 .filter(booking -> booking.getDocument().getId().equals(bookId))
-                .filter(booking -> ("open".equals(booking.getTypeBooking().getTypeName()) || "outstanding".equals(booking.getTypeBooking().getTypeName())))
+                .filter(booking -> ("open".equals(booking.getTypeBooking().getTypeName())))
                 .collect(Collectors.toList()));
 
         return queue;
+    }
+
+    /**
+     * Priorities of the user types
+     */
+    public enum Priority {
+        PROFESSOR, VP, TA, INSTRUCTOR, STUDENT
     }
 }

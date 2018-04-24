@@ -170,9 +170,9 @@ function search() {
                 "</div>\n";
 
 
-            let updateButton = "<small class=\"d-block text-right mt-3\">\n" +
-                "<button class=\"btn btn-outline-primary my-2 my-sm-0\" type=\"button\" onclick=\"updateBooks()\">Update</button>\n" +
-                "</small>\n";
+            // let updateButton = "<small class=\"d-block text-right mt-3\">\n" +
+            //     "<button class=\"btn btn-outline-primary my-2 my-sm-0\" type=\"button\" onclick=\"updateBooks()\">Update</button>\n" +
+            //     "</small>\n";
 
             outer += listOfBooks;
             outer += updatedBooks;
