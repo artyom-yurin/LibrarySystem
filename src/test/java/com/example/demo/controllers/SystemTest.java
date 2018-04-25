@@ -1,16 +1,14 @@
 package com.example.demo.controllers;
 
-import com.example.demo.entity.booking.Booking;
 import com.example.demo.entity.document.Author;
 import com.example.demo.entity.document.Document;
-import com.example.demo.entity.document.Publisher;
 import com.example.demo.entity.document.Tag;
 import com.example.demo.entity.user.User;
+import com.example.demo.exception.AccessDeniedException;
 import com.example.demo.model.DocumentModel;
 import com.example.demo.model.UserModel;
 import com.example.demo.repository.*;
 import com.example.demo.service.TypeDocumentService;
-import org.hibernate.boot.jaxb.SourceType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +18,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Date;
 import java.util.HashSet;
-import java.util.PriorityQueue;
+import java.util.List;
 import java.util.Set;
 
 @RunWith(SpringRunner.class)
@@ -132,9 +130,113 @@ public class SystemTest {
     public void test1() {
         clearDB();
         addUsers();
-        addDocuments(userRepository.findByUsername("ram").getId());
-
+        boolean check = false;
+        try {
+            userController.addAdmin(new UserModel(-1, "Artyom", "Yu", "Via Margutta, 3", "30001", "admin", "art", "123"));
+        } catch (AccessDeniedException exception) {
+            check = true;
+        }
+        assert check;
         clearDB();
     }
 
+    @Test
+    public void test2() {
+        clearDB();
+        addUsers();
+        List<User> librarians = userController.getLibrarians();
+        assert librarians.size() == 3;
+        clearDB();
+    }
+
+    @Test
+    public void test3() {
+        clearDB();
+        addUsers();
+        boolean check = false;
+        try { addDocuments(userRepository.findByUsername("eug").getId()); }
+        catch (AccessDeniedException exception) {
+            check = true;
+        }
+        assert check;
+        clearDB();
+    }
+
+    @Test
+    public void test4() {
+        clearDB();
+        addUsers();
+        addDocuments(userRepository.findByUsername("lui").getId());
+        int count = 0;
+        for (User user: userController.getUsers()) {
+            count++;
+        }
+        int count2 = 0;
+        for (Document document: documentController.getDocuments()) {
+            count2++;
+        }
+        assert count == 5;
+        assert count2 == 3;
+        clearDB();
+    }
+
+    @Test
+    public void test5(){
+        clearDB();
+        addUsers();
+        addDocuments(userRepository.findByUsername("lui").getId());
+        documentController.removeCopy(documentRepository.findByTitle("Introduction to Algorithms").getId(), userRepository.findByUsername("ram").getId());
+        assert documentRepository.findByTitle("Introduction to Algorithms").getCount() == 2;
+        clearDB();
+    }
+
+    @Test
+    public void test6(){
+        clearDB();
+        addUsers();
+        addDocuments(userRepository.findByUsername("lui").getId());
+        bookingController.requestDocumentById(documentRepository.findByTitle("The Art of Computer Programming").getId(), userRepository.findByUsername("ser").getId(), System.currentTimeMillis());
+        bookingController.requestDocumentById(documentRepository.findByTitle("The Art of Computer Programming").getId(), userRepository.findByUsername("nad").getId(), System.currentTimeMillis());
+        bookingController.requestDocumentById(documentRepository.findByTitle("The Art of Computer Programming").getId(), userRepository.findByUsername("elv").getId(), System.currentTimeMillis());
+        bookingController.requestDocumentById(documentRepository.findByTitle("The Art of Computer Programming").getId(), userRepository.findByUsername("and").getId(), System.currentTimeMillis());
+        bookingController.requestDocumentById(documentRepository.findByTitle("The Art of Computer Programming").getId(), userRepository.findByUsername("ver").getId(), System.currentTimeMillis());
+        boolean check = false;
+        try { bookingController.makeOutstandingRequest(documentRepository.findByTitle("The Art of Computer Programming").getId(), userRepository.findByUsername("eug").getId(), System.currentTimeMillis());}
+        catch (AccessDeniedException exception) { check = true; }
+        assert check;
+        clearDB();
+    }
+
+    @Test
+    public void test7(){
+        clearDB();
+        addUsers();
+        addDocuments(userRepository.findByUsername("lui").getId());
+        bookingController.requestDocumentById(documentRepository.findByTitle("The Art of Computer Programming").getId(), userRepository.findByUsername("ser").getId(), System.currentTimeMillis());
+        bookingController.requestDocumentById(documentRepository.findByTitle("The Art of Computer Programming").getId(), userRepository.findByUsername("nad").getId(), System.currentTimeMillis());
+        bookingController.requestDocumentById(documentRepository.findByTitle("The Art of Computer Programming").getId(), userRepository.findByUsername("elv").getId(), System.currentTimeMillis());
+        bookingController.requestDocumentById(documentRepository.findByTitle("The Art of Computer Programming").getId(), userRepository.findByUsername("and").getId(), System.currentTimeMillis());
+        bookingController.requestDocumentById(documentRepository.findByTitle("The Art of Computer Programming").getId(), userRepository.findByUsername("ver").getId(), System.currentTimeMillis());
+        bookingController.makeOutstandingRequest(documentRepository.findByTitle("The Art of Computer Programming").getId(), userRepository.findByUsername("ram").getId(), System.currentTimeMillis());
+        assert notificationController.findMyNotifications(userRepository.findByUsername("ser").getId()).size() == 1;
+        assert notificationController.findMyNotifications(userRepository.findByUsername("nad").getId()).size() == 1;
+        assert notificationController.findMyNotifications(userRepository.findByUsername("elv").getId()).size() == 1;
+        assert notificationController.findMyNotifications(userRepository.findByUsername("and").getId()).size() == 1;
+        assert notificationController.findMyNotifications(userRepository.findByUsername("ver").getId()).size() == 1;
+        clearDB();
+    }
+
+    @Test
+    public void test8() throws AccessDeniedException{
+        clearDB();
+        //НЕ ЕБУ КАК ДЕЛАТЬ ЛОООГИ
+        clearDB();
+    }
+
+    @Test
+    public void test9() throws AccessDeniedException{
+        clearDB();
+        //НЕ ЕБУ КАК ДЕЛАТЬ ЛОООГИ
+        clearDB();
+    }
 }

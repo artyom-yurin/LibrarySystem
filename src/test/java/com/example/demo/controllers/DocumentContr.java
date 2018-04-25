@@ -6,13 +6,9 @@ import com.example.demo.entity.user.User;
 import com.example.demo.exception.*;
 import com.example.demo.model.DocumentModel;
 import com.example.demo.service.*;
-import com.example.security.ParserToken;
-import com.example.security.TokenAuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -165,6 +161,24 @@ public class DocumentContr {
         this.documentService.remove(id);
 
         logService.newLog(librarianId, "Removed document" + document.getTitle());
+    }
+
+    public void removeCopy(Integer id, Integer librarianId) {
+        User librarian = userService.findById(librarianId);
+        if (!librarian.getRole().getName().equals("librarian")) throw new AccessDeniedException();
+        if (Privileges.Privilege.Priv2.compareTo(Privileges.convertStringToPrivelege(librarian.getRole().getPosition())) > 0) throw new AccessDeniedException();
+
+        if (id == -1)
+            throw new InvalidIdException();
+
+        Document document = documentService.findById(id);
+
+        if (document == null)
+            throw new UserNotFoundException();
+
+        document.setCount(document.getCount() - 1);
+
+        this.documentService.save(document);
     }
 
     public Document getDocument(Integer id) {
