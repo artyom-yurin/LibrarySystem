@@ -237,6 +237,19 @@ public class BookingContr {
             notificationService.newNotification(bookItem.getUser().getId(), message);
         }
 
+        for (Booking bookItem : bookingService.findAll()
+                .stream()
+                .filter(booking -> booking.getDocument().getId().equals(documentId))
+                .filter(booking -> ("available".equals(booking.getTypeBooking().getTypeName())))
+                .collect(Collectors.toList()))
+        {
+            bookItem.setTypeBooking(typeBookingService.findByTypeName("close"));
+            bookingService.save(bookItem);
+
+            String message = "Your document not available yet";
+            notificationService.newNotification(bookItem.getUser().getId(), message);
+        }
+
         for (Booking bookItem : getHoldersForBookById(documentId))
         {
             bookItem.setTypeBooking(typeBookingService.findByTypeName("outstanding"));
@@ -408,8 +421,8 @@ public class BookingContr {
                 .stream()
                 .filter(booking -> booking.getDocument().getId().equals(bookId))
                 .filter(booking -> ("taken".equals(booking.getTypeBooking().getTypeName())
-                        || "renew".equals(booking.getTypeBooking().getTypeName())
-                        || "return request".equals(booking.getTypeBooking().getTypeName())))
+                                    || "renew".equals(booking.getTypeBooking().getTypeName())
+                                    || "return request".equals(booking.getTypeBooking().getTypeName())))
                 .collect(Collectors.toList());
     }
 

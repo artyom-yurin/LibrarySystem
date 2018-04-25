@@ -364,6 +364,19 @@ public class BookingController {
             notificationService.newNotification(bookItem.getUser().getId(), message);
         }
 
+        for (Booking bookItem : bookingService.findAll()
+                .stream()
+                .filter(booking -> booking.getDocument().getId().equals(documentId))
+                .filter(booking -> ("available".equals(booking.getTypeBooking().getTypeName())))
+                .collect(Collectors.toList()))
+        {
+            bookItem.setTypeBooking(typeBookingService.findByTypeName("close"));
+            bookingService.save(bookItem);
+
+            String message = "Your document not available yet";
+            notificationService.newNotification(bookItem.getUser().getId(), message);
+        }
+
         for (Booking bookItem : getHoldersForBookById(documentId))
         {
             bookItem.setTypeBooking(typeBookingService.findByTypeName("outstanding"));
