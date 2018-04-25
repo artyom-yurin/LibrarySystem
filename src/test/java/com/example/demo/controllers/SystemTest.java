@@ -3,6 +3,7 @@ package com.example.demo.controllers;
 import com.example.demo.entity.document.Author;
 import com.example.demo.entity.document.Document;
 import com.example.demo.entity.document.Tag;
+import com.example.demo.entity.information.Log;
 import com.example.demo.entity.user.User;
 import com.example.demo.exception.AccessDeniedException;
 import com.example.demo.model.DocumentModel;
@@ -16,10 +17,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import javax.swing.*;
+import java.util.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -33,6 +32,8 @@ public class SystemTest {
     BookingContr bookingController;
     @Autowired
     NotificationContr notificationController;
+    @Autowired
+    LogContr logController;
 
     @Autowired
     TypeDocumentService typeDocumentService;
@@ -229,14 +230,89 @@ public class SystemTest {
     @Test
     public void test8() throws AccessDeniedException{
         clearDB();
-        //НЕ ЕБУ КАК ДЕЛАТЬ ЛОООГИ
+        Integer adminId = userController.addAdmin(new UserModel(-1, "Artyom", "Yu", "Via Margutta, 3", "30001", "admin", "art", "123"));
+
+        userController.addUser(new UserModel(-1, "Eugenia", "Rama", "Stret Atocha, 27", "30005", "Priv1", "eug", "123"), adminId);
+
+        userController.addUser(new UserModel(-1, "Luie", "Ramos", "Stret Atocha, 27", "30005", "Priv2", "lui", "123"), adminId);
+
+        userController.addUser(new UserModel(-1, "Ramon", "Valdez", "Stret Atocha, 27", "30005", "Priv3", "ram", "123"), adminId);
+
+        Integer libId = userRepository.findByUsername("lui").getId();
+        addDocuments(libId);
+        userController.addUser(new UserModel(-1, "Andrey", "Velo", "Avenida Mazatlan 250", "30004", "Student", "and", "123"), libId);
+
+        userController.addUser(new UserModel(-1, "Sergey", "Afonso", "Via Margutta, 3", "30001", "Professor", "ser", "123"), libId);
+
+        userController.addUser(new UserModel(-1, "Nadia", "Teixeira", "Via Sacra, 13", " 30002", "Professor", "nad", "123"), libId);
+
+        userController.addUser(new UserModel(-1, "Elvira", "Espindola", "Via del Corso, 22", "30003", "Professor", "elv", "123"), libId);
+
+        userController.addUser(new UserModel(-1, "Veronika", "Rama", "Stret Atocha, 27", "30005", "VP", "ver", "123"), libId);
+
+        bookingController.requestDocumentById(documentRepository.findByTitle("The Art of Computer Programming").getId(), userRepository.findByUsername("ser").getId(), System.currentTimeMillis());
+        bookingController.requestDocumentById(documentRepository.findByTitle("The Art of Computer Programming").getId(), userRepository.findByUsername("nad").getId(), System.currentTimeMillis());
+        bookingController.requestDocumentById(documentRepository.findByTitle("The Art of Computer Programming").getId(), userRepository.findByUsername("elv").getId(), System.currentTimeMillis());
+        bookingController.requestDocumentById(documentRepository.findByTitle("The Art of Computer Programming").getId(), userRepository.findByUsername("and").getId(), System.currentTimeMillis());
+        bookingController.requestDocumentById(documentRepository.findByTitle("The Art of Computer Programming").getId(), userRepository.findByUsername("ver").getId(), System.currentTimeMillis());
+        boolean check = false;
+        try { bookingController.makeOutstandingRequest(documentRepository.findByTitle("The Art of Computer Programming").getId(), userRepository.findByUsername("eug").getId(), System.currentTimeMillis());}
+        catch (AccessDeniedException exception) { check = true; }
+        assert check;
+
+        List<Log> logs = logController.getLogs();
+
+        assert logs.size() == 16;
+        System.out.println();
+        System.out.println("LOGS TEST 8");
+        for (Log newLog: logs) {
+            System.out.println(newLog.getUser().getName() + ": " + newLog.getMessage());
+        }
+        System.out.println();
         clearDB();
     }
 
     @Test
     public void test9() throws AccessDeniedException{
         clearDB();
-        //НЕ ЕБУ КАК ДЕЛАТЬ ЛОООГИ
+
+        Integer adminId = userController.addAdmin(new UserModel(-1, "Artyom", "Yu", "Via Margutta, 3", "30001", "admin", "art", "123"));
+
+        userController.addUser(new UserModel(-1, "Eugenia", "Rama", "Stret Atocha, 27", "30005", "Priv1", "eug", "123"), adminId);
+
+        userController.addUser(new UserModel(-1, "Luie", "Ramos", "Stret Atocha, 27", "30005", "Priv2", "lui", "123"), adminId);
+
+        userController.addUser(new UserModel(-1, "Ramon", "Valdez", "Stret Atocha, 27", "30005", "Priv3", "ram", "123"), adminId);
+
+        Integer libId = userRepository.findByUsername("lui").getId();
+        addDocuments(libId);
+        userController.addUser(new UserModel(-1, "Andrey", "Velo", "Avenida Mazatlan 250", "30004", "Student", "and", "123"), libId);
+
+        userController.addUser(new UserModel(-1, "Sergey", "Afonso", "Via Margutta, 3", "30001", "Professor", "ser", "123"), libId);
+
+        userController.addUser(new UserModel(-1, "Nadia", "Teixeira", "Via Sacra, 13", " 30002", "Professor", "nad", "123"), libId);
+
+        userController.addUser(new UserModel(-1, "Elvira", "Espindola", "Via del Corso, 22", "30003", "Professor", "elv", "123"), libId);
+
+        userController.addUser(new UserModel(-1, "Veronika", "Rama", "Stret Atocha, 27", "30005", "VP", "ver", "123"), libId);
+
+        bookingController.requestDocumentById(documentRepository.findByTitle("The Art of Computer Programming").getId(), userRepository.findByUsername("ser").getId(), System.currentTimeMillis());
+        bookingController.requestDocumentById(documentRepository.findByTitle("The Art of Computer Programming").getId(), userRepository.findByUsername("nad").getId(), System.currentTimeMillis());
+        bookingController.requestDocumentById(documentRepository.findByTitle("The Art of Computer Programming").getId(), userRepository.findByUsername("elv").getId(), System.currentTimeMillis());
+        bookingController.requestDocumentById(documentRepository.findByTitle("The Art of Computer Programming").getId(), userRepository.findByUsername("and").getId(), System.currentTimeMillis());
+        bookingController.requestDocumentById(documentRepository.findByTitle("The Art of Computer Programming").getId(), userRepository.findByUsername("ver").getId(), System.currentTimeMillis());
+        bookingController.makeOutstandingRequest(documentRepository.findByTitle("The Art of Computer Programming").getId(), userRepository.findByUsername("ram").getId(), System.currentTimeMillis());
+
+        List<Log> logs = logController.getLogs();
+
+        assert logs.size() == 17;
+        System.out.println();
+        System.out.println("LOGS TEST 9");
+        for (Log newLog: logs) {
+            System.out.println(newLog.getUser().getName() + ": " + newLog.getMessage());
+        }
+        System.out.println();
+
         clearDB();
     }
 }
