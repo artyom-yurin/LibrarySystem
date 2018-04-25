@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 
 import com.example.demo.entity.document.Document;
+import com.example.demo.entity.document.Tag;
 import com.example.demo.exception.UnauthorizedException;
 import com.example.demo.model.SearchModel;
 import com.example.demo.service.DocumentService;
@@ -61,8 +62,13 @@ public class SearchController {
                 String[] tags = searchModel.getSearchQuery().split(" ");
                 for (String substring : tags) {
                     for (Document document : documentService.getAllDocuments()){
-                        if(document.getTags().toString().toLowerCase().contains(substring.toLowerCase()) && !toReturn.contains(document)){
-                            toReturn.add(document);
+                        for(Tag tag : document.getTags())
+                        {
+                            if(tag.getTagName().toLowerCase().equals(substring.toLowerCase().replace(" ", "")))
+                            {
+                                toReturn.add(document);
+                                break;
+                            }
                         }
                     }
                 }
