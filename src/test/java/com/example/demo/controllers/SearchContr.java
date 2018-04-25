@@ -1,38 +1,29 @@
-package com.example.demo.controller;
+package com.example.demo.controllers;
 
 
 import com.example.demo.entity.document.Document;
-import com.example.demo.exception.UnauthorizedException;
 import com.example.demo.model.SearchModel;
 import com.example.demo.service.DocumentService;
-import com.example.security.ParserToken;
-import com.example.security.TokenAuthenticationService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 
 @RestController
-public class SearchController {
+public class SearchContr{
     private DocumentService documentService;
 
-    public SearchController(DocumentService documentService) {
+    public SearchContr(DocumentService documentService) {
         this.documentService = documentService;
     }
 
     /**
      * Method for searching the document
      * @param searchModel Model for the search (type of search and search request
-     * @param request HTTP Servlet Request with a token of the session
      * @return List of all documents found based on search request
      */
-    @PostMapping("/search")
-    public Iterable<Document> search(@RequestBody SearchModel searchModel, HttpServletRequest request){
-        ParserToken token = TokenAuthenticationService.getAuthentication(request);
-        if (token == null) throw new UnauthorizedException();
-
+    @GetMapping("/search")
+    public ArrayList<Document> search(SearchModel searchModel){
         if(searchModel == null){
             return null;
         }

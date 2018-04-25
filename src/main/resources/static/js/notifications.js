@@ -99,12 +99,12 @@ function updateNotifications() {
 
                 //close div for notification
                 currentConfirmation +=
-                    "</dl>" +
-                    "<small class='d-block text-right mt-3 border-bottom border-gray pb-2'>\n" +
-                    "<button class='btn btn-outline-success my-2 my-sm-0' onclick='acceptConfirmation(" + notifications_json[notification]["id"] + ")' " +
-                    "type='submit'>Accept" +
-                    "</button>\n" +
-                    "</small>\n" +
+                    // "</dl>" +
+                    // "<small class='d-block text-right mt-3 border-bottom border-gray pb-2'>\n" +
+                    // "<button class='btn btn-outline-success my-2 my-sm-0' onclick='acceptConfirmation(" + notifications_json[notification]["id"] + ")' " +
+                    // "type='submit'>Accept" +
+                    // "</button>\n" +
+                    // "</small>\n" +
                     "</div>\n";
 
 

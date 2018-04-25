@@ -9,7 +9,7 @@ public class Tag {
     @Column(name = "TAG_ID")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-    @Size(max = 25)
+    @Size(max = 100)
     @Column(name = "TAG_NAME")
     private String tagName;
 
