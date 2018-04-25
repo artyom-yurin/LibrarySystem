@@ -188,7 +188,7 @@ public class DocumentController {
 
         this.documentService.remove(id);
 
-        logService.newLog(token.id, "Removed document" + document.getTitle());
+        logService.newLog(token.id, "Removed document " + document.getTitle());
     }
 
     @GetMapping("/document/find")

@@ -47,7 +47,13 @@ public class UserController {
             TokenAuthenticationService.addAuthentication(response, loginUser);
             switch (loginUser.getRole().getName()) {
                 case "librarian":
-                    return new ModelAndView("books");
+                    if (Privileges.Privilege.Priv1.compareTo(Privileges.convertStringToPrivelege(loginUser.getRole().getPosition())) == 0)
+                        return new ModelAndView("books1");
+                    else if (Privileges.Privilege.Priv2.compareTo(Privileges.convertStringToPrivelege(loginUser.getRole().getPosition())) ==  0)
+                        return new ModelAndView("books2");
+                    else if (Privileges.Privilege.Priv3.compareTo(Privileges.convertStringToPrivelege(loginUser.getRole().getPosition())) ==  0)
+                        return new ModelAndView("books3");
+                    else throw new AccessDeniedException();
                 case "admin":
                     return new ModelAndView("librarians");
                 default:

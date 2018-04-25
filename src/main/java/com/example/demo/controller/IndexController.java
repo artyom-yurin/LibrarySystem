@@ -23,7 +23,13 @@ public class IndexController {
             return new ModelAndView("login");
         }
         else if("librarian".equals(token.role)){
-            return new ModelAndView("books");
+            if (Privileges.Privilege.Priv1.compareTo(Privileges.convertStringToPrivelege(token.position)) == 0)
+                return new ModelAndView("books1");
+            else if (Privileges.Privilege.Priv2.compareTo(Privileges.convertStringToPrivelege(token.position)) ==  0)
+                return new ModelAndView("books2");
+            else if (Privileges.Privilege.Priv3.compareTo(Privileges.convertStringToPrivelege(token.position)) ==  0)
+                return new ModelAndView("books3");
+            else throw new AccessDeniedException();
         }
         else if("admin".equals(token.role))
         {
@@ -71,11 +77,13 @@ public class IndexController {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null) throw new UnauthorizedException();
         if (!token.role.equals("librarian")) throw new AccessDeniedException();
-        if (Privileges.Privilege.Priv1.compareTo(Privileges.convertStringToPrivelege(token.position)) > 0)
+        if (Privileges.Privilege.Priv1.compareTo(Privileges.convertStringToPrivelege(token.position)) == 0)
             return new ModelAndView("books1");
-        else if (Privileges.Privilege.Priv2.compareTo(Privileges.convertStringToPrivelege(token.position)) > 0)
+        else if (Privileges.Privilege.Priv2.compareTo(Privileges.convertStringToPrivelege(token.position)) ==  0)
             return new ModelAndView("books2");
-        else return new ModelAndView("books3");
+        else if (Privileges.Privilege.Priv3.compareTo(Privileges.convertStringToPrivelege(token.position)) ==  0)
+            return new ModelAndView("books3");
+        else throw new AccessDeniedException();
     }
 
     @GetMapping("/librarian/users")
@@ -83,11 +91,13 @@ public class IndexController {
         ParserToken token = TokenAuthenticationService.getAuthentication(request);
         if (token == null) throw new UnauthorizedException();
         if (!token.role.equals("librarian")) throw new AccessDeniedException();
-        if (Privileges.Privilege.Priv1.compareTo(Privileges.convertStringToPrivelege(token.position)) > 0)
-            return new ModelAndView("users1");
-        else if (Privileges.Privilege.Priv2.compareTo(Privileges.convertStringToPrivelege(token.position)) > 0)
-            return new ModelAndView("users2");
-        else return new ModelAndView("users3");
+        if (Privileges.Privilege.Priv1.compareTo(Privileges.convertStringToPrivelege(token.position)) == 0)
+            return new ModelAndView("user1");
+        else if (Privileges.Privilege.Priv2.compareTo(Privileges.convertStringToPrivelege(token.position)) ==  0)
+            return new ModelAndView("user2");
+        else if (Privileges.Privilege.Priv3.compareTo(Privileges.convertStringToPrivelege(token.position)) ==  0)
+            return new ModelAndView("user3");
+        else throw new AccessDeniedException();
     }
 
     @GetMapping("/librarian/requests")
