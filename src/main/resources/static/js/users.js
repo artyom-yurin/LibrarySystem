@@ -151,7 +151,7 @@ function modifyCurrentUser() {
 // }
 
 function updateUsers() {
-    let title = $("title").innerHTML;
+    let title = $("#title")[0].innerHTML;
     console.log("title is " + title);
     $.ajax({
         url: URL_LOCALHOST + 'user' + (title === 'Librarians' ? '/librarians' : '/users'),
