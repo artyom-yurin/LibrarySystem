@@ -50,11 +50,11 @@ function updateBooks() {
     });
 }
 
-function displaybooks(books_json) {
+function displayBooks(books_json) {
     console.info("Responding json: ");
     console.info(books_json);
 
-    let title = $("#title")[0].innerHTML;
+    let title = $("#htitle")[0].innerHTML;
     let outer =
         "<h4 class=\"border-bottom border-gray pb-2 mb-0\">Library</h4>\n" +
         "\n" +
