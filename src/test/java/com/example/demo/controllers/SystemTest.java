@@ -7,6 +7,7 @@ import com.example.demo.entity.information.Log;
 import com.example.demo.entity.user.User;
 import com.example.demo.exception.AccessDeniedException;
 import com.example.demo.model.DocumentModel;
+import com.example.demo.model.SearchModel;
 import com.example.demo.model.UserModel;
 import com.example.demo.repository.*;
 import com.example.demo.service.TypeDocumentService;
@@ -17,7 +18,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.swing.*;
 import java.util.*;
 
 @RunWith(SpringRunner.class)
@@ -34,6 +34,8 @@ public class SystemTest {
     NotificationContr notificationController;
     @Autowired
     LogContr logController;
+    @Autowired
+    SearchContr searchController;
 
     @Autowired
     TypeDocumentService typeDocumentService;
@@ -314,5 +316,37 @@ public class SystemTest {
         System.out.println();
 
         clearDB();
+    }
+
+    @Test
+    public void test10(){
+        clearDB();
+        addUsers();
+        addDocuments(userRepository.findByUsername("lui").getId());
+        ArrayList<Document> searched = searchController.search(new SearchModel("title", "Introduction to Algorithms"));
+        assert searched.contains(documentRepository.findByTitle("Introduction to Algorithms"));
+        clearDB();
+    }
+
+    @Test
+    public void test11(){
+        clearDB();
+        addUsers();
+        addDocuments(userRepository.findByUsername("lui").getId());
+        ArrayList<Document> searched = searchController.search(new SearchModel("title", "Algorithms"));
+        assert searched.contains(documentRepository.findByTitle("Introduction to Algorithms"));
+        assert searched.contains(documentRepository.findByTitle("Algorithms + Data Structures = Programs"));
+        clearDB();
+    }
+
+    @Test
+    public void test12(){
+        clearDB();
+        addUsers();
+        addDocuments(userRepository.findByUsername("lui").getId());
+        ArrayList<Document> searched = searchController.search(new SearchModel("tags", "Algorithms"));
+        assert searched.contains(documentRepository.findByTitle("Introduction to Algorithms"));
+        assert searched.contains(documentRepository.findByTitle("Algorithms + Data Structures = Programs"));
+        assert searched.contains(documentRepository.findByTitle("The Art of Computer Programming"));
     }
 }
