@@ -22,7 +22,7 @@ public class LogContr{
         this.logService = logService;
     }
 
-    public List<Log> getLogs(@RequestParam(name = "id", defaultValue = "-1") Integer userId, HttpServletRequest request)
+    public List<Log> getLogs(Integer userId)
     {
         return logService.findAll()
                 .stream()
@@ -30,7 +30,7 @@ public class LogContr{
                 .collect(Collectors.toList());
     }
 
-    public List<Log> getLogs(HttpServletRequest request)
+    public List<Log> getLogs()
     {
         return logService.findAll();
     }
