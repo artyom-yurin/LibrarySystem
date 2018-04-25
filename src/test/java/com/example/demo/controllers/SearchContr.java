@@ -2,6 +2,7 @@ package com.example.demo.controllers;
 
 
 import com.example.demo.entity.document.Document;
+import com.example.demo.entity.document.Tag;
 import com.example.demo.model.SearchModel;
 import com.example.demo.service.DocumentService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,7 +23,6 @@ public class SearchContr{
      * @param searchModel Model for the search (type of search and search request
      * @return List of all documents found based on search request
      */
-    @GetMapping("/search")
     public ArrayList<Document> search(SearchModel searchModel){
         if(searchModel == null){
             return null;
@@ -52,8 +52,13 @@ public class SearchContr{
                 String[] tags = searchModel.getSearchQuery().split(" ");
                 for (String substring : tags) {
                     for (Document document : documentService.getAllDocuments()){
-                        if(document.getTags().toString().toLowerCase().contains(substring.toLowerCase()) && !toReturn.contains(document)){
-                            toReturn.add(document);
+                        for(Tag tag : document.getTags())
+                        {
+                            if(tag.getTagName().toLowerCase().equals(substring.toLowerCase().replace(" ", "")))
+                            {
+                                toReturn.add(document);
+                                break;
+                            }
                         }
                     }
                 }
