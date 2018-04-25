@@ -35,6 +35,25 @@ public class UserContr {
         this.logService = logService;
     }
 
+    public Integer addAdmin(UserModel userModel)
+    {
+        List<User> admins = userService.getAllUsers()
+                .stream()
+                .filter(user -> user.getRole().getName().equals("admin"))
+                .collect(Collectors.toList());
+        if (!admins.isEmpty()) throw new AccessDeniedException();
+
+        User user = userService.findByUsername(userModel.getUsername());
+        if (user != null) {
+            throw new AlreadyUserExistException();
+        }
+        Role role = roleService.findByPosition(userModel.getPosition().toLowerCase());
+        if (role == null) throw new RoleNotFoundException();
+        user = new User(userModel.getName(), userModel.getSurname(), userModel.getAddress(), userModel.getPhone(), role, userModel.getUsername(), userModel.getPassword());
+        userService.save(user);
+        return userService.findByUsername(userModel.getUsername()).getId();
+    }
+
     public void addUser(UserModel userModel, Integer librarianId){
         User librarian = userService.findById(librarianId);
         if (!librarian.getRole().getName().equals("admin"))

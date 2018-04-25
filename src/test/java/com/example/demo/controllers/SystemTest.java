@@ -50,91 +50,89 @@ public class SystemTest {
     AuthorRepository authorRepository;
     @Autowired
     BookingRepository bookingRepository;
+    @Autowired
+    TagRepository tagRepository;
+    @Autowired
+    LogRepository logRepository;
 
     final long time = 1522627200000L;
 
-    public void clearDB()
-    {
+    public void clearDB() {
         notificationRepository.deleteAll();
+        logRepository.deleteAll();
         bookingRepository.deleteAll();
         documentRepository.deleteAll();
         authorRepository.deleteAll();
+        tagRepository.deleteAll();
         publisherRepository.deleteAll();
         userRepository.deleteAll();
     }
 
-    public void addUsers()
-    {
-        /*userController.addUser(new UserModel(-1, "Sergey", "Afonso", "Via Margutta, 3", "30001", "Professor", "ser", "123"));
+    public void addUsers() {
+        //БЕРИ ОТСЮДА ЮЗЕРОВ, ВТОРОЙ АТРИБУТ, ЭТО КТО ДОБАВЛЯЕТ
+        Integer adminId = userController.addAdmin(new UserModel(-1, "Artyom", "Yu", "Via Margutta, 3", "30001", "admin", "art", "123"));
 
-        userController.addUser(new UserModel(-1, "Nadia", "Teixeira", "Via Sacra, 13", " 30002", "Professor", "nad", "123"));
+        userController.addUser(new UserModel(-1, "Sergey", "Afonso", "Via Margutta, 3", "30001", "Professor", "ser", "123"), adminId);
 
-        userController.addUser(new UserModel(-1, "Elvira", "Espindola", "Via del Corso, 22", "30003", "Professor", "elv", "123"));
+        userController.addUser(new UserModel(-1, "Nadia", "Teixeira", "Via Sacra, 13", " 30002", "Professor", "nad", "123"), adminId);
 
-        userController.addUser(new UserModel(-1, "Andrey", "Velo", "Avenida Mazatlan 250", "30004", "Student", "and", "123"));
+        userController.addUser(new UserModel(-1, "Elvira", "Espindola", "Via del Corso, 22", "30003", "Professor", "elv", "123"), adminId);
 
-        userController.addUser(new UserModel(-1, "Veronika", "Rama", "Stret Atocha, 27", "30005", "VP", "ver", "123"));
-   */ }
+        userController.addUser(new UserModel(-1, "Andrey", "Velo", "Avenida Mazatlan 250", "30004", "Student", "and", "123"), adminId);
 
-    public void addDocuments()
-    {
+        userController.addUser(new UserModel(-1, "Veronika", "Rama", "Stret Atocha, 27", "30005", "VP", "ver", "123"), adminId);
+
+        userController.addUser(new UserModel(-1, "Eugenia", "Rama", "Stret Atocha, 27", "30005", "Priv1", "eug", "123"), adminId);
+
+        userController.addUser(new UserModel(-1, "Luie", "Ramos", "Stret Atocha, 27", "30005", "Priv2", "lui", "123"), adminId);
+
+        userController.addUser(new UserModel(-1, "Ramon", "Valdez", "Stret Atocha, 27", "30005", "Priv3", "ram", "123"), adminId);
+    }
+
+    public void addDocuments(Integer librarianId) {
+        //БЕРИ ОТСЮДА ДОКУМЕНТЫ, ВТОРОЙ АТРИБУТ, ЭТО КТО ДОБАВЛЯЕТ
         Set<Author> authors0 = new HashSet<>();
-        Author tempAuthor = new Author("Thomas H", "Cormen");
-        authorRepository.save(tempAuthor);
-        authors0.add(authorRepository.findByLastName("Cormen"));
+        authors0.add(new Author("Thomas H", "Cormen"));
+        authors0.add(new Author("Charles E", "Leiserson"));
+        authors0.add(new Author("Ronald L", "Rivest"));
+        authors0.add(new Author("Clifford", "Stein"));
 
-        tempAuthor = new Author("Charles E", "Leiserson");
-        authorRepository.save(tempAuthor);
-        authors0.add(authorRepository.findByLastName("Leiserson"));
+        Set<Tag> tags0 = new HashSet<Tag>();
+        tags0.add(new Tag("Algorithms"));
+        tags0.add(new Tag("Data Structures"));
+        tags0.add(new Tag("Complexity"));
+        tags0.add(new Tag("Computational Theory"));
 
-        tempAuthor = new Author("Ronald L", "Rivest");
-        authorRepository.save(tempAuthor);
-        authors0.add(authorRepository.findByLastName("Rivest"));
-
-        tempAuthor = new Author("Clifford", "Stein");
-        authorRepository.save(tempAuthor);
-        authors0.add(authorRepository.findByLastName("Stein"));
-
-        Publisher publisher0 = new Publisher(("MIT Press").toLowerCase());
-        publisherRepository.save(publisher0);
-        publisher0 = publisherRepository.findByPublisherName(("MIT Press").toLowerCase());
-        //documentController.addDocument(new DocumentModel(1, "Introduction to Algorithms", authors0, 5000, 3, new HashSet<Tag>(), publisher0, 3, false, false, new Date(1230768000000L), "", typeDocumentService.findByTypeName("book")));
+        documentController.addDocument(new DocumentModel(1, "Introduction to Algorithms", authors0, 5000, 3, tags0, "MIT Press", 3, false, false, new Date(1230768000000L), "", typeDocumentService.findByTypeName("book")), librarianId);
 
         Set<Author> authors1 = new HashSet<>();
-        tempAuthor = new Author("Erich", "Gamma");
-        authorRepository.save(tempAuthor);
-        authors1.add(authorRepository.findByLastName("Gamma"));
+        authors1.add(new Author("Niklaus", "Wirth"));
 
-        tempAuthor = new Author("Ralph", "Johnson");
-        authorRepository.save(tempAuthor);
-        authors1.add(authorRepository.findByLastName("Johnson"));
 
-        tempAuthor = new Author("John", "Vlissides");
-        authorRepository.save(tempAuthor);
-        authors1.add(authorRepository.findByLastName("Vlissides"));
+        Set<Tag> tags1 = new HashSet<Tag>();
+        tags1.add(new Tag("Algorithms"));
+        tags1.add(new Tag("Data Structures"));
+        tags1.add(new Tag("Search Algorithms"));
+        tags1.add(new Tag("Pascal"));
 
-        tempAuthor = new Author("Richard", "Helm");
-        authorRepository.save(tempAuthor);
-        authors1.add(authorRepository.findByLastName("Helm"));
+        documentController.addDocument(new DocumentModel(1, "Algorithms + Data Structures = Programs", authors1, 5000, 3, tags1, "Prentice Hall PTR", 1, false, false, new Date(1230768000000L), "", typeDocumentService.findByTypeName("book")), librarianId);
 
-        Publisher publisher1 = new Publisher("Addison-Wesley Professional".toLowerCase());
-        publisherRepository.save(publisher1);
-        publisher1 = publisherRepository.findByPublisherName("Addison-Wesley Professional".toLowerCase());
-        //documentController.addDocument(new DocumentModel(1, "Design Patterns: Elements of Reusable Object-Oriented Software", authors1, 1700, 3, new HashSet<Tag>(), publisher1, 1, true, false, new Date(1041379200000L), "", typeDocumentService.findByTypeName("book")));
+        Set<Author> authors2 = new HashSet<>();
+        authors2.add(new Author("Donald E.", "Knuth"));
 
-        Set<Author> authors3 = new HashSet<>();
-        tempAuthor = new Author("Tony", "Hoare");
-        authorRepository.save(tempAuthor);
-        authors3.add(authorRepository.findByLastName("Hoare"));
+        Set<Tag> tags2 = new HashSet<Tag>();
+        tags2.add(new Tag("Algorithms"));
+        tags2.add(new Tag("Combinatorial Algorithms"));
+        tags2.add(new Tag("Recursion"));
 
-        //documentController.addDocument(new DocumentModel(1, "Null References: The Billion Dollar Mistake", authors3, 700, 2, new HashSet<Tag>(), null, 0, false, false, null, "", typeDocumentService.findByTypeName("avmaterial")));
+        documentController.addDocument(new DocumentModel(1, "The Art of Computer Programming", authors2, 5000, 3, tags2, "Addison Wesley Longman Publishing Co., Inc.", 3, false, false, new Date(1230768000000L), "", typeDocumentService.findByTypeName("book")), librarianId);
     }
 
     @Test
     public void test1() {
         clearDB();
         addUsers();
-        addDocuments();
+        addDocuments(userRepository.findByUsername("ram").getId());
 
         clearDB();
     }

@@ -1,10 +1,7 @@
 package com.example.demo.controllers;
 
 import com.example.demo.common.Privileges;
-import com.example.demo.entity.document.Author;
-import com.example.demo.entity.document.Document;
-import com.example.demo.entity.document.Publisher;
-import com.example.demo.entity.document.TypeDocument;
+import com.example.demo.entity.document.*;
 import com.example.demo.entity.user.User;
 import com.example.demo.exception.*;
 import com.example.demo.model.DocumentModel;
@@ -19,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 public class DocumentContr {
@@ -33,29 +31,57 @@ public class DocumentContr {
     private AuthorService authorService;
     private PublisherService publisherService;
     private LogService logService;
+    private TagService tagService;
 
-    public DocumentContr(DocumentService documentService, TypeDocumentService typeDocumentService, AuthorService authorService, PublisherService publisherService, LogService logService) {
+    public DocumentContr(DocumentService documentService, TypeDocumentService typeDocumentService, AuthorService authorService, PublisherService publisherService, LogService logService, TagService tagService) {
         this.documentService = documentService;
         this.typeDocumentService = typeDocumentService;
         this.authorService = authorService;
         this.publisherService = publisherService;
         this.logService = logService;
+        this.tagService = tagService;
     }
 
     private HashSet<Author> findAuthors(Set<Author> setAuthors) {
         HashSet<Author> authors = new HashSet<>();
-        if (setAuthors != null) {
-            for (Author author : setAuthors) {
-                if (author.getId() != null) {
-                    authors.add(authorService.findById(author.getId()));
-                } else if (author.getFirstName() != null) {
-                    authors.add(authorService.findByFirstName(author.getFirstName()));
-                } else {
-                    authors.add(authorService.findByLastName(author.getLastName()));
+        if(setAuthors != null && setAuthors.size() > 0)
+        {
+            for (Author authorItem : setAuthors) {
+                List<Author> concurrencesAuthors = authorService.findAll()
+                        .stream()
+                        .filter(author -> author.getFirstName().toLowerCase().equals(authorItem.getFirstName().toLowerCase()))
+                        .filter(author -> author.getLastName().toLowerCase().equals(authorItem.getLastName().toLowerCase()))
+                        .collect(Collectors.toList());
+                if(concurrencesAuthors.isEmpty())
+                {
+                    authorService.save(new Author(authorItem.getFirstName(), authorItem.getLastName()));
+                    concurrencesAuthors = authorService.findAll()
+                            .stream()
+                            .filter(author -> author.getFirstName().toLowerCase().equals(authorItem.getFirstName().toLowerCase()))
+                            .filter(author -> author.getLastName().toLowerCase().equals(authorItem.getLastName().toLowerCase()))
+                            .collect(Collectors.toList());
                 }
+                authors.add(concurrencesAuthors.get(0));
             }
         }
         return authors;
+    }
+
+    private HashSet<Tag> findTags(Set<Tag> setTags) {
+        HashSet<Tag> tags = new HashSet<>();
+        if(setTags != null && setTags.size() > 0)
+        {
+            for (Tag tagItem : setTags) {
+                Tag newTag = tagService.findTag(tagItem.getTagName().toLowerCase());
+                if(newTag == null)
+                {
+                    tagService.save(tagItem);
+                    newTag = tagService.findTag(tagItem.getTagName().toLowerCase());
+                }
+                tags.add(newTag);
+            }
+        }
+        return tags;
     }
 
     public void addDocument(DocumentModel documentModel, Integer librarianId) {
@@ -67,7 +93,7 @@ public class DocumentContr {
         if (type == null) throw new TypeNotFoundException();
         Set<Author> authors = findAuthors(documentModel.getAuthors());
         Publisher publisher = null;
-
+        Set<Tag> tags = findTags(documentModel.getTags());
         if(!"avmaterial".equals(type.getTypeName()))
         {
             publisher = publisherService.findByPublisherName(documentModel.getPublisher());
@@ -78,7 +104,7 @@ public class DocumentContr {
             }
         }
 
-        Document document = new Document(documentModel.getTitle(), authors, documentModel.getPrice(), documentModel.getCount(), documentModel.getTags(), publisher, documentModel.getEdition(), documentModel.isBestseller(), documentModel.isReference(), documentModel.getPublishingDate(), documentModel.getEditor(), type);
+        Document document = new Document(documentModel.getTitle(), authors, documentModel.getPrice(), documentModel.getCount(), tags, publisher, documentModel.getEdition(), documentModel.isBestseller(), documentModel.isReference(), documentModel.getPublishingDate(), documentModel.getEditor(), type);
         this.documentService.save(document);
 
         logService.newLog(librarianId, "Added new document " + document.getTitle());
@@ -92,7 +118,7 @@ public class DocumentContr {
         TypeDocument type = typeDocumentService.findByTypeName(documentModel.getType().getTypeName());
         if (type == null) throw new TypeNotFoundException();
         Set<Author> authors = findAuthors(documentModel.getAuthors());
-
+        Set<Tag> tags = findTags(documentModel.getTags());
         Publisher publisher = null;
         if(!"avmaterial".equals(type.getTypeName()))
         {
@@ -114,7 +140,7 @@ public class DocumentContr {
             }
             needAllocation = true;
         }
-        Document document = new Document(documentModel.getTitle(), authors, documentModel.getPrice(), count, documentModel.getTags(), publisher, documentModel.getEdition(), documentModel.isBestseller(), documentModel.isReference(), documentModel.getPublishingDate(), documentModel.getEditor(), documentModel.getType());
+        Document document = new Document(documentModel.getTitle(), authors, documentModel.getPrice(), count, tags, publisher, documentModel.getEdition(), documentModel.isBestseller(), documentModel.isReference(), documentModel.getPublishingDate(), documentModel.getEditor(), documentModel.getType());
         document.setId(documentModel.getId());
         this.documentService.save(document);
         if (needAllocation) bookingController.queueAllocation(document.getId());
