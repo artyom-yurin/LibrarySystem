@@ -151,7 +151,7 @@ function modifyCurrentUser() {
 // }
 
 function updateUsers() {
-    let title = $("title").innerHTML;
+    let title = $("#title")[0].innerHTML;
     console.log("title is " + title);
     $.ajax({
         url: URL_LOCALHOST + 'user' + (title === 'Librarians' ? '/librarians' : '/users'),
@@ -174,7 +174,8 @@ function updateUsers() {
     });
 }
 
-function displayUsers(users){
+function displayUsers(users) {
+    let title = $("#title")[0].innerHTML;
     console.info("Responding json: ");
     console.info(users);
 
@@ -257,13 +258,16 @@ function displayUsers(users){
 
             "<button class='btn btn-outline-primary my-2 my-sm-0' data-toggle=\"modal\" data-target=\"#myModal\" " +
             "onclick='setCurrentUser(" + users[user]["id"] + ")' >Modify" +
-            "</button>\n" +
+            "</button>\n";
 
-            "<button class='btn btn-outline-danger my-2 my-sm-0' onclick='deleteUser(" +
-            users[user]["id"] +
-            ")' type='submit'>Delete" +
-            "</button>\n" +
-
+        if (title === 'Control Users3') {
+            currentUser +=
+                "<button class='btn btn-outline-danger my-2 my-sm-0' onclick='deleteUser(" +
+                users[user]["id"] +
+                ")' type='submit'>Delete" +
+                "</button>\n";
+        }
+        currentUser +=
             "</small>\n" +
             "</div>\n";
 
@@ -294,7 +298,8 @@ function displayUsers(users){
     //Final load in html. It replace everything inside <div id = "database'> which is container for our database.
     $("#database").html(outer);
 }
-function displayRequests(requests_json){
+
+function displayRequests(requests_json) {
     console.info("Responding json: ");
     console.info(requests_json);
 
@@ -425,6 +430,7 @@ function displayRequests(requests_json){
 }
 
 var map;
+
 function init() {
     map = new Map();
 
@@ -436,6 +442,7 @@ function init() {
     map.set('username', 'username');
     map.set('password', 'password');
 }
+
 function fillInputsInUserModify() {
     for (let index in userAttributesWeHave) {
         if (userAttributesWeHave[index] === "id")
@@ -451,6 +458,7 @@ function fillInputsInUserModify() {
 }
 
 var userAttributesWeHave = [];
+
 function pushNewUserAttribute(attr) {
     for (let i in userAttributesWeHave) {
         if (attr === userAttributesWeHave[i])
@@ -460,6 +468,7 @@ function pushNewUserAttribute(attr) {
 }
 
 var currentUserId = -1;
+
 function setCurrentUser(id) {
     currentUserId = id;
     fillInputsInUserModify();
