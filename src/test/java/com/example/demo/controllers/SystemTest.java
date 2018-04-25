@@ -324,7 +324,12 @@ public class SystemTest {
         addUsers();
         addDocuments(userRepository.findByUsername("lui").getId());
         ArrayList<Document> searched = searchController.search(new SearchModel("title", "Introduction to Algorithms"));
-        assert searched.contains(documentRepository.findByTitle("Introduction to Algorithms"));
+        boolean check = false;
+        for(Document document : searched){
+            if(document.getTitle().equals("Introduction to Algorithms"))
+                check = true;
+        }
+        assert check;
         clearDB();
     }
 
@@ -334,8 +339,16 @@ public class SystemTest {
         addUsers();
         addDocuments(userRepository.findByUsername("lui").getId());
         ArrayList<Document> searched = searchController.search(new SearchModel("title", "Algorithms"));
-        assert searched.contains(documentRepository.findByTitle("Introduction to Algorithms"));
-        assert searched.contains(documentRepository.findByTitle("Algorithms + Data Structures = Programs"));
+        boolean check = false;
+        boolean check2 = false;
+        for(Document document : searched){
+            if(document.getTitle().equals("Introduction to Algorithms"))
+                check = true;
+            if(document.getTitle().equals("Algorithms + Data Structures = Programs"))
+                check2 = true;
+        }
+        assert check;
+        assert check2;
         clearDB();
     }
 
@@ -345,8 +358,19 @@ public class SystemTest {
         addUsers();
         addDocuments(userRepository.findByUsername("lui").getId());
         ArrayList<Document> searched = searchController.search(new SearchModel("tags", "Algorithms"));
-        assert searched.contains(documentRepository.findByTitle("Introduction to Algorithms"));
-        assert searched.contains(documentRepository.findByTitle("Algorithms + Data Structures = Programs"));
-        assert searched.contains(documentRepository.findByTitle("The Art of Computer Programming"));
+        boolean check = false;
+        boolean check2 = false;
+        boolean check3 = false;
+        for(Document document : searched){
+            if(document.getTitle().equals("Introduction to Algorithms"))
+                check = true;
+            if(document.getTitle().equals("Algorithms + Data Structures = Programs"))
+                check2 = true;
+            if(document.getTitle().equals("The Art of Computer Programming"))
+                check3 = true;
+        }
+        assert check;
+        assert check2;
+        assert check3;
     }
 }
